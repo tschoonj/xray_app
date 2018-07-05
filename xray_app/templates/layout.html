@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    {% if title %}
+      <title>Flask App - {{ title }}</title>
+    {% else %}
+      <title>Flask App</title>
+    {% endif %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+  </head>
+  
+  <body>
+    {% include 'includes/_navbar.html' %}
+     <div class="container">
+      <div class="jumbotron text-center"> <h1></h1>
+      {% block body %}
+      
+      <form method="GET" action="/">
+      {{ form.hidden_tag() }}
+      {{ form.name.label }} {{ form.name(size=20) }}
+      <input type="submit" value="Go">
+      </form>
+      
+      {% endblock body%}
+      </div>
+     </div>
+     
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js">
+  </script>
+  </body>
+</html>
