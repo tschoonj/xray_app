@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <h1> Atomic Weight </h1>
+  <form method="GET" action="">
+     <fieldset class="form-group">
+        <div class="form-group">
+           {{ form.atm_num.label }} :
+                <input type="text" name="atm_num"> <br>
+                <input type="submit" value="Submit"><br>
+        </div>
+        <!-- multiple form groups can be made each in a diff. div -->
+     </fieldset>
+  </form>
+    
+  <h2> Result: </h2>
+
+{% endblock body%}
