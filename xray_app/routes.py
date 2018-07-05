@@ -9,8 +9,12 @@ def index():
 @app.route('/atomicweight', methods=['GET', 'POST'])
 def atomicweight():
         form = xraylib_request()
+        if request.method == 'GET':
+                for key in request.form.keys():
+                        print('key= {}', key)
+        
               
-        return render_template('atomicweight_2.html', title='Atomic Weight', form=form)
+        return render_template('atomicweight.html', title='Atomic Weight', form=form)
 
    #xraylib.AtomicWeight(input)    
  
