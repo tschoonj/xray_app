@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, url_for
 from xray_app import app
 from xray_app.forms import xraylib_request
 import xraylib
@@ -17,9 +17,7 @@ def atomicweight():
                 print(f'atm_num: {atm_num}')
                 weight = xraylib.AtomicWeight(int(atm_num))
                 return render_template('atomicweight.html', title='Atomic Weight', form=form, atm_num=atm_num, weight=weight)
-              
         return render_template('atomicweight.html', title='Atomic Weight', form=form)
-
-   #xraylib.AtomicWeight(input)    
- 
+  
+#url_for('static', filename='style.css')
     
