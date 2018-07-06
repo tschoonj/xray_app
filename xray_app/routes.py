@@ -1,4 +1,4 @@
-from flask import render_template, request, flash
+from flask import render_template, request
 from xray_app import app
 from xray_app.forms import xraylib_request
 import xraylib

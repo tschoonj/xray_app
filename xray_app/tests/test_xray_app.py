@@ -10,13 +10,15 @@ import xray_app
 @pytest.fixture
 def client():
 	client = xray_app.app.test_client()
-
 	yield client
+
+#def request(client, atm_num):
+#	return client.post('/atomicweight',data=dict(atm_num=atm_num), follow_redirects=True)
 
 def test_atomicweight_nonexistent(client):
 	rv = client.get('/atomicweight_nonexistent')
 	#for key in rv.__dict__:
-	#print(f'{key} -> {rv.__dict__[key]}')
+	#	print(f'{key} -> {rv.__dict__[key]}')
 	assert 404 == rv.status_code
 
 def test_atomicweight_vanilla(client):
@@ -25,9 +27,15 @@ def test_atomicweight_vanilla(client):
 	assert b'<h2> Result: </h2>\n\n\n      </div>' in rv.data
 	assert b'<input type="text" name="atm_num"> <br>' in rv.data
 
-def test_atomicweight_with_valid_input(client):
-	rv = client.post('/atomicweight', data=dict(atm_num=5))
-	assert 200 == rv.status_code
-	assert b'<input type="text" name="atm_num" value=5>' in rv.data
-	assert b'<h2> Result: </h2>\n\n10.81\n\n\n' in rv.data
+#def test_atomicweight_with_valid_input(client):
+#	rv = request(client, xray_app.config['ATM_NUM'], follow_redirects=True)
+#	assert 200 == rv.status_code
+#	assert b'<input type="text" name="atm_num" value=5>' in rv.data
+#	assert b'<h2> Result: </h2>\n\n10.81\n\n\n' in rv.data
+
+def test_atomicweight_with_invalid_input(client):
+        rv = client.post('/atomicweight', data=dict(atm_num=5))
+        assert 200 == rv.status_code
+        assert b'<input type="text" name="atm_num" value=5>' in rv.data
+        assert b'<h2> Result: </h2>\n\n10.81\n\n\n' in rv.data
 	
