@@ -1,0 +1,28 @@
+language: python
+
+install:
+        - sudo apt-get update
+        - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+        - bash miniconda.sh -b -p $HOME/miniconda
+        - export PATH="$HOME/miniconda/bin:$PATH"
+        - hash -r
+        - conda config --set always_yes yes
+        - conda update -q conda
+        - conda install flask flask-wtf matplotlib pytest
+        - conda install -c conda-forge xraylib
+
+script:
+        - cd xray_app
+        - pytest -v
+
+
+branches:
+        only:
+                - master
+
+notifications:
+        email:
+                recipients:
+                        - Katherine.Rowlinson@diamond.ac.uk
+                on_success: never
+                on_failure: always
