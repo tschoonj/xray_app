@@ -3,8 +3,14 @@ from wtforms import StringField
 from wtforms.validators import DataRequired, NumberRange
 
 class xraylib_request(FlaskForm):
-    int_z = StringField('Atomic Number', validators=[DataRequired(message="Invalid response"), NumberRange(min=1, max=118)],)
-    float_q = StringField('Momentum Transfer', validators=[DataRequired(message="Invalid response")])  
+    int_z = StringField(
+    'Atomic Number', 
+    validators=[DataRequired(message="Invalid response"), 
+    NumberRange(min=1, max=118)]
+    )
+    float_q = StringField(
+    'Momentum Transfer', 
+    validators=[DataRequired(message="Invalid response")])  
     
 class choose_request(FlaskForm):
         pass
