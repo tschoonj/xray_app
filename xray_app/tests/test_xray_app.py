@@ -14,8 +14,8 @@ def client():
 	client = xray_app.app.test_client()
 	yield client
 
-def test_atomicweight_nonexistent(client):
-	rv = client.get('/atomicweight_nonexistent')
+def test_nonexistent(client):
+	rv = client.get('/nonexistent')
 	#for key in rv.__dict__:
 	#	print(f'{key} -> {rv.__dict__[key]}')
 	assert 404 == rv.status_code
@@ -47,4 +47,17 @@ def test_atomicweight_with_invalid_input_str(client):
         assert 200 == rv.status_code
         assert b'<input type = "text" name = "int_z"' in rv.data
         assert b'Invalid input' in rv.data
+
+def test_rrf_vanilla(client):
+	rv = client.post('/rayleigh_ff', data=dict(int_z='',float_q=''))
+	assert 200 == rv.status_code
+	assert b'<h2> Result: </h2>' in rv.data
+	assert b'<input type = "text" name = "int_z"' in rv.data
+
+def test_rrf_valid_input(client):
+	rv = client.post('/rayleigh_ff', data=dict(int_z=5,float_q=0.05))
+	assert 200 == rv.status_code
+	assert b'<h2> Result: </h2>\n\n4.727\n\n\n' in rv.data
+	assert b'<input type = "text" name = "int_z" value = 5>' in rv.data
+	assert b'<input type = "text" name = "float_q" value = 0.05>' in rv.data
 
