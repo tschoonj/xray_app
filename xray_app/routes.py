@@ -1,16 +1,27 @@
-from flask import render_template, request, flash
-from xray_app import app
-from xray_app.forms import xraylib_request
-
 from flask import render_template, request, url_for
 from xray_app import app
 from xray_app.forms import xraylib_request
 import xraylib
 
+#def validate_int(s):
+#        if s[0] in ('-', '+'):
+#                return s[1:].isdigit()
+#        return s.isdigit()
+
 def validate_int(s):
-        if s[0] in ('-', '+'):
-                return s[1:].isdigit()
-        return s.isdigit()
+        try: 
+                int(s)
+                return True
+        except ValueError:
+                return False
+        
+def validate_float(s):
+        try: 
+                float(s)
+                return True
+        except ValueError:
+                return False
+        
 
 @app.route("/")
 def index():
@@ -23,7 +34,7 @@ def atomicweight():
                 #for key in request.form.keys():
                 #        print(f'key= {key}')
                 int_z = request.form['int_z']
-                if int_z.isdigit() == False:
+                if validate_int(int_z) == False:
                         return render_template('atomicweight.html', title='Atomic Weight', form=form, int_z=int_z, error=xraylib_request.int_z_error) 
                 elif 0<int(int_z)<=118:                
                         print(f'int_z: {int_z}')
@@ -34,7 +45,5 @@ def atomicweight():
         return render_template('atomicweight.html', title='Atomic Weight', form=form)
   
 #url_for('static', filename='style.css')
-
-   #xraylib.AtomicWeight(input)    
  
     

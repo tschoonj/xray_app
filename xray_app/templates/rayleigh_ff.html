@@ -2,7 +2,7 @@
 
 {% block body %}
 
-  <h1> Atomic Weight </h1> 
+<h1> Rayleigh Form Factor </h1> 
   <form method = "POST" action = "">
      <fieldset class = "form-group">
         <div class = "form-group">
@@ -16,14 +16,13 @@
         </div>
      </fieldset>
   </form>
-    
-  <h2> Result: </h2>
-{% if weight %}
-{{ weight }}
+
+<h2> Result: </h2>
+{% if rayl_ff %}
+{{ rayl_ff }}
 {% endif %}
 
 {% if error %}
 {{error}}
 {% endif %}
 {% endblock body%}
-
