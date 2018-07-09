@@ -43,7 +43,7 @@ def atomicweight():
                 elif 0<int(int_z)<=118:                
                         print(f'int_z: {int_z}')
                         weight = xraylib.AtomicWeight(int(int_z))
-                        return render_template('atomicweight.html', title='Atomic Weight', form=form, int_z=int_z, weight=weight)
+                        return render_template('atomicweight.html', title='Atomic Weight', form=form, int_z=int_z, function=weight)
                 else:
                         return render_template('atomicweight.html', title='Atomic Weight', form=form, int_z=int_z, error=xraylib_request.int_z_error)                       
         return render_template('atomicweight.html', title='Atomic Weight', form=form)
@@ -63,9 +63,10 @@ def rayleigh_form_factor():
                 elif 0<int(int_z)<=118:                
                         print(f'int_z: {int_z}')
                         rff = xraylib.FF_Rayl(int(int_z), float(float_q))
-                        return render_template('rayleigh_ff.html', title='Rayleigh Form Factor', form=form, int_z=int_z, float_q=float_q, rff=rff)
+                        return render_template('rayleigh_ff.html', title='Rayleigh Form Factor', form=form, int_z=int_z, float_q=float_q, function=rff)
                 else:
                         return render_template('rayleigh_ff.html', title='Rayleigh Form Factor', form=form, int_z=int_z, float_q=float_q, error=xraylib_request.error)                       
         return render_template('rayleigh_ff.html', title='Rayleigh Form Factor', form=form)  
+        
 #url_for('static', filename='style.css')
  

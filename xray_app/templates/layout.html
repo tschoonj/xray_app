@@ -16,8 +16,6 @@
        <div class="jumbotron text-center"> <h1></h1>
        {% if title %}
          <h1> {{ title }} </h1>
-       {% else %}
-         <h1> </h1>
        {% endif %}    
        {% block body %}
          <form method="POST" action="/">
@@ -25,11 +23,23 @@
          {{ form.name.label }} {{ form.name(size=20) }}
          <input type = "submit" value = "Submit"><br>
        </form>
-       {% endblock body %}
        </div>
+       {% endblock body %}
+       
+       {% if title %}
+         <h2> Result: </h2>
+       {% endif %}
+       {% if function %}
+       {{ function }}
+       {% endif %}
+       
+       {% if error %}
+       {{error}}
+       {% endif %}
      </div>
-     
+           
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js">
   </script>
   </body>
 </html>
+

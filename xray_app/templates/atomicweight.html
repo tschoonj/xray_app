@@ -2,7 +2,7 @@
 
 {% block body %}
 
-  <form method = "POST" action = "">
+<form method = "POST" action = "">
      <fieldset class = "form-group">
         <div class = "form-group">
            {{ form.int_z.label }} :
@@ -14,15 +14,6 @@
                 <input type = "submit" value = "Submit"><br>
         </div>
      </fieldset>
-  </form>
-    
-  <h2> Result: </h2>
-{% if weight %}
-{{ weight }}
-{% endif %}
-
-{% if error %}
-{{error}}
-{% endif %}
+</form>
 {% endblock body%}
 

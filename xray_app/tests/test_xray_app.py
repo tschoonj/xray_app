@@ -14,13 +14,8 @@ def client():
 	client = xray_app.app.test_client()
 	yield client
 
-<<<<<<< HEAD
 def test_nonexistent(client):
 	rv = client.get('/nonexistent')
-=======
-def test_atomicweight_nonexistent(client):
-	rv = client.get('/atomicweight_nonexistent')
->>>>>>> 8384bfa29a972382b366dfd064f305c391456553
 	#for key in rv.__dict__:
 	#	print(f'{key} -> {rv.__dict__[key]}')
 	assert 404 == rv.status_code
