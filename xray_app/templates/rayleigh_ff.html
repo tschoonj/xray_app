@@ -2,7 +2,6 @@
 
 {% block body %}
 
-<h1> Rayleigh Form Factor </h1> 
   <form method = "POST" action = "">
      <fieldset class = "form-group">
         <div class = "form-group">
@@ -10,7 +9,15 @@
            {% if int_z %} 
                 <input type = "text" name = "int_z" value = {{ int_z }}> <br>
            {% else %}
-                <input type = "text" name = "int_z"> <br>
+                <input type = "text" name = "int_z">
+           {% endif %}
+        </div>   
+        <div class = "form-group">
+           {{ form.float_q.label }} :
+           {% if float_q %} 
+                <input type = "text" name = "float_q" value = {{ float_q }}> <br>
+           {% else %}
+                <input type = "text" name = "float_q"> <br>
            {% endif %}
                 <input type = "submit" value = "Submit"><br>
         </div>
@@ -18,8 +25,8 @@
   </form>
 
 <h2> Result: </h2>
-{% if rayl_ff %}
-{{ rayl_ff }}
+{% if rff %}
+{{ rff }}
 {% endif %}
 
 {% if error %}

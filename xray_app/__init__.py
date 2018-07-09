@@ -4,7 +4,7 @@ from xraylib import AtomicWeight
 bp = Blueprint('xray_app', __name__)
 
 app=Flask(__name__)
-app.debug = True
+# app.debug = True; from old flask
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f8463221fsg654dfhsh45'
 
