@@ -9,20 +9,27 @@
            {% if int_z %} 
                 <input type = "text" name = "int_z" value = {{ int_z }}> <br>
            {% else %}
-                <input type = "text" name = "int_z"> <br>
+                <input type = "text" name = "int_z">
+           {% endif %}
+        </div>   
+        <div class = "form-group">
+           {{ form.float_q.label }} :
+           {% if float_q %} 
+                <input type = "text" name = "float_q" value = {{ float_q }}> <br>
+           {% else %}
+                <input type = "text" name = "float_q"> <br>
            {% endif %}
                 <input type = "submit" value = "Submit"><br>
         </div>
      </fieldset>
   </form>
-    
-  <h2> Result: </h2>
-{% if weight %}
-{{ weight }}
+
+<h2> Result: </h2>
+{% if rff %}
+{{ rff }}
 {% endif %}
 
 {% if error %}
 {{error}}
 {% endif %}
 {% endblock body%}
-

@@ -13,17 +13,20 @@
   <body>
     {% include 'includes/_navbar.html' %}
      <div class="container">
-      <div class="jumbotron text-center"> <h1></h1>
-      {% block body %}
-      
-      <form method="POST" action="/">
-      {{ form.csrf_token }}
-      {{ form.name.label }} {{ form.name(size=20) }}
-      <input type = "submit" value = "Submit"><br>
-      </form>
-      
-      {% endblock body%}
-      </div>
+       <div class="jumbotron text-center"> <h1></h1>
+       {% if title %}
+         <h1> {{ title }} </h1>
+       {% else %}
+         <h1> </h1>
+       {% endif %}    
+       {% block body %}
+         <form method="POST" action="/">
+         {{ form.csrf_token }}
+         {{ form.name.label }} {{ form.name(size=20) }}
+         <input type = "submit" value = "Submit"><br>
+       </form>
+       {% endblock body %}
+       </div>
      </div>
      
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js">
