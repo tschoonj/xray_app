@@ -3,6 +3,10 @@ from xray_app import app
 from xray_app.forms import xraylib_request
 import xraylib
 
+def validate_int(input):
+        if type(input) != int:
+               return xraylib_request.int_z_error
+
 @app.route("/")
 def index():
         return render_template('index.html') 
@@ -13,10 +17,14 @@ def atomicweight():
         if request.method == 'POST':
                 #for key in request.form.keys():
                 #        print(f'key= {key}')
-                atm_num = request.form['atm_num']
-                print(f'atm_num: {atm_num}')
-                weight = xraylib.AtomicWeight(int(atm_num))
-                return render_template('atomicweight.html', title='Atomic Weight', form=form, atm_num=atm_num, weight=weight)
+                int_z = request.form['int_z']
+                if 0<int(int_z)<=118:                
+                        print(f'int_z: {int_z}')
+                        weight = xraylib.AtomicWeight(int(int_z))
+                        return render_template('atomicweight.html', title='Atomic Weight', form=form, int_z=int_z, weight=weight)
+                else:
+                        validate_int(int_z)
+                        return render_template('atomicweight.html', title='Atomic Weight', form=form, int_z=int_z, error=xraylib_request.int_z_error)                       
         return render_template('atomicweight.html', title='Atomic Weight', form=form)
   
 #url_for('static', filename='style.css')

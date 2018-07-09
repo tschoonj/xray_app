@@ -2,19 +2,18 @@
 
 {% block body %}
 
-  <h1> Atomic Weight </h1>
+  <h1> Atomic Weight </h1> 
   <form method = "POST" action = "">
      <fieldset class = "form-group">
         <div class = "form-group">
-           {{ form.atm_num.label }} :
-           {% if atm_num %} 
-                <input type = "text" name = "atm_num" value = {{ atm_num }}> <br>
+           {{ form.int_z.label }} :
+           {% if int_z %} 
+                <input type = "text" name = "int_z" value = {{ int_z }}> <br>
            {% else %}
-                <input type = "text" name = "atm_num"> <br>
+                <input type = "text" name = "int_z"> <br>
            {% endif %}
                 <input type = "submit" value = "Submit"><br>
         </div>
-        <!-- multiple form groups can be made each in a diff. div -->
      </fieldset>
   </form>
     
@@ -22,4 +21,9 @@
 {% if weight %}
 {{ weight }}
 {% endif %}
+
+{% if error %}
+{{error}}
+{% endif %}
 {% endblock body%}
+
