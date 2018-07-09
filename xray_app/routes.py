@@ -69,4 +69,3 @@ def rayleigh_form_factor():
         return render_template('rayleigh_ff.html', title='Rayleigh Form Factor', form=form)  
 #url_for('static', filename='style.css')
  
-    
