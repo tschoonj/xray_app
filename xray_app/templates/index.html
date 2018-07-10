@@ -5,45 +5,39 @@
 <h1> Xraylib App </h1>
 <style>
   #myInput {
-    padding: 20px;
-    margin-top: -6px;
+    padding: 5px;
+    margin-top: -5px;
     border: 0;
     border-radius: 0;
     background: #f1f1f1;
   }
   </style>
-
-<div class="container">
-    <p>Open the dropdown menu and type something in the input field to search for dropdown items:</p>
-    <div class="dropdown">
+    <form>
+    <div class="form-group">
       <button 
-        class="btn btn-primary dropdown-toggle"
+        class="btn btn-default dropdown-toggle"
         type="button"
+        id="menu1"
         data-toggle="dropdown">
         Dropdown
         <span class="caret"></span>
       </button>
-      <ul class="dropdown-menu">
+      <label for="request" 
+        class="dropdown-menu"
+        role="menu"
+        aria-labelledby="menu1">
         <input
                 class="form-control" 
                 id="myInput" 
                 type="text" 
                 placeholder="Search..">
-        <li><a href="/atomicweight">Atomic Weight</a></li>
-        <li><a href="/rayleigh_ff">Rayleigh Form Factor</a></li>
+        <option><a href="/atomicweight">Atomic Weight</a></option>
+        <option><a href="/rayleigh_ff">Rayleigh Form Factor</a></option>
       </ul>
+    </form>    
     </div>
-</div>
 
 <script>
-$(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $(".dropdown-menu li").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
 </script>
 
 <script
