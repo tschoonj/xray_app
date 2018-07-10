@@ -3,56 +3,57 @@
 </head>
 {% block body %}
 <h1> Xraylib App </h1>
-<style>
-  #myInput {
-    padding: 5px;
-    margin-top: -4px;
-    border: 0;
-    border-radius: 0;
-    background: #f1f1f1;
-  }
-  </style>
-    <div class="dropdown">
-      <button 
-        class="btn btn-default dropdown-toggle"
-        type="button"
-        id="menu1"
-        data-toggle="dropdown">
-        Dropdown
-        <span class="caret"></span>
-      </button>
-      <ul
-        class="dropdown-menu"
-        role="menu"
-        aria-labelledby="menu1">
-        <input
-                class="form-control" 
-                id="myInput" 
-                type="text" 
-                placeholder="Search..">
-        <li><a href="/atomicweight">Atomic Weight</a></li>
-        <li><a href="/rayleigh_ff">Rayleigh Form Factor</a></li>
-      </ul>
+  <form>  
+    <div class="form-group">
+      <label for="request">Choose function: </label>
+      <select
+        class="form-control"
+        id="request">        
+        <option id="AtmW">Atomic Weight</option>
+        <option id="RFF">Rayleigh Form Factor</option>
+      </select>
     </div>
-    
+  </form>  
+  <form 
+  class="form-horizontal" 
+  method = "POST" 
+  action = "">
+     <fieldset class = "form-group">
+        <div class = "form-group">
+           {{ form.int_z.label }} :
+           {% if int_z %} 
+                <input 
+                        type = "text"
+                        name = "int_z"
+                        value = {{ int_z }}> 
+                        <br>
+           {% else %}
+                <input 
+                        type = "text" 
+                        name = "int_z"> 
+                        <br>
+           {% endif %}
+                <input 
+                        type = "submit" 
+                        value = "Submit">
+                        <br>
+        </div>
+     </fieldset>
+  </form>
 <script
         src="https://code.jquery.com/jquery-3.3.1.js"
         integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
         crossorigin="anonymous">
 </script>
-<!check https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_filters_dropdown&stacked=h >        
+
 <script>
 $(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#myList").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
-
+        let $AtmW = $('#AtmW');
+        let $RFF = $('#RFF');
+             
+       
+})
 </script>
-
 
 <script
         type="text/js"

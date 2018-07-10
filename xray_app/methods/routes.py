@@ -20,6 +20,11 @@ def validate_float(s):
         except ValueError:
                 return False
 #------------------------------------------------------------------------------------------------------------
+@methods.route("/")
+def index():
+        form = Xraylib_Request()
+        return render_template('index.html', form=form) 
+  #------------------------------------------------------------------------------------------------------------      
 @methods.route('/atomicweight', methods=['GET', 'POST'])
 def atomicweight():
         form = Xraylib_Request()
