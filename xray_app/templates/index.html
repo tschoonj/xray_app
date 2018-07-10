@@ -6,14 +6,13 @@
 <style>
   #myInput {
     padding: 5px;
-    margin-top: -5px;
+    margin-top: -4px;
     border: 0;
     border-radius: 0;
     background: #f1f1f1;
   }
   </style>
-    <form>
-    <div class="form-group">
+    <div class="dropdown">
       <button 
         class="btn btn-default dropdown-toggle"
         type="button"
@@ -22,7 +21,7 @@
         Dropdown
         <span class="caret"></span>
       </button>
-      <label for="request" 
+      <ul
         class="dropdown-menu"
         role="menu"
         aria-labelledby="menu1">
@@ -31,20 +30,30 @@
                 id="myInput" 
                 type="text" 
                 placeholder="Search..">
-        <option><a href="/atomicweight">Atomic Weight</a></option>
-        <option><a href="/rayleigh_ff">Rayleigh Form Factor</a></option>
+        <li><a href="/atomicweight">Atomic Weight</a></li>
+        <li><a href="/rayleigh_ff">Rayleigh Form Factor</a></li>
       </ul>
-    </form>    
     </div>
-
-<script>
-</script>
-
+    
 <script
         src="https://code.jquery.com/jquery-3.3.1.js"
         integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
         crossorigin="anonymous">
-        </script>
+</script>
+<!check https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_filters_dropdown&stacked=h >        
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myList").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+</script>
+
+
 <script
         type="text/js"
         src="{{url_for('static', filename='main/static/main.js')}}">
