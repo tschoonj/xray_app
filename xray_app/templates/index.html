@@ -1,8 +1,58 @@
 {% extends 'layout.html' %}
-
+<head>
+</head>
 {% block body %}
+<h1> Xraylib App </h1>
+<style>
+  #myInput {
+    padding: 20px;
+    margin-top: -6px;
+    border: 0;
+    border-radius: 0;
+    background: #f1f1f1;
+  }
+  </style>
 
-  <h1> Xraylib App </h1>
-  <p class="lead"> This app is built on the Python Flask framework </p>
+<div class="container">
+    <p>Open the dropdown menu and type something in the input field to search for dropdown items:</p>
+    <div class="dropdown">
+      <button 
+        class="btn btn-primary dropdown-toggle"
+        type="button"
+        data-toggle="dropdown">
+        Dropdown
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <input
+                class="form-control" 
+                id="myInput" 
+                type="text" 
+                placeholder="Search..">
+        <li><a href="/atomicweight">Atomic Weight</a></li>
+        <li><a href="/rayleigh_ff">Rayleigh Form Factor</a></li>
+      </ul>
+    </div>
+</div>
 
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".dropdown-menu li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
+<script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous">
+        </script>
+<script
+        type="text/js"
+        src="{{url_for('static', filename='main/static/main.js')}}">
+        </script>
 {% endblock body%}
