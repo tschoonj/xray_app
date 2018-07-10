@@ -6,7 +6,7 @@
   method = "POST" 
   action = "">
      <fieldset class = "form-group">
-        <div class = "form-group">
+        <div class = "form-group" id = "int_z">
            {{ form.int_z.label }} :
            {% if int_z %} 
                 <input 
@@ -20,12 +20,8 @@
                         name = "int_z"> 
                         <br>
            {% endif %}
-                <input 
-                        type = "submit" 
-                        value = "Submit">
-                        <br>
         </div>   
-        <div class = "form-group">
+        <div class = "form-group" id = "float_q">
            {{ form.float_q.label }} :
            {% if float_q %} 
                 <input 
@@ -39,11 +35,11 @@
                         name = "float_q"> 
                         <br>
            {% endif %}
-                <input 
+        </div>
+        <input 
                         type = "submit" 
                         value = "Submit">
                         <br>
-        </div>
      </fieldset>
   </form>
 {% endblock body%}

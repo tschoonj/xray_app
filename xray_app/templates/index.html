@@ -5,7 +5,7 @@
 <h1> Xraylib App </h1>
   <form>  
     <div class="form-group">
-      <label for="request">Choose function: </label>
+      <b>Choose function</b>:
       <select
         class="form-control"
         id="request">        
@@ -14,13 +14,14 @@
       </select>
     </div>
   </form>  
+  
   <form 
-  class="form-horizontal" 
-  method = "POST" 
-  action = "">
+    class="form-horizontal" 
+    method = "POST" 
+    action = "">
      <fieldset class = "form-group">
-        <div class = "form-group">
-           {{ form.int_z.label }} :
+        <div class = "form-group" id = "int_z">
+           <label>{{ form.int_z.label }} :</label>
            {% if int_z %} 
                 <input 
                         type = "text"
@@ -33,13 +34,29 @@
                         name = "int_z"> 
                         <br>
            {% endif %}
+        </div>   
+        <div class = "form-group" id = "float_q">
+           <label>{{ form.float_q.label }} :</label>
+           {% if float_q %} 
                 <input 
+                        type = "text" 
+                        name = "float_q" 
+                        value = {{ float_q }}>
+                        <br>
+           {% else %}
+                <input 
+                        type = "text" 
+                        name = "float_q"> 
+                        <br>
+           {% endif %}
+        </div>
+        <input 
                         type = "submit" 
                         value = "Submit">
                         <br>
-        </div>
      </fieldset>
   </form>
+  
 <script
         src="https://code.jquery.com/jquery-3.3.1.js"
         integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -47,11 +64,22 @@
 </script>
 
 <script>
+$('input').hide()
+$('label').hide()
 $(document).ready(function(){
         let $AtmW = $('#AtmW');
         let $RFF = $('#RFF');
-             
-       
+        let $z_form = $('#int_z');
+        let $q_form = $('#float_q');     
+        
+        $Atm_W.on('click', () => {
+                $z_form.show();
+                $q_form.hide();
+                })
+        $RFF.on('click', () => {
+                $z_form.show();
+                $q_form.show();
+                }) 
 })
 </script>
 
