@@ -27,16 +27,11 @@
          <h1> {{ title }} </h1>
        {% endif %}    
        {% block body %}
-       <form method="POST" action="/">
-         {{ form.csrf_token }}
-         {{ form.name.label }} {{ form.name(size=20) }}
-         <input type = "submit" value = "Submit"><br>
-       </form>
        {% endblock body %}
        
-       {% if function %}
+       {% if output %}
        <h2> Result: </h2>
-       {{ function }}
+       {{ output }}
        {% endif %}
        
        {% if error %}

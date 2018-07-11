@@ -57,7 +57,7 @@
         </div>
         <input 
                         type = "submit" 
-                        value = "Submit">
+                        value = "submit">
                         <br>
      </fieldset>
   </form>
@@ -81,7 +81,7 @@ $(document).ready(function(){
                 });        
 });
 
-window.onload = function() {
+window.onload = function(){
     if (window.jQuery) {  
         // jQuery is loaded  
         alert("jQuery works! Believe in yourself :)");
@@ -91,10 +91,8 @@ window.onload = function() {
     }
 } 
 </script>
-
+{% endblock body%}
 <script
-        
         type="text/js"
         href="{{url_for('static', filename='main.js')}}">
         </script>
-{% endblock body%}

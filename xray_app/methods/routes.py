@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, url_for
 #from xray_app import app - remove me?
-from xray_app.methods.forms import Xraylib_Request, Request_Error #remember to add request classes
+from xray_app.methods.forms import Xraylib_Request, Request_Error #,Function_Request
 import xraylib
 
-methods = Blueprint('methods', __name__, static_folder='/main/static')
+methods = Blueprint('methods', __name__)
 
 #eventually move to own package e.g. xray_app.methods.validators, then import
 def validate_int(s):
@@ -20,23 +20,20 @@ def validate_float(s):
         except ValueError:
                 return False
        
-#def choose_request():
-#        if request.method == 'POST':
-#                function_choice = request.form['option']
-#        else:
-#                return
-# set up function to only run the chosen xraylib method
-      
+     
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
-        if request.method == 'POST': #need to specify which method to use
+        #function_form = Function_Request()
+        if request.method == 'POST': #need to specify which xraylib method to use
+                
                 #for key in request.form.keys():
                 #        print(f'key= {key}')
                 
                 int_z = request.form['int_z']
-                
+                #submit = request.form['submit']
+                #function = request.function_form['function']
                 if validate_int(int_z) == False:    
                         return render_template(
                         'index.html',
@@ -51,8 +48,8 @@ def index():
                         return render_template(
                         'index.html', 
                         form=form, 
-                        int_z=int_z, 
-                        function=weight
+                        int_z=int_z,
+                        output=weight 
                         )
                 
                 else:
@@ -63,7 +60,7 @@ def index():
                         error=Request_Error.int_z_error
                         )                   
                         
-        return render_template('index.html', form=form) 
+        return render_template('index.html', form=form,) 
   #------------------------------------------------------------------------------------------------------------      
 @methods.route('/atomicweight', methods=['GET', 'POST'])
 def atomicweight():
@@ -89,8 +86,8 @@ def atomicweight():
                         'atomicweight.html', 
                         title='Atomic Weight', 
                         form=form, 
-                        int_z=int_z, 
-                        function=weight
+                        int_z=int_z,                        
+                        output=weight
                         )
                 
                 else:
@@ -143,8 +140,8 @@ def rayleigh_form_factor():
                         title='Rayleigh Form Factor', 
                         form=form, 
                         int_z=int_z, 
-                        float_q=float_q, 
-                        function=rff
+                        float_q=float_q,
+                        output = rff
                         )
                 else:
                         return render_template(
