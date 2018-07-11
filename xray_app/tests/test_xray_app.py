@@ -61,6 +61,7 @@ def test_rff_invalid_input_atm(client):
 	assert 200 == rv.status_code
 	assert b'Invalid input: please enter an integer' in rv.data
 
+
 def test_rff_invalid_input_mt(client):
 	rv = client.post('/rayleigh_ff', data=dict(int_z=5,float_q=''))
 	assert 200 == rv.status_code

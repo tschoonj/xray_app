@@ -19,8 +19,6 @@ def validate_float(s):
                 return True
         except ValueError:
                 return False
-       
-     
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
@@ -61,7 +59,7 @@ def index():
                         )                   
                         
         return render_template('index.html', form=form,) 
-  #------------------------------------------------------------------------------------------------------------      
+#------------------------------------------------------------------------------------------------------------      
 @methods.route('/atomicweight', methods=['GET', 'POST'])
 def atomicweight():
         form = Xraylib_Request()
@@ -108,7 +106,7 @@ def atomicweight():
 @methods.route('/rayleigh_ff', methods=['GET', 'POST'])
 def rayleigh_form_factor():
         form = Xraylib_Request()
-        
+       
         if request.method == 'POST':
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
