@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, url_for
 from xray_app.methods.forms import Xraylib_Request, Request_Error #remember to add request classes
 import xraylib
 
-methods = Blueprint('methods', __name__, static_folder='/main/static')
+methods = Blueprint('methods', __name__)
 
 #eventually move to own package e.g. xray_app.methods.validators, then import
 def validate_int(s):
@@ -19,7 +19,7 @@ def validate_float(s):
                 return True
         except ValueError:
                 return False
-       
+      
 #def choose_request():
 #        if request.method == 'POST':
 #                function_choice = request.form['option']
@@ -111,7 +111,7 @@ def atomicweight():
 @methods.route('/rayleigh_ff', methods=['GET', 'POST'])
 def rayleigh_form_factor():
         form = Xraylib_Request()
-        
+       
         if request.method == 'POST':
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']

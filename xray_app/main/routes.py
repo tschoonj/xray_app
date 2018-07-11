@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, url_for
 
-main = Blueprint('main', __name__, static_folder='/static')
+main = Blueprint('main', __name__)
 
 @main.route("/about")
 def about():
