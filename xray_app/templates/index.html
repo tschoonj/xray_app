@@ -5,22 +5,16 @@
 <h1> Xraylib App </h1>
   <form>  
     <div 
-        class="dropdown"
+        class="form-group"
         method="POST"
         action="">
-      <button 
-        class="btn btn-primary dropdown-toggle"
-        type="button" 
-        data-toggle="dropdown">
-        Choose function:
-        <span class="caret"></span> 
-        </button>
-      <ul
-        class="dropdown-menu"
+      <label for="request"> Choose function:
+      </label>
+      <select
         id="function">        
-        <li id="atmw"><a href="#">Atomic Weight</a></li>
-        <li id="rff"><a href="#">Rayleigh Form Factor</a></li>
-      </ul>
+        <option id="atmw">Atomic Weight</option>
+        <option id="rff">Rayleigh Form Factor</option>
+      </select>
     </div>
   </form>  
   <br>
@@ -29,7 +23,7 @@
     method = "POST" 
     action = "">
      <fieldset class = "form-group">
-        <div class = "form-group" id = "int_z">
+        <div class = "form-group" id = "atm_num">
            <label>{{ form.int_z.label }} :</label>
            {% if int_z %} 
                 <input 
@@ -45,7 +39,7 @@
                         <br>
            {% endif %}
         </div>   
-        <div class = "form-group" id = "float_q">
+        <div class = "form-group" id = "momentum">
            <label>{{ form.float_q.label }} :</label>
            {% if float_q %} 
                 <input 
@@ -63,7 +57,7 @@
         </div>
         <input 
                         type = "submit" 
-                        value = "Submit">
+                        value = "submit">
                         <br>
      </fieldset>
   </form>
@@ -78,18 +72,27 @@
 
 $(document).ready(function(){
         $("#atmw").click(function(){
-                $("#int_z").show();
+                $("#atm_num").fadeIn();
+                $("#momentum").fadeOut();
                 });
         $("#rff").click(function(){
-                $("#int_z").show();
-                $("#float_q").show();
+                $("#atm_num").fadeIn();
+                $("#momentum").fadeIn();
                 });        
-})
-</script>
+});
 
+window.onload = function(){
+    if (window.jQuery) {  
+        // jQuery is loaded  
+        alert("jQuery works! Believe in yourself :)");
+    } else {
+        // jQuery is not loaded
+        alert("Doesn't Work");
+    }
+} 
+</script>
+{% endblock body%}
 <script
-        
         type="text/js"
         href="{{url_for('static', filename='main.js')}}">
         </script>
-{% endblock body%}
