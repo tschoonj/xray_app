@@ -4,17 +4,26 @@
 {% block body %}
 <h1> Xraylib App </h1>
   <form>  
-    <div class="form-group">
-      <b>Choose function</b>:
-      <select
-        class="form-control"
-        id="request">        
-        <option id="AtmW">Atomic Weight</option>
-        <option id="RFF">Rayleigh Form Factor</option>
-      </select>
+    <div 
+        class="dropdown"
+        method="POST"
+        action="">
+      <button 
+        class="btn btn-primary dropdown-toggle"
+        type="button" 
+        data-toggle="dropdown">
+        Choose function:
+        <span class="caret"></span> 
+        </button>
+      <ul
+        class="dropdown-menu"
+        id="function">        
+        <li id="atmw"><a href="#">Atomic Weight</a></li>
+        <li id="rff"><a href="#">Rayleigh Form Factor</a></li>
+      </ul>
     </div>
   </form>  
-  
+  <br>
   <form 
     class="form-horizontal" 
     method = "POST" 
@@ -26,6 +35,7 @@
                 <input 
                         type = "text"
                         name = "int_z"
+                        onfocus="this.value=''"
                         value = {{ int_z }}> 
                         <br>
            {% else %}
@@ -41,6 +51,7 @@
                 <input 
                         type = "text" 
                         name = "float_q" 
+                        onfocus="this.value=''"
                         value = {{ float_q }}>
                         <br>
            {% else %}
@@ -64,27 +75,21 @@
 </script>
 
 <script>
-$('input').hide()
-$('label').hide()
+
 $(document).ready(function(){
-        let $AtmW = $('#AtmW');
-        let $RFF = $('#RFF');
-        let $z_form = $('#int_z');
-        let $q_form = $('#float_q');     
-        
-        $Atm_W.on('click', () => {
-                $z_form.show();
-                $q_form.hide();
-                })
-        $RFF.on('click', () => {
-                $z_form.show();
-                $q_form.show();
-                }) 
+        $("#atmw").click(function(){
+                $("#int_z").show();
+                });
+        $("#rff").click(function(){
+                $("#int_z").show();
+                $("#float_q").show();
+                });        
 })
 </script>
 
 <script
+        
         type="text/js"
-        src="{{url_for('static', filename='main/static/main.js')}}">
+        href="{{url_for('static', filename='main.js')}}">
         </script>
 {% endblock body%}

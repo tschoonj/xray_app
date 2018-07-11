@@ -19,3 +19,6 @@ class Request_Error():
         float_q_error = 'Invalid input : please enter an number.'
         error = 'Please enter valid input.'
 #then when you need error you do error = request_error.error_name
+
+
+

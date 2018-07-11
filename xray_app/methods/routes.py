@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, url_for
 from xray_app.methods.forms import Xraylib_Request, Request_Error #remember to add request classes
 import xraylib
 
-methods = Blueprint('methods', __name__)
+methods = Blueprint('methods', __name__, static_folder='/main/static')
 
 #eventually move to own package e.g. xray_app.methods.validators, then import
 def validate_int(s):
@@ -19,10 +19,50 @@ def validate_float(s):
                 return True
         except ValueError:
                 return False
+       
+#def choose_request():
+#        if request.method == 'POST':
+#                function_choice = request.form['option']
+#        else:
+#                return
+# set up function to only run the chosen xraylib method
+      
 #------------------------------------------------------------------------------------------------------------
-@methods.route("/")
+@methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
+        if request.method == 'POST': #need to specify which method to use
+                #for key in request.form.keys():
+                #        print(f'key= {key}')
+                
+                int_z = request.form['int_z']
+                
+                if validate_int(int_z) == False:    
+                        return render_template(
+                        'index.html',
+                        form=form, 
+                        int_z=int_z,
+                        error=Request_Error.int_z_error
+                        ) 
+                
+                elif 0<int(int_z)<=118:                
+                        print(f'int_z: {int_z}')
+                        weight = xraylib.AtomicWeight(int(int_z))
+                        return render_template(
+                        'index.html', 
+                        form=form, 
+                        int_z=int_z, 
+                        function=weight
+                        )
+                
+                else:
+                        return render_template(
+                        'index.html', 
+                        form=form, 
+                        int_z=int_z, 
+                        error=Request_Error.int_z_error
+                        )                   
+                        
         return render_template('index.html', form=form) 
   #------------------------------------------------------------------------------------------------------------      
 @methods.route('/atomicweight', methods=['GET', 'POST'])

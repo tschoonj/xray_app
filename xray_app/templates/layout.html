@@ -12,6 +12,10 @@
         href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
         integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
         crossorigin="anonymous">
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="{{url_for('static', filename='style.css')}}"/>
   </head>
   
   <body>
@@ -28,7 +32,6 @@
          {{ form.name.label }} {{ form.name(size=20) }}
          <input type = "submit" value = "Submit"><br>
        </form>
-       </div>
        {% endblock body %}
        
        {% if function %}
@@ -39,6 +42,7 @@
        {% if error %}
        {{error}}
        {% endif %}
+       </div>
      </div>
        
   <script 
@@ -46,7 +50,7 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous">
         </script>
-  <!put in java and jQuery >
+  <!put in java and jQuery here? >
   </body>
 </html>
 
