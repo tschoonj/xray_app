@@ -2,20 +2,20 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired, NumberRange
 
-class xraylib_request(FlaskForm):
+class Xraylib_Request(FlaskForm):
+
     int_z = StringField(
     'Atomic Number', 
     validators=[DataRequired(message="Invalid response"), 
     NumberRange(min=1, max=118)]
     )
+   
     float_q = StringField(
     'Momentum Transfer', 
-    validators=[DataRequired(message="Invalid response")])  
-    
-class choose_request(FlaskForm):
-        pass
-
-class request_error():
+    validators=[DataRequired(message="Invalid response")]
+    )
+          
+class Request_Error():
         int_z_error = 'Invalid input: please enter an integer.'
         float_q_error = 'Invalid input : please enter an number.'
         error = 'Please enter valid input.'

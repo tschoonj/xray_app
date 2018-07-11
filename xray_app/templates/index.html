@@ -1,8 +1,95 @@
 {% extends 'layout.html' %}
-
+<head>
+</head>
 {% block body %}
+<h1> Xraylib App </h1>
+  <form>  
+    <div 
+        class="dropdown"
+        method="POST"
+        action="">
+      <button 
+        class="btn btn-primary dropdown-toggle"
+        type="button" 
+        data-toggle="dropdown">
+        Choose function:
+        <span class="caret"></span> 
+        </button>
+      <ul
+        class="dropdown-menu"
+        id="function">        
+        <li id="atmw"><a href="#">Atomic Weight</a></li>
+        <li id="rff"><a href="#">Rayleigh Form Factor</a></li>
+      </ul>
+    </div>
+  </form>  
+  <br>
+  <form 
+    class="form-horizontal" 
+    method = "POST" 
+    action = "">
+     <fieldset class = "form-group">
+        <div class = "form-group" id = "int_z">
+           <label>{{ form.int_z.label }} :</label>
+           {% if int_z %} 
+                <input 
+                        type = "text"
+                        name = "int_z"
+                        onfocus="this.value=''"
+                        value = {{ int_z }}> 
+                        <br>
+           {% else %}
+                <input 
+                        type = "text" 
+                        name = "int_z"> 
+                        <br>
+           {% endif %}
+        </div>   
+        <div class = "form-group" id = "float_q">
+           <label>{{ form.float_q.label }} :</label>
+           {% if float_q %} 
+                <input 
+                        type = "text" 
+                        name = "float_q" 
+                        onfocus="this.value=''"
+                        value = {{ float_q }}>
+                        <br>
+           {% else %}
+                <input 
+                        type = "text" 
+                        name = "float_q"> 
+                        <br>
+           {% endif %}
+        </div>
+        <input 
+                        type = "submit" 
+                        value = "Submit">
+                        <br>
+     </fieldset>
+  </form>
+  
+<script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous">
+</script>
 
-  <h1> Welcome to flaskapp </h1>
-  <p class="lead"> This app is built on the Python Flask framework </p>
+<script>
 
+$(document).ready(function(){
+        $("#atmw").click(function(){
+                $("#int_z").show();
+                });
+        $("#rff").click(function(){
+                $("#int_z").show();
+                $("#float_q").show();
+                });        
+})
+</script>
+
+<script
+        
+        type="text/js"
+        href="{{url_for('static', filename='main.js')}}">
+        </script>
 {% endblock body%}
