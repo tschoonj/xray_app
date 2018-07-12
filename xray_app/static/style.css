@@ -1,4 +1,9 @@
-#atm_num, #momentum {
+.xlib {
     display: none;
 }
 
+#atm_num {
+    display:block
+}
+
+/*hide all inputs as you addd them*/
