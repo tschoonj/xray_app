@@ -3,17 +3,82 @@ from wtforms import StringField, SelectField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 
 class Xraylib_Request(FlaskForm):
-
+    comp = StringField(
+    'Compound', 
+    validators=[DataRequired()]
+    )
+    
     int_z = StringField(
-    'Atomic Number', 
-    validators=[DataRequired(message="Invalid response"), 
+    'Element', 
+    validators=[DataRequired(), 
     NumberRange(min=1, max=118)]
     )
    
+    int_z_or_comp = StringField(
+    'Element or Compound', 
+    validators=[DataRequired()]
+    )
+       
     float_q = StringField(
     'Momentum Transfer', 
-    validators=[DataRequired(message="Invalid response")]
+    validators=[DataRequired()]
     )
+            
+    linetype = StringField(
+    'Line Type', 
+    validators=[DataRequired()]
+    )
+    
+    shell = StringField(
+    'Shell', 
+    validators=[DataRequired()]
+    )
+    
+    energy = StringField(
+    'Energy', 
+    validators=[DataRequired()]
+    )
+    
+    theta = StringField(
+    'Theta', 
+    validators=[DataRequired()]
+    )  
+    
+    phi = StringField(
+    'Phi', 
+    validators=[DataRequired()]
+    )
+    
+    density = StringField(
+    'Density', 
+    validators=[DataRequired()]
+    )
+    
+    pz = StringField(
+    'Pz', 
+    validators=[DataRequired()]
+    )
+    
+    cktrans = StringField(
+    'Cktrans', 
+    validators=[DataRequired()]
+    )
+    
+    nistcomp = StringField(
+    'Nist Compound', 
+    validators=[DataRequired()]
+    )
+    
+    augtrans = StringField(
+    'Auger Trans', 
+    validators=[DataRequired()]
+    )
+    
+    rad_nuc = StringField(
+    'Radio Nuclide', 
+    validators=[DataRequired()]
+    )
+    
     #submit = SubmitField(
     #'Submit',
     #validators=[DataRequired(message="Invalid response")])

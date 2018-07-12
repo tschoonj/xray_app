@@ -12,8 +12,14 @@
       </label>
       <select
         id="function">        
-        <option id="atmw">Atomic Weight</option>
-        <option id="rff">Rayleigh Form Factor</option>
+        <option 
+        id="atmw"
+        value="AtomicWeight">
+        Atomic Weight</option>
+        <option 
+        id="rff"
+        value="Rayl_FF">
+        Rayleigh Form Factor</option>
       </select>
     </div>
   </form>  
@@ -39,7 +45,7 @@
                         <br>
            {% endif %}
         </div>   
-        <div class = "form-group" id = "momentum">
+        <div class = "form-group" id = "momentumtransfer">
            <label>{{ form.float_q.label }} :</label>
            {% if float_q %} 
                 <input 
@@ -55,6 +61,7 @@
                         <br>
            {% endif %}
         </div>
+        <p></p>
         <input 
                         type = "submit" 
                         value = "submit">
@@ -73,14 +80,23 @@
 $(document).ready(function(){
         $("#atmw").click(function(){
                 $("#atm_num").fadeIn();
-                $("#momentum").fadeOut();
+                $("#momentumtransfer").fadeOut();
                 });
         $("#rff").click(function(){
                 $("#atm_num").fadeIn();
-                $("#momentum").fadeIn();
+                $("#momentumtransfer").fadeIn();
                 });        
 });
 
+$( "select" )
+  .change(function() {
+    var str = "";
+    $( "select option:selected" ).each(function() {
+      str += "Function: " + $( this ).val() + " ";
+    });
+    $( "p" ).text( str );
+  })
+  .trigger( "change" );
 window.onload = function(){
     if (window.jQuery) {  
         // jQuery is loaded  
