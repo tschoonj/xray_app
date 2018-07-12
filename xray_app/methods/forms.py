@@ -25,7 +25,7 @@ class Xraylib_Request(FlaskForm):
     )
             
     linetype = StringField(
-    'Line Type', 
+    'Transition', 
     validators=[DataRequired()]
     )
     
