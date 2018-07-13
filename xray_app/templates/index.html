@@ -12,11 +12,10 @@
       <label for="request"> Choose function:
       </label>
       <select>  
-            {% for choices in function_form.functions  %}
-            <option id={{"choices.value"}} value={{"choices.value"}}>
-            {{choices.label}}
-            </option>
-            {% else %}
+            {% for choices in function_form.function  %}
+                {{choices}}
+                
+            
             {% endfor %}
       </select>
      

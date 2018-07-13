@@ -24,6 +24,7 @@ def validate_float(s):
 def index():
         form = Xraylib_Request()
         function_form = Function_Request()
+        
         if request.method == 'POST': #need to specify which xraylib method to use
                 
                 #for key in request.form.keys():
