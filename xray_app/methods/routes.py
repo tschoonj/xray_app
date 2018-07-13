@@ -23,21 +23,20 @@ def validate_float(s):
 @methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
-        #function_form = Function_Request()
+        function_form = Function_Request()
         if request.method == 'POST': #need to specify which xraylib method to use
                 
                 #for key in request.form.keys():
                 #        print(f'key= {key}')
-                #function = request.function_form['']
+                
                 int_z = request.form['int_z']
-                #submit = request.form['submit']
-                #function = request.function_form['function']
                 if validate_int(int_z) == False:    
                         return render_template(
                         'index.html',
                         form=form, 
                         int_z=int_z,
-                        error=Request_Error.int_z_error
+                        error=Request_Error.int_z_error,
+                        function_form=function_form
                         ) 
                 
                 elif 0<int(int_z)<=118:                
@@ -47,7 +46,8 @@ def index():
                         'index.html', 
                         form=form, 
                         int_z=int_z,
-                        output=weight 
+                        output=weight,
+                        function_form=function_form 
                         )
                 
                 else:
@@ -55,10 +55,11 @@ def index():
                         'index.html', 
                         form=form, 
                         int_z=int_z, 
-                        error=Request_Error.int_z_error
+                        error=Request_Error.int_z_error,
+                        function_form=function_form
                         )                   
                         
-        return render_template('index.html', form=form,) 
+        return render_template('index.html', form=form, function_form=function_form) 
 #------------------------------------------------------------------------------------------------------------      
 @methods.route('/atomicweight', methods=['GET', 'POST'])
 def atomicweight():

@@ -1,3 +1,4 @@
+from flask import g 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
@@ -20,8 +21,8 @@ class Xraylib_Request(FlaskForm):
     augtrans = StringField('Auger Trans',validators=[DataRequired()])
     rad_nuc = StringField('Radio Nuclide',validators=[DataRequired()])
         
-def Function_Request(Flaskform):
-    function = SelectField(u'Select Function', 
+class Function_Request(FlaskForm):
+    functions = SelectField('Select Function', 
         choices=[('AtomicWeight', 'atmw'), ('ElementDensity', 'dens'), ('Rayl_FF', 'rff'),
         ('LineEnergy','lineenergy'), ('EdgeEnergy','absedge'), ('RadRate','radrate'), ('JumpFactor','jumprat'), 
         ('FluorYield','flyield'), ('AugerYield','augyield'), ('AtomicLevelWidth','alw'), 

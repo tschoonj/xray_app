@@ -30,17 +30,21 @@
        {% endblock %}
        
        {% block body %}
-          {% block form1 %}  
-            {% for function in function_form  %}
-            <option id={{"function"}} value={{"function"}}>
-            {{function.label}}
+       {% endblock body %}
+       
+       {% block form1 %}  
+          <select>  
+            {% for i in function_form.choices  %}
+            <option id={{"i"}} value={{"i"}}>
+            {{i.label}}
             </option>
             {% else %}
             {% endfor %}
-          {% endblock form1 %}
-          {% block form2 %}
-          {% endblock form2 %}
-       {% endblock body %}
+          </select>
+       {% endblock form1 %}
+       
+       
+
        
        {% if output %}
        <h2> Result: </h2>

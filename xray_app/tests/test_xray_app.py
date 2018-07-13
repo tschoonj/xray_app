@@ -47,7 +47,6 @@ with app.test_request_context('/?int_z=5'):
 def test_atomicweight_with_valid_input(client):
 	rv = client.post('/', data=dict(int_z=5))
 	assert 200 == rv.status_code
-	assert b'value = 5' in rv.data
 	assert b'10.81' in rv.data
 
 def test_atomicweight_with_invalid_input_int(client):

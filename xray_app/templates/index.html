@@ -3,7 +3,7 @@
 </head>
 {% block body %}
 <h1> Xraylib App </h1>
-  {% block form1 %}
+  
   <form>  
     <div 
         class="form-group"
@@ -11,6 +11,8 @@
         action="">
       <label for="request"> Choose function:
       </label>
+      {% block form1 %}
+      
       <select>        
         <!--add search function into dropdown cf bootstrap-->
         <option id="atmw" value="AtomicWeight">
@@ -71,290 +73,44 @@
         </option>
         <!--don't forget Kissel Cascades-->
       </select>
+      {% endblock form1 %}
     </div>
   </form>
-  {% endblock form1 %}  
+    
   <br>
-  {% block form2 %}
+  
   <form 
     class="form-horizontal" 
     method = "POST" 
     action = "">
-     <fieldset class = "form-group">
-        <div class = "form-group xlib" id = "atm_num">
-           <label>{{ form.int_z.label }} :</label>
-           {% if int_z %} 
-                <input 
-                        type = "text"
-                        name = "int_z"
-                        onfocus="this.value=''"
-                        value = {{ int_z }}> 
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "int_z"> 
-                        <br>
+    <fieldset class = "form-group">
+       {% for field in form %}
+            {% if field %}
+            <div class = "form-group xlib" id = "{{field.id}}">
+            <label>{{field.label}}: </label>
+                <input type = "text" name = "{{field.id}}"  value = "{{field.value}}"> 
+                <br>
            {% endif %}
-        </div>   
-        <div class = "form-group xlib" id = "momentumtransfer">
-           <label>{{ form.float_q.label }} :</label>
-           {% if float_q %} 
-                <input 
-                        type = "text" 
-                        name = "float_q" 
-                        onfocus="this.value=''"
-                        value = {{ float_q }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "float_q"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "compound">
-           <label>{{ form.comp.label }} :</label>
-           {% if comp %} 
-                <input 
-                        type = "text" 
-                        name = "comp" 
-                        onfocus="this.value=''"
-                        value = {{ comp }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "comp"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "element_or_comp">
-           <label>{{ form.int_z_or_comp.label }} :</label>
-           {% if int_z_or_comp %} 
-                <input 
-                        type = "text" 
-                        name = "int_z_or_comp" 
-                        onfocus="this.value=''"
-                        value = {{ int_z_or_comp }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "int_z_or_comp"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "linetype">
-           <label>{{ form.linetype.label }} :</label>
-           {% if linetype %} 
-                <input 
-                        type = "text" 
-                        name = "linetype" 
-                        onfocus="this.value=''"
-                        value = {{ linetype }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "linetype"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "shell">
-           <label>{{ form.shell.label }} :</label>
-           {% if shell %} 
-                <input 
-                        type = "text" 
-                        name = "shell" 
-                        onfocus="this.value=''"
-                        value = {{ shell }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "shell"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "energy">
-           <label>{{ form.energy.label }} :</label>
-           {% if energy %} 
-                <input 
-                        type = "text" 
-                        name = "energy" 
-                        onfocus="this.value=''"
-                        value = {{ energy }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "energy"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "theta">
-           <label>{{ form.theta.label }} :</label>
-           {% if theta %} 
-                <input 
-                        type = "text" 
-                        name = "theta" 
-                        onfocus="this.value=''"
-                        value = {{ theta }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "theta"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "phi">
-           <label>{{ form.phi.label }} :</label>
-           {% if phi %} 
-                <input 
-                        type = "text" 
-                        name = "phi" 
-                        onfocus="this.value=''"
-                        value = {{ phi }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "phi"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "density">
-           <label>{{ form.density.label }} :</label>
-           {% if density %} 
-                <input 
-                        type = "text" 
-                        name = "density" 
-                        onfocus="this.value=''"
-                        value = {{ density }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "density"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "pz">
-           <label>{{ form.pz.label }} :</label>
-           {% if pz %} 
-                <input 
-                        type = "text" 
-                        name = "pz" 
-                        onfocus="this.value=''"
-                        value = {{ pz }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "pz"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "cktrans">
-           <label>{{ form.cktrans.label }} :</label>
-           {% if cktrans %} 
-                <input 
-                        type = "text" 
-                        name = "cktrans" 
-                        onfocus="this.value=''"
-                        value = {{ cktrans }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "cktrans"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "rad_nuc">
-           <label>{{ form.rad_nuc.label }} :</label>
-           {% if rad_nuc %} 
-                <input 
-                        type = "text" 
-                        name = "rad_nuc" 
-                        onfocus="this.value=''"
-                        value = {{ rad_nuc }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "rad_nuc"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "nistcomp">
-           <label>{{ form.nistcomp.label }} :</label>
-           {% if nistcomp %} 
-                <input 
-                        type = "text" 
-                        name = "nistcomp" 
-                        onfocus="this.value=''"
-                        value = {{ nistcomp }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "nistcomp"> 
-                        <br>
-           {% endif %}
-        </div>
-        <div class = "form-group xlib" id = "augtrans">
-           <label>{{ form.augtrans.label }} :</label>
-           {% if augtrans %} 
-                <input 
-                        type = "text" 
-                        name = "augtrans" 
-                        onfocus="this.value=''"
-                        value = {{ augtrans }}>
-                        <br>
-           {% else %}
-                <input 
-                        type = "text" 
-                        name = "augtrans"> 
-                        <br>
-           {% endif %}
-        </div>
+            </div>    
+       {% endfor %}
+       
         <p></p>
         <input 
                         type = "submit" 
                         value = "submit">
                         <br>
+     
      </fieldset>
   </form>
-  {% endblock form2 %}
   
 <script
         src="https://code.jquery.com/jquery-3.3.1.js"
         integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
         crossorigin="anonymous">
 
-
-//add units! maybe better to add to forms as part of field?
-  
-/*$( "select" ).change(function() {
-    $( "select option:selected" ).each(function() {
-        var $selectedForm = $(this).val;
-        if ($selectedForm == "AtomicWeight") {
-            $("div.form-group").hide();
-            $(".element").show();}
-        else if ($selectedForm. == "Rayl_FF") {
-            $("div.form-group").hide();
-            $(".element, .momentumtransfer").show();
-            })
-            .trigger("change")  
-            
-so bugged it breaks the window :(
-*/  
 </script>
 <script
     src="{{url_for('static', filename='main.js')}}">
 </script>
-{% endblock body%}
+{% endblock body %}
 
