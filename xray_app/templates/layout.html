@@ -32,6 +32,20 @@
        {% block body %}
        {% endblock body %}
        
+       {% block form1 %}  
+          <select>  
+            {% for i in function_form.choices  %}
+            <option id={{"i"}} value={{"i"}}>
+            {{i.label}}
+            </option>
+            {% else %}
+            {% endfor %}
+          </select>
+       {% endblock form1 %}
+       
+       
+
+       
        {% if output %}
        <h2> Result: </h2>
        {{ output }}
@@ -48,7 +62,7 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous">
         </script>
-  <!put in java and jQuery here? >
+  <!--put in java and jQuery here?-->
   </body>
 </html>
 
