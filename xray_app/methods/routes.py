@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, url_for
 #from xray_app import app - remove me?
-from xray_app.methods.forms import Xraylib_Request, Request_Error #,Function_Request
+from xray_app.methods.forms import Xraylib_Request, Request_Error, Function_Request 
 import xraylib
 
 methods = Blueprint('methods', __name__)
@@ -28,7 +28,7 @@ def index():
                 
                 #for key in request.form.keys():
                 #        print(f'key= {key}')
-                
+                #function = request.function_form['']
                 int_z = request.form['int_z']
                 #submit = request.form['submit']
                 #function = request.function_form['function']

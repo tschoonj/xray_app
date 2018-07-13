@@ -30,6 +30,16 @@
        {% endblock %}
        
        {% block body %}
+          {% block form1 %}  
+            {% for function in function_form  %}
+            <option id={{"function"}} value={{"function"}}>
+            {{function.label}}
+            </option>
+            {% else %}
+            {% endfor %}
+          {% endblock form1 %}
+          {% block form2 %}
+          {% endblock form2 %}
        {% endblock body %}
        
        {% if output %}
@@ -48,7 +58,7 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous">
         </script>
-  <!put in java and jQuery here? >
+  <!--put in java and jQuery here?-->
   </body>
 </html>
 
