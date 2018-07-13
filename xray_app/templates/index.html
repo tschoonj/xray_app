@@ -41,7 +41,7 @@
         <option id="alw" value="AtomicLevelWidth">
         Atomic Level Width
         </option>
-        <option id="cs_pp" value="CS_PhotoPartial">
+        <option id="cs_pp" value="CS_Photo_Partial">
         Partial Photoionization CS
         </option>
         <option id="cs_tot" value="CS_Total">
@@ -390,19 +390,12 @@ $( "select" )
             })
             .trigger("change")  
             
-so bad it breaks the window :(
+so bugged it breaks the window :(
 */  
-window.onload = function(){
-    if (window.jQuery) {  
-        // jQuery is loaded  
-        alert("jQuery works!  :)");
-    } else {
-        // jQuery is not loaded
-        alert("Doesn't Work");
-    }
-} 
+
 </script>
-{% endblock body%}
 <script
-        href="{{url_for('static', filename='main.js')}}">
+        src="{{url_for('static', filename='main.js')}}">
         </script>
+{% endblock body%}
+
