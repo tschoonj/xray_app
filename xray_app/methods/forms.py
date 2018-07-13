@@ -23,12 +23,7 @@ class Xraylib_Request(FlaskForm):
         
 class Function_Request(FlaskForm):
     functions = SelectField('Select Function', 
-        choices=[('AtomicWeight', 'atmw'), ('ElementDensity', 'dens'), ('Rayl_FF', 'rff'),
-        ('LineEnergy','lineenergy'), ('EdgeEnergy','absedge'), ('RadRate','radrate'), ('JumpFactor','jumprat'), 
-        ('FluorYield','flyield'), ('AugerYield','augyield'), ('AtomicLevelWidth','alw'), 
-        ('CS_Photo_Partial','cs_pp'), ('CS_Total','cs_tot'), ('CS_Photo','cs_ph'), ('CS_Rayl','cs_rayl'), 
-        ('CS_Compt','cs_compt'), ('CSb_Total','csb_tot'), ('CSb_Photo','csb_ph'), ('CSb_Rayl','csb_rayl'), 
-        ('CSb_Compt','csb_compt')],
+        choices=[('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('Rayl_FF', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb')],
         validators=[DataRequired()])
     #choices(value,label)
     submit = SubmitField('Submit', validators=[DataRequired()])

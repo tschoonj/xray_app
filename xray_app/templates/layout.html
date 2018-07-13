@@ -31,21 +31,7 @@
        
        {% block body %}
        {% endblock body %}
-       
-       {% block form1 %}  
-          <select>  
-            {% for i in function_form.choices  %}
-            <option id={{"i"}} value={{"i"}}>
-            {{i.label}}
-            </option>
-            {% else %}
-            {% endfor %}
-          </select>
-       {% endblock form1 %}
-       
-       
-
-       
+                    
        {% if output %}
        <h2> Result: </h2>
        {{ output }}

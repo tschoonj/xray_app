@@ -9,6 +9,8 @@ $( "select" )
   })
   .trigger( "change" );
 
+$("#int_z").show();
+
 $(document).ready(function(){
         $("#atmw, #dens").click(function(){
                 $("div.xlib").hide();
