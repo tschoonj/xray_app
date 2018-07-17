@@ -11,69 +11,12 @@
         action="">
       <label for="request"> Choose function:
       </label>
-      {% block form1 %}
-      
-      <select>        
-        <!--add search function into dropdown cf bootstrap-->
-        <option id="atmw" value="AtomicWeight">
-        Atomic Weight
-        </option>
-        <option id="dens" value="ElementDensity">
-        Element Density
-        </option>
-        <option id="rff" value="Rayl_FF">
-        Rayleigh Form Factor
-        </option>
-        <option id="lineenergy" value="LineEnergy">
-        Fluorescence Line Energy
-        </option>
-        <option id="absedge" value="EdgeEnergy">
-        Absorption Edge Energy
-        </option>
-        <option id="radrate" value="RadRate">
-        Radiative Transition Probability
-        </option>
-        <option id="jumprat" value="JumpFactor">
-        Jump Ratio
-        </option>
-        <option id="flyield" value="FluorYield">
-        Fluorescence Yield
-        <option id="augyield" value="AugerYield">
-        Auger Yield
-        </option>
-        <option id="alw" value="AtomicLevelWidth">
-        Atomic Level Width
-        </option>
-        <option id="cs_pp" value="CS_Photo_Partial">
-        Partial Photoionization CS
-        </option>
-        <option id="cs_tot" value="CS_Total">
-        Total CS
-        </option>
-        <option id="cs_ph" value="CS_Photo">
-        Photoionization CS
-        </option>
-        <option id="cs_rayl" value="CS_Rayl">
-        Rayleigh CS
-        </option>
-        <option id="cs_compt" value="CS_Compt">
-        Compton CS
-        </option>
-        <option id="csb_tot" value="CSb_Total">
-        Total CSb
-        </option>
-        <option id="csb_ph" value="CSb_Photo">
-        Photo CSb
-        </option>
-        <option id="csb_rayl" value="CSb_Rayl">
-        Rayleigh CSb
-        </option>
-        <option id="csb_compt" value="CS_Compt">
-        Compton CSb
-        </option>
-        <!--don't forget Kissel Cascades-->
+      <select>  
+            {% for choices in function_form.function  %}
+                {{choices}}
+            {% endfor %}
       </select>
-      {% endblock form1 %}
+     
     </div>
   </form>
     
@@ -88,16 +31,19 @@
             {% if field %}
             <div class = "form-group xlib" id = "{{field.id}}">
             <label>{{field.label}}: </label>
-                <input type = "text" name = "{{field.id}}"  value = "{{field.value}}"> 
+                <input 
+                type = "text" 
+                name = "{{field.id}}"  
+                value = "{{field.value}}" 
+                onfocus="this.value=''"> 
                 <br>
            {% endif %}
             </div>    
        {% endfor %}
-       
-        <p></p>
-        <input 
-                        type = "submit" 
-                        value = "submit">
+       <p></p>
+       <input 
+            type = "submit" 
+            value = "submit">
                         <br>
      
      </fieldset>
