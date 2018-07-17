@@ -12,32 +12,34 @@ $( "select" )
 $("#int_z").show();
 
 $(document).ready(function(){
-        $("#atmw, #dens").click(function(){
-                $("div.xlib").hide();
-                $("#int_z").show();
-                                });
-        $("#rff").click(function(){
+        $("option[value='Rayl_FF']").click(function(){
                 $("div.xlib").hide();
                 $("#int_z").show();
                 $("#float_q").show();
-                });        
-        $("#lineenergy, #radrate").click(function(){
+                });
+                                
+        $("option[value='AtomicWeight'], option[value='ElementDensity']").click(function(){
+                $("div.xlib").hide();
+                $("#int_z").show();
+                                });
+       
+        $("option[value='LineEnergy'], option[value='RadRate']").click(function(){
                 $("div.xlib").hide();
                 $("#int_z").show();
                 $("#linetype").show();
                 });
-        $("#absedge, #jumprat, #flyield, #augyield, #alw, #econfig").click(function(){
+        $("option[value='EdgeEnergy'], option[value='JumpFactor'], option[value='FluorYield'], option[value='AugerYield'], option[value='AtomicLevelWidth'], option[value='ElectronConfig']").click(function(){
                 $("div.xlib").hide();
                 $("#int_z").show();
                 $("#shell").show();
                 }); 
-        $("#cs_pp").click(function(){
+        $("option[value='CS_Photo_Partial']").click(function(){
                 $("div.xlib").hide();
                 $("#int_z").show();
                 $("#shell").show();
                 $("#energy").show();
                 });
-        $("#cs_tot, #cs_ph, #cs_rayl, #cs_compt, #csb_tot, #csb_ph, #csb_rayl, #csb_compt,").click(function(){
+        $("option[value='CS_Total'], option[value='CS_Photo'], option[value='CS_Rayl'], option[value='CS_Compt'], option[value='CSb_Total'], option[value='CSb_Photo'], option[value='CS_Rayl'], option[value='CS_Compt']").click(function(){
                 $("div.xlib").hide();
                 $("#energy").show();
                 $("#int_z_or_comp").show();

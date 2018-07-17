@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, url_for
 #from xray_app import app - remove me?
-from xray_app.methods.forms import Xraylib_Request, Request_Error, Function_Request 
+from xray_app.methods.forms import Xraylib_Request, Request_Error, Function_Request, Request_Units
 import xraylib
 
 methods = Blueprint('methods', __name__)
@@ -24,20 +24,21 @@ def validate_float(s):
 def index():
         form = Xraylib_Request()
         function_form = Function_Request()
-        
-        if request.method == 'POST': #need to specify which xraylib method to use
+               
+        if request.method == 'POST':
+         #need to specify which xraylib method to use
                 
                 #for key in request.form.keys():
                 #        print(f'key= {key}')
-                
+                #unction = request.function_form['']
                 int_z = request.form['int_z']
                 if validate_int(int_z) == False:    
                         return render_template(
                         'index.html',
-                        form=form, 
+                        form=form,
+                        function_form=function_form, 
                         int_z=int_z,
                         error=Request_Error.int_z_error,
-                        function_form=function_form
                         ) 
                 
                 elif 0<int(int_z)<=118:                
@@ -45,10 +46,11 @@ def index():
                         weight = xraylib.AtomicWeight(int(int_z))
                         return render_template(
                         'index.html', 
-                        form=form, 
+                        form=form,
+                        function_form=function_form,
                         int_z=int_z,
                         output=weight,
-                        function_form=function_form 
+                        units = Request_Units.AtomicWeight_u
                         )
                 
                 else:
