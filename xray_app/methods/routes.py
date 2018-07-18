@@ -24,43 +24,79 @@ def validate_float(s):
 def index():
         form = Xraylib_Request()
         function_form = Function_Request()
-               
+        
         if request.method == 'POST':
-         #need to specify which xraylib method to use
+         #need to specify which xraylib method to use with AND statement
                 
-                #for key in request.form.keys():
-                #        print(f'key= {key}')
-                #unction = request.function_form['']
+                for key in request.form.keys():
+                    print(f'key= {key}')
+                select = request.form.get('select_input')
+                print(str(select))
+                
                 int_z = request.form['int_z']
-                if validate_int(int_z) == False:    
-                        return render_template(
-                        'index.html',
-                        form=form,
-                        function_form=function_form, 
-                        int_z=int_z,
-                        error=Request_Error.int_z_error,
-                        ) 
+                float_q = request.form['float_q']
                 
-                elif 0<int(int_z)<=118:                
-                        print(f'int_z: {int_z}')
-                        weight = xraylib.AtomicWeight(int(int_z))
-                        return render_template(
-                        'index.html', 
-                        form=form,
-                        function_form=function_form,
-                        int_z=int_z,
-                        output=weight,
-                        units = Request_Units.AtomicWeight_u
-                        )
+                if select == 'AtomicWeight':
+                    if validate_int(int_z) == False:    
+                            return render_template(
+                            'index.html',
+                            form=form,
+                            function_form=function_form, 
+                            int_z=int_z,
+                            error=Request_Error.int_z_error,
+                           #selected = 
+                            ) 
                 
-                else:
-                        return render_template(
-                        'index.html', 
-                        form=form, 
-                        int_z=int_z, 
-                        error=Request_Error.int_z_error,
-                        function_form=function_form
-                        )                   
+                    elif 0<int(int_z)<=118:                
+                            print(f'int_z: {int_z}')
+                            weight = xraylib.AtomicWeight(int(int_z))
+                            return render_template(
+                            'index.html', 
+                            form=form,
+                            function_form=function_form,
+                            int_z=int_z,
+                            output=weight,
+                            units = Request_Units.AtomicWeight_u
+                            )
+                
+                    else:
+                            return render_template(
+                            'index.html', 
+                            form=form, 
+                            int_z=int_z, 
+                            error=Request_Error.int_z_error,
+                            function_form=function_form
+                            )    
+                if select == 'ElementDensity':
+                    if validate_int(int_z) == False:    
+                            return render_template(
+                            'index.html',
+                            form=form,
+                            function_form=function_form, 
+                            int_z=int_z,
+                            error=Request_Error.int_z_error,
+                            ) 
+                
+                    elif 0<int(int_z)<=118:                
+                            print(f'int_z: {int_z}')
+                            density=xraylib.ElementDensity(int(int_z))
+                            return render_template(
+                            'index.html', 
+                            form=form,
+                            function_form=function_form,
+                            int_z=int_z,
+                            output=density,
+                            units = Request_Units.ElementDensity_u
+                            )
+                
+                    else:
+                            return render_template(
+                            'index.html', 
+                            form=form, 
+                            int_z=int_z, 
+                            error=Request_Error.int_z_error,
+                            function_form=function_form
+                            )    
                         
         return render_template('index.html', form=form, function_form=function_form) 
 #------------------------------------------------------------------------------------------------------------      

@@ -64,13 +64,5 @@ $(document).ready(function(){
             
 so bugged it breaks the window :(
 */  
-window.onload = function(){
-    if (window.jQuery) {  
-        // jQuery is loaded  
-        alert("Static works");
-    } else {
-        // jQuery is not loaded
-        alert("Doesn't Work");
-    }
-} 
+
 
