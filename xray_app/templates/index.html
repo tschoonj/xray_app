@@ -4,48 +4,34 @@
 {% block body %}
 <h1> Xraylib App </h1>
   
-  <form>  
-    <div 
-        class="form-group"
-        method="POST"
-        action="">
-      <label for="request"> Choose function:
-      </label>
-      <select>  
+  <form method="POST" action="">  
+    <div class="form-group">
+      <label for="request"> Choose function: </label>
+      <select name="select_input">  
             {% for choices in function_form.function  %}
                 {{choices}}
             {% endfor %}
       </select>
-     
     </div>
-  </form>
-    
-  <br>
+    <br>
   
-  <form 
-    class="form-horizontal" 
-    method = "POST" 
-    action = "">
     <fieldset class = "form-group">
        {% for field in form %}
-            {% if field %}
             <div class = "form-group xlib" id = "{{field.id}}">
-            <label>{{field.label}}: </label>
+                {{field.label}}: 
                 <input 
                 type = "text" 
                 name = "{{field.id}}"  
                 value = "{{field.value}}" 
                 onfocus="this.value=''"> 
                 <br>
-           {% endif %}
             </div>    
        {% endfor %}
        <p></p>
        <input 
             type = "submit" 
             value = "submit">
-                        <br>
-     
+        <br>
      </fieldset>
   </form>
   
@@ -53,10 +39,11 @@
         src="https://code.jquery.com/jquery-3.3.1.js"
         integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
         crossorigin="anonymous">
-
 </script>
+
 <script
     src="{{url_for('static', filename='main.js')}}">
 </script>
+
 {% endblock body %}
 

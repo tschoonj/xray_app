@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, NumberRange
 class Xraylib_Request(FlaskForm):
     #make select field then put all string fields in as subfields? also change stringfields to integer fields where necessary
     comp = StringField('Compound',validators=[DataRequired()])
-    int_z = StringField('Element',validators=[DataRequired(), NumberRange(min=1, max=118)])
+    int_z = StringField('Element',validators=[DataRequired()])
     int_z_or_comp = StringField('Element or Compound',validators=[DataRequired()])
     float_q = StringField('Momentum Transfer',validators=[DataRequired()])
     linetype = StringField('Transition',validators=[DataRequired()])    
@@ -22,12 +22,13 @@ class Xraylib_Request(FlaskForm):
     rad_nuc = StringField('Radio Nuclide',validators=[DataRequired()])
         
 class Function_Request(FlaskForm):
-    function = SelectField('Select Function', 
+    function = SelectField(u'Select Function', 
         choices=[('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('Rayl_FF', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb')],
         validators=[DataRequired()])
     #choices(value,label)
     submit = SubmitField('Submit', validators=[DataRequired()])
     #doesn't make a submit button just checks if it has been submitted
+
       
 # set up function to only run the chosen xraylib method, might work better if it is a form
           
