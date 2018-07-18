@@ -10,7 +10,6 @@
       <select name="select_input">  
             {% for choices in function_form.function  %}
                 {{choices}}
-                {{choices.id}}
             {% endfor %}
       </select>
     </div>
@@ -19,7 +18,7 @@
     <fieldset class = "form-group">
        {% for field in form %}
             <div class = "form-group xlib" id = "{{field.id}}">
-                <label>{{field.label}}: </label>
+                {{field.label}}: 
                 <input 
                 type = "text" 
                 name = "{{field.id}}"  

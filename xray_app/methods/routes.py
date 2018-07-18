@@ -30,13 +30,13 @@ def index():
                 
                 for key in request.form.keys():
                     print(f'key= {key}')
-                select = request.form.get('select_input')
-                print(str(select))
+                
+                select_input = request.form.get('select_input')
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
                 
-                if select == 'AtomicWeight':
+                if select_input == 'AtomicWeight':
                     if validate_int(int_z) == False:    
                             return render_template(
                             'index.html',
@@ -67,7 +67,7 @@ def index():
                             error=Request_Error.int_z_error,
                             function_form=function_form
                             )    
-                if select == 'ElementDensity':
+                if select_input == 'ElementDensity':
                     if validate_int(int_z) == False:    
                             return render_template(
                             'index.html',

@@ -23,11 +23,10 @@ def test_style(client):
 	rv = client.get('/')
 	assert 200 == rv.status_code
 	assert b"rel=\"stylesheet\""
+	assert b"type=\"text/css\""
+	assert b"href=\"/static/style.css\""
 
 def test_navbar(client):
-	pass
-
-def test_choose_function(client):
 	pass
 
 def test_js_present(client):
@@ -35,17 +34,23 @@ def test_js_present(client):
 	assert 200 == rv.status_code
 	assert b"src=\"/static/main.js\""
 
-def test_atomicweight_vanilla(client):
+def test_index_vanilla(client):
 	rv = client.get('/')
 	assert 200 == rv.status_code
-	assert b'name = "int_z"' in rv.data
+	assert b'<div class = "form-group xlib" id = "comp">' in rv.data
+	assert b'<option value="AtomicWeight">Atomic Weight</option>' in rv.data
+	assert b'type = "submit"' in rv.data
 
-with app.test_request_context('/?int_z=5'):
-	assert flask.request.path == '/'
-	assert flask.request.args['int_z'] == '5'
+def test_plots_vanilla(client):
+	rv = client.get('/')
+	assert 200 == rv.status_code
+	
+def test_about_vanilla(client):
+	rv = client.get('/about')
+	assert 200 == rv.status_code
 
 def test_atomicweight_with_valid_input(client):
-	rv = client.post('/', data=dict(int_z=5))
+	rv = client.post('/', data=dict(select_input='AtomicWeight', int_z=5))
 	assert 200 == rv.status_code
 	assert b'10.81' in rv.data
 
