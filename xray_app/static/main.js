@@ -9,6 +9,18 @@ $( "select" )
   })
   .trigger( "change" );
 
+$( "select" ).change(function() {
+    $( "select option:selected" ).each(function() {
+        var $selectedForm = $(this).val;
+        if ($selectedForm == "AtomicWeight") {
+            $("div.form-group").hide();
+            $(".element").show();}
+        else if ($selectedForm. == "Rayl_FF") {
+            $("div.form-group").hide();
+            $(".element, .momentumtransfer").show();
+            })
+            .trigger("change")  
+            
 $("#int_z").show();
 
 $(document).ready(function(){
@@ -48,21 +60,6 @@ $(document).ready(function(){
 });
 
 
-//add units! maybe better to add to forms as part of field?
   
-/*$( "select" ).change(function() {
-    $( "select option:selected" ).each(function() {
-        var $selectedForm = $(this).val;
-        if ($selectedForm == "AtomicWeight") {
-            $("div.form-group").hide();
-            $(".element").show();}
-        else if ($selectedForm. == "Rayl_FF") {
-            $("div.form-group").hide();
-            $(".element, .momentumtransfer").show();
-            })
-            .trigger("change")  
-            
-so bugged it breaks the window :(
-*/  
 
 

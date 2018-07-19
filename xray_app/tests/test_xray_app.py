@@ -67,7 +67,7 @@ def test_about_vanilla(client):
 	assert 200 == rv.status_code
 
 def test_atomicweight_with_valid_input(client):
-	test_input['function']='AtomicWeight'
+	test_input['function'] = 'AtomicWeight'
 	rv = client.post('/', data=test_input)
 	assert 200 == rv.status_code
 	assert b'10.81' in rv.data
