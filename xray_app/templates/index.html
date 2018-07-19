@@ -8,13 +8,13 @@
     <div class="form-group">
       <label for="request"> Choose function: </label>
  
-            {{ function_form.function }}
+            {{ form.function }}
   
     </div>
     <br>
   
     <fieldset class = "form-group">
-       {% for field in form %}
+       {% for field in form if field != 'csrf_token' %}
             <div class = "form-group xlib" id = "{{field.id}}">
                 {{field.label}}: 
                 {{field}}
@@ -24,7 +24,7 @@
        <p></p>
        <input 
             type = "submit" 
-            value = "submit"
+            value = "Submit"
             formnovalidate>
         <br>
      </fieldset>

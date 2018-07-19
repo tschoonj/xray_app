@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, url_for
 #from xray_app import app - remove me?
-from xray_app.methods.forms import Xraylib_Request, Request_Error, Function_Request, Request_Units
+from xray_app.methods.forms import Xraylib_Request, Request_Error,  Request_Units
 import xraylib
 
 methods = Blueprint('methods', __name__)
@@ -23,7 +23,7 @@ def validate_float(s):
 @methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
-        function_form = Function_Request()
+        
         
         if request.method == 'POST':
          #need to specify which xraylib method to use with AND statement
@@ -41,8 +41,7 @@ def index():
                     if validate_int(int_z) == False:    
                             return render_template(
                             'index.html',
-                            form=form,
-                            function_form=function_form, 
+                            form=form, 
                             error=Request_Error.int_z_error, 
                             #got to set HTML attr to selected?
                             ) 
@@ -53,7 +52,6 @@ def index():
                             return render_template(
                             'index.html', 
                             form=form,
-                            function_form=function_form,
                             output=weight,
                             units = Request_Units.AtomicWeight_u
                             )
@@ -63,14 +61,12 @@ def index():
                             'index.html', 
                             form=form,
                             error=Request_Error.int_z_error,
-                            function_form=function_form
                             )    
                 elif select_input == 'ElementDensity':
                     if validate_int(int_z) == False:    
                             return render_template(
                             'index.html',
-                            form=form,
-                            function_form=function_form, 
+                            form=form, 
                             error=Request_Error.int_z_error,
                             ) 
                 
@@ -80,7 +76,6 @@ def index():
                             return render_template(
                             'index.html', 
                             form=form,
-                            function_form=function_form,
                             output=density,
                             units = Request_Units.ElementDensity_u
                             )
@@ -90,22 +85,20 @@ def index():
                             'index.html', 
                             form=form,  
                             error=Request_Error.int_z_error,
-                            function_form=function_form
                             )
                             
-                elif select_input == 'Rayl_FF':
+                elif select_input == 'FF_Rayl':
                     if validate_int(int_z) == True and validate_float(float_q) == True:
                             print(f'int_z: {int_z}' + f'float_q: {float_q}')
-                            rayl_ff=xraylib.Rayl_FF(int(int_z), float(float_q))
+                            rayl_ff=xraylib.FF_Rayl(int(int_z), float(float_q))
                             return render_template(
                             'index.html', 
                             form=form,
-                            function_form=function_form,
                             output=rayl_ff,
                             units = Request_Units.ElementDensity_u
                             )    
                         
-        return render_template('index.html', form=form, function_form=function_form) 
+        return render_template('index.html', form=form) 
 
         
 #------------------------------------------------------------------------------------------------------------

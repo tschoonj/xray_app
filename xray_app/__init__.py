@@ -1,5 +1,4 @@
 from flask import Flask, url_for
-from xraylib import AtomicWeight
 
 app=Flask(__name__)
 # app.debug = True; from old flask
