@@ -13,6 +13,23 @@ def client():
 	client = xray_app.app.test_client()
 	yield client
 
+test_input = {
+	'comp': '', 
+	'int_z':'5',
+	'int_z_or_comp': '',
+	'float_q': '',
+	'linetype': '',
+	'shell': '',
+	'energy': '',
+	'theta': '',
+	'phi': '',
+	'density': '',
+	'pz': '',
+	'cktrans': '',
+	'nistcomp': '',
+	'augtrans': '',
+	'rad_nuc': ''
+	}
 def test_nonexistent(client):
 	rv = client.get('/nonexistent')
 	#for key in rv.__dict__:
@@ -50,17 +67,21 @@ def test_about_vanilla(client):
 	assert 200 == rv.status_code
 
 def test_atomicweight_with_valid_input(client):
-	rv = client.post('/', data=dict(select_input='AtomicWeight', int_z=5))
+	test_input['function']='AtomicWeight'
+	rv = client.post('/', data=test_input)
 	assert 200 == rv.status_code
 	assert b'10.81' in rv.data
+	assert b'g mol<sup>-1</sup>' in rv.data
 
 def test_atomicweight_with_invalid_input_int(client):
-	rv = client.post('/', data=dict(int_z=0))
+	test_input.update({'function':'AtomicWeight', 'int_z':'0'})
+	rv = client.post('/', data=test_input)
 	assert 200 == rv.status_code
 	assert b'Invalid input' in rv.data
 
 def test_atomicweight_with_invalid_input_str(client):
-        rv = client.post('/', data=dict(int_z=''))
-        assert 200 == rv.status_code
-        assert b'Invalid input' in rv.data
+	test_input.update({'function':'AtomicWeight', 'int_z':''})
+	rv = client.post('/', data=test_input)
+	assert 200 == rv.status_code
+	assert b'Invalid input' in rv.data
 

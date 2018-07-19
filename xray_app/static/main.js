@@ -12,7 +12,7 @@ $( "select" )
 $("#int_z").show();
 
 $(document).ready(function(){
-        $("option[value='Rayl_FF']").click(function(){
+        $("option[value='FF_Rayl']").click(function(){
                 $("div.xlib").hide();
                 $("#int_z").show();
                 $("#float_q").show();

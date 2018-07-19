@@ -7,30 +7,25 @@
   <form method="POST" action="">  
     <div class="form-group">
       <label for="request"> Choose function: </label>
-      <select name="select_input">  
-            {% for choices in function_form.function  %}
-                {{choices}}
-            {% endfor %}
-      </select>
+ 
+            {{ form.function }}
+  
     </div>
     <br>
   
     <fieldset class = "form-group">
-       {% for field in form %}
+       {% for field in form if field != 'csrf_token' %}
             <div class = "form-group xlib" id = "{{field.id}}">
                 {{field.label}}: 
-                <input 
-                type = "text" 
-                name = "{{field.id}}"  
-                value = "{{field.value}}" 
-                onfocus="this.value=''"> 
+                {{field}}
                 <br>
             </div>    
        {% endfor %}
        <p></p>
        <input 
             type = "submit" 
-            value = "submit">
+            value = "Submit"
+            formnovalidate>
         <br>
      </fieldset>
   </form>
