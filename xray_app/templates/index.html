@@ -7,11 +7,9 @@
   <form method="POST" action="">  
     <div class="form-group">
       <label for="request"> Choose function: </label>
-      <select name="select_input">  
-            {% for choices in function_form.function  %}
-                {{choices}}
-            {% endfor %}
-      </select>
+ 
+            {{ function_form.function }}
+  
     </div>
     <br>
   
@@ -19,18 +17,15 @@
        {% for field in form %}
             <div class = "form-group xlib" id = "{{field.id}}">
                 {{field.label}}: 
-                <input 
-                type = "text" 
-                name = "{{field.id}}"  
-                value = "{{field.value}}" 
-                onfocus="this.value=''"> 
+                {{field}}
                 <br>
             </div>    
        {% endfor %}
        <p></p>
        <input 
             type = "submit" 
-            value = "submit">
+            value = "submit"
+            formnovalidate>
         <br>
      </fieldset>
   </form>

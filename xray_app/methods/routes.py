@@ -31,10 +31,11 @@ def index():
                 for key in request.form.keys():
                     print(f'key= {key}')
                 
-                select_input = request.form.get('select_input')
+                select_input = request.form.get('function')
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
+                
                 
                 if select_input == 'AtomicWeight':
                     if validate_int(int_z) == False:    
@@ -42,9 +43,8 @@ def index():
                             'index.html',
                             form=form,
                             function_form=function_form, 
-                            int_z=int_z,
-                            error=Request_Error.int_z_error,
-                           #selected = 
+                            error=Request_Error.int_z_error, 
+                            #got to set HTML attr to selected?
                             ) 
                 
                     elif 0<int(int_z)<=118:                
@@ -54,7 +54,6 @@ def index():
                             'index.html', 
                             form=form,
                             function_form=function_form,
-                            int_z=int_z,
                             output=weight,
                             units = Request_Units.AtomicWeight_u
                             )
@@ -62,18 +61,16 @@ def index():
                     else:
                             return render_template(
                             'index.html', 
-                            form=form, 
-                            int_z=int_z, 
+                            form=form,
                             error=Request_Error.int_z_error,
                             function_form=function_form
                             )    
-                if select_input == 'ElementDensity':
+                elif select_input == 'ElementDensity':
                     if validate_int(int_z) == False:    
                             return render_template(
                             'index.html',
                             form=form,
                             function_form=function_form, 
-                            int_z=int_z,
                             error=Request_Error.int_z_error,
                             ) 
                 
@@ -84,7 +81,6 @@ def index():
                             'index.html', 
                             form=form,
                             function_form=function_form,
-                            int_z=int_z,
                             output=density,
                             units = Request_Units.ElementDensity_u
                             )
@@ -92,55 +88,25 @@ def index():
                     else:
                             return render_template(
                             'index.html', 
-                            form=form, 
-                            int_z=int_z, 
+                            form=form,  
                             error=Request_Error.int_z_error,
                             function_form=function_form
+                            )
+                            
+                elif select_input == 'Rayl_FF':
+                    if validate_int(int_z) == True and validate_float(float_q) == True:
+                            print(f'int_z: {int_z}' + f'float_q: {float_q}')
+                            rayl_ff=xraylib.Rayl_FF(int(int_z), float(float_q))
+                            return render_template(
+                            'index.html', 
+                            form=form,
+                            function_form=function_form,
+                            output=rayl_ff,
+                            units = Request_Units.ElementDensity_u
                             )    
                         
         return render_template('index.html', form=form, function_form=function_form) 
-#------------------------------------------------------------------------------------------------------------      
-@methods.route('/atomicweight', methods=['GET', 'POST'])
-def atomicweight():
-        form = Xraylib_Request()
-        if request.method == 'POST':
-                #for key in request.form.keys():
-                #        print(f'key= {key}')
-                
-                int_z = request.form['int_z']
-                
-                if validate_int(int_z) == False:    
-                        return render_template(
-                        'atomicweight.html',
-                        title='Atomic Weight',
-                        form=form, int_z=int_z,
-                        error=Request_Error.int_z_error
-                        ) 
-                
-                elif 0<int(int_z)<=118:                
-                        print(f'int_z: {int_z}')
-                        weight = xraylib.AtomicWeight(int(int_z))
-                        return render_template(
-                        'atomicweight.html', 
-                        title='Atomic Weight', 
-                        form=form, 
-                        int_z=int_z,                        
-                        output=weight
-                        )
-                
-                else:
-                        return render_template(
-                        'atomicweight.html', 
-                        title='Atomic Weight', 
-                        form=form, 
-                        int_z=int_z, 
-                        error=Request_Error.int_z_error
-                        )                       
-        return render_template(
-        'atomicweight.html', 
-        title='Atomic Weight', 
-        form=form
-        )
+
         
 #------------------------------------------------------------------------------------------------------------
 @methods.route('/rayleigh_ff', methods=['GET', 'POST'])
