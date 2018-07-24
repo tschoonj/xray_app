@@ -1,27 +1,21 @@
 //move code from index here after fixing reroute, below tests if routes etc work
 $( "select" )
   .change(function() {
-    var str = "";
+    var opt = "";
     $( "select option:selected" ).each(function() {
-      str += "Function: " + $( this ).val() + " ";
+      opt = $( this ).val();
     });
-    $( "p" ).text( str );
+    $( "p" ).text( opt );
   })
   .trigger( "change" );
 
-$( "select" ).change(function() {
-    $( "select option:selected" ).each(function() {
-        var $selectedForm = $(this).val;
-        if ($selectedForm == "AtomicWeight") {
-            $("div.form-group").hide();
-            $(".element").show();}
-        else if ($selectedForm. == "Rayl_FF") {
-            $("div.form-group").hide();
-            $(".element, .momentumtransfer").show();
-            })
-            .trigger("change")  
-            
 $("#int_z").show();
+/* 
+
+need an if selected div.xlib.hide() then relevant variables show 
+poss a for loop? but each also iterates through elements
+cannot be in .change on .click, it's then ignored after request
+*/
 
 $(document).ready(function(){
         $("option[value='FF_Rayl']").click(function(){
@@ -32,6 +26,7 @@ $(document).ready(function(){
                                 
         $("option[value='AtomicWeight'], option[value='ElementDensity']").click(function(){
                 $("div.xlib").hide();
+                
                 $("#int_z").show();
                                 });
        
@@ -58,8 +53,4 @@ $(document).ready(function(){
                 });         
                 
 });
-
-
-  
-
 
