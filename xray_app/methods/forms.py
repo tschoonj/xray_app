@@ -24,13 +24,13 @@ class Xraylib_Request(FlaskForm):
         choices=[],
         validators=[DataRequired()])
     cktrans = SelectField(u'Coster Kronig Trans', 
-        choices=[('','L1 => L2')],
+        choices=[],
         validators=[DataRequired()])
     nistcomp = SelectField(u'NIST Compound', 
         choices=[],
         validators=[DataRequired()])
     augtrans = SelectField(u'Auger Transition', 
-        choices=[('','')],
+        choices=[],
         validators=[DataRequired()])
     rad_nuc_index = SelectField(u'Radio Nuclide I', 
         choices=[],

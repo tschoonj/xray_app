@@ -26,20 +26,23 @@ def validate_float(s):
 nist_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: k for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
 shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
+ck_dict = {}
+aug_dict = {}
+trans_dict = {}
 
-rad_name_tup = [(k, v) for k, v in rad_dict.items()]
-print(rad_name_tup)
+nist_tup = [(v, k) for k, v in nist_dict.items()]
+rad_name_tup = [(v, k) for k, v in rad_dict.items()]
+shell_tup = [(k, k) for k, v in shell_dict.items()]
 
-#shell_tup = [(v, str(k)) for k, v in shell_dict.items()]
-#print(shell_tup)
 
-#also need trans, shell, cktrans, augtrans dicts
+
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
         form.rad_nuc_name.choices = rad_name_tup
-       # form.shell.choices =  shell_tup
+        form.shell.choices =  shell_tup
+        form.nistcomp.choices = nist_tup
            
         if request.method == 'POST':        
                #for key in request.form.keys():
@@ -47,6 +50,8 @@ def index():
                 
                 select_input = request.form.get('function')
                 rad_nuc_name = request.form.get('rad_nuc_name')
+                shell = request.form.get('shell')
+                print(shell)
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
@@ -118,6 +123,11 @@ def index():
                             form=form,
                             output=nuc_data
                             )
+                            
+                elif select_input == 'EdgeEnergy':
+                    if validate_int(int_z) == True:
+                        print(f'int_z: {int_z}' + f'shell: {shell}')
+                        #edge_energy=xraylib.EdgeEnergy(int(int_z), xraylib.shell)
                             
         return render_template('index.html', form=form) 
 

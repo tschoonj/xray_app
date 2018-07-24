@@ -12,7 +12,7 @@
     <br>
   
     <fieldset class = "form-group">
-       {% for field in form if field.id != 'function' %}
+       {% for field in form if field.id != 'function' and field.id != 'csrf_token' %}
             <div class = "form-group xlib" id = "{{field.id}}">
                 {{field.label}}: 
                 {{field}}

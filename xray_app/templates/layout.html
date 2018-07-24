@@ -33,14 +33,16 @@
        {% endblock body %}
                     
        {% if output is mapping %}
-           <table>
+           <div class="table-responsive">  
+             <table class="table">
                 {% for key, value in output.items() %}
                     <tr>
                     <th> {{ key }} </th>
                     <td> {{ value }} </td>
                     </tr>
                 {% endfor%}
-           </table>
+             </table>
+           </div>
        {% else %} 
            <h2> Result: </h2>
                 {{ output }}
