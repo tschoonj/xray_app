@@ -4,33 +4,44 @@ from wtforms import StringField, SelectField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 
 class Xraylib_Request(FlaskForm):
-    #make select field then put all string fields in as subfields? also change stringfields to integer fields where necessary
     comp = StringField('Compound',validators=[DataRequired()])
     int_z = StringField('Element',validators=[DataRequired()])
-    int_z_or_comp = StringField('Element or Compound',validators=[DataRequired()])
+    int_z_or_comp = StringField('Element or Compound',validators=[DataRequired()]) #needs to accomodate both str and int - try/except loop!
     float_q = StringField('Momentum Transfer',validators=[DataRequired()])
-    linetype = StringField('Transition',validators=[DataRequired()])    
-    shell = StringField('Shell',validators=[DataRequired()])
     energy = StringField('Energy', validators=[DataRequired()])
-    theta = StringField('Theta', validators=[DataRequired()])
-    phi = StringField('Phi', validators=[DataRequired()])
+    theta = StringField(u'Theta &#952', validators=[DataRequired()])
+    phi = StringField(u'Phi &#981', validators=[DataRequired()])
     density = StringField('Density',validators=[DataRequired()])
-    pz = StringField('Electron Momentum Pz',validators=[DataRequired()])
-    cktrans = StringField('Cktrans',validators=[DataRequired()])
-    nistcomp = StringField('Nist Compound',validators=[DataRequired()])
-    augtrans = StringField('Auger Trans',validators=[DataRequired()])
-    rad_nuc = StringField('Radio Nuclide',validators=[DataRequired()])
-    function = SelectField(u'Select Function', 
-        choices=[('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb')],
+    pz = StringField('Electron Momentum p<sub>z</sub>',validators=[DataRequired()])
+    linetype = SelectField(u'Transition', 
+        choices=[],
+        validators=[DataRequired()]) 
+        #needs to have a choice of IUPAC, SIEGBAHN or ALL 
+        #can do with dynamic select field will need extra select field though  
+    shell = SelectField(u'Shell', 
+        choices=[],
+        validators=[DataRequired()])
+    cktrans = SelectField(u'Coster Kronig Trans', 
+        choices=[('','L1 => L2')],
+        validators=[DataRequired()])
+    nistcomp = SelectField(u'NIST Compound', 
+        choices=[],
+        validators=[DataRequired()])
+    augtrans = SelectField(u'Auger Transition', 
+        choices=[('','')],
+        validators=[DataRequired()])
+    rad_nuc_index = SelectField(u'Radio Nuclide I', 
+        choices=[],
+        validators=[DataRequired()])
+    rad_nuc_name = SelectField(u'Radio Nuclide N', 
+        choices=[],
+        validators=[DataRequired()])
+    function = SelectField(u'Xraylib Function', 
+        choices=[('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile')],
         validators=[DataRequired()])    
 
     #choices(value,label)
-   
-    #doesn't make a submit button just checks if it has been submitted
-
       
-# set up function to only run the chosen xraylib method, might work better if it is a form
-          
 class Request_Error():
         comp_error = 'Invalid input: Compound'
         int_z_error = 'Invalid input: Element'
@@ -54,5 +65,12 @@ class Request_Error():
 class Request_Units():
         AtomicWeight_u = 'g mol<sup>-1</sup>'
         ElementDensity_u = 'g cm<sup>-3</sup>'
+        LineEnergy_u = 'keV'
+        EdgeEnergy_u = 'keV'
+        RadRate_u = ''
+        FluorYield_u = ''
+        ElectronConfig_u = ''
+        CS_u = 'cm<sup>2</sup> g<sup>-1</sup>'
+        CSb_u = ''
         
-        
+ #<sup></sup>       

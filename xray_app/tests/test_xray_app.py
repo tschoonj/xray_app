@@ -15,7 +15,7 @@ def client():
 
 test_input = {
 	'comp': '', 
-	'int_z':'5',
+	'int_z':'',
 	'int_z_or_comp': '',
 	'float_q': '',
 	'linetype': '',
@@ -66,12 +66,17 @@ def test_about_vanilla(client):
 	rv = client.get('/about')
 	assert 200 == rv.status_code
 
+#could possibly make an if function with valid input test and it loops
+#test failures would be harder to find though
+
 def test_atomicweight_with_valid_input(client):
-	test_input['function']='AtomicWeight'
+	test_input.update({'function':'AtomicWeight', 'int_z':'5'})
 	rv = client.post('/', data=test_input)
+	val = xraylib.AtomicWeight(5)
 	assert 200 == rv.status_code
 	assert b'10.81' in rv.data
 	assert b'g mol<sup>-1</sup>' in rv.data
+#	assert pytest.approx(val) in rv.data
 
 def test_atomicweight_with_invalid_input_int(client):
 	test_input.update({'function':'AtomicWeight', 'int_z':'0'})
@@ -80,8 +85,30 @@ def test_atomicweight_with_invalid_input_int(client):
 	assert b'Invalid input' in rv.data
 
 def test_atomicweight_with_invalid_input_str(client):
-	test_input.update({'function':'AtomicWeight', 'int_z':''})
+	test_input.update({'function':'AtomicWeight', 'int_z':'a'})
 	rv = client.post('/', data=test_input)
 	assert 200 == rv.status_code
 	assert b'Invalid input' in rv.data
 
+def test_elementdensity_with_valid_input(client):
+	test_input.update({'function':'ElementDensity', 'int_z':'5'})
+	rv = client.post('/', data=test_input)
+	assert 200 == rv.status_code
+	#assert xlib data present
+	assert b'g cm<sup>-3</sup>' in rv.data
+
+def test_elementdensity_with_invalid_input_str(client):
+        test_input.update({'function':'ElementDensity', 'int_z':'a'})
+        rv = client.post('/', data=test_input)
+        assert 200 == rv.status_code
+        #assert xlib data present
+        assert b'Invalid input' in rv.data
+
+def test_elementdensity_with_invalid_input_int(client):
+        test_input.update({'function':'ElementDensity', 'int_z':'0'})
+        rv = client.post('/', data=test_input)
+        assert 200 == rv.status_code
+        #assert xlib data present
+        assert b'Invalid input' in rv.data
+
+#FF_Rayl and RadNuc

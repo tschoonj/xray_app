@@ -6,6 +6,7 @@ import xraylib
 methods = Blueprint('methods', __name__)
 
 #eventually move to own package e.g. xray_app.methods.validators, then import
+#ditto for the dicts
 def validate_int(s):
         try: 
                 int(s)
@@ -19,34 +20,40 @@ def validate_float(s):
                 return True
         except ValueError:
                 return False
+
+#def validate_NIST(s)
+#------------------------------------------------------------------------------------------------------------
+nist_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
+rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: k for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
+shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
+
+rad_name_tup = [(k, v) for k, v in rad_dict.items()]
+
+
+#shell_tup = [(v, str(k)) for k, v in shell_dict.items()]
+#print(shell_tup)
+
+#also need trans, shell, cktrans, augtrans dicts
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
-        
-        
-        if request.method == 'POST':
-         #need to specify which xraylib method to use with AND statement
-                
-                for key in request.form.keys():
-                    print(f'key= {key}')
+        form.rad_nuc_name.choices = rad_name_tup
+       # form.shell.choices =  shell_tup
+           
+        if request.method == 'POST':        
+               #for key in request.form.keys():
+                   #print(f'key= {key}')
                 
                 select_input = request.form.get('function')
+                rad_nuc_name = request.form.get('rad_nuc_name')
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
                 
-                
+                                
                 if select_input == 'AtomicWeight':
-                    if validate_int(int_z) == False:    
-                            return render_template(
-                            'index.html',
-                            form=form, 
-                            error=Request_Error.int_z_error, 
-                            #got to set HTML attr to selected?
-                            ) 
-                
-                    elif 0<int(int_z)<=118:                
+                    if validate_int(int_z) == True and 0<int(int_z)<=118:                
                             print(f'int_z: {int_z}')
                             weight = xraylib.AtomicWeight(int(int_z))
                             return render_template(
@@ -60,17 +67,11 @@ def index():
                             return render_template(
                             'index.html', 
                             form=form,
-                            error=Request_Error.int_z_error,
-                            )    
+                            error=Request_Error.int_z_error
+                            )
+                                
                 elif select_input == 'ElementDensity':
-                    if validate_int(int_z) == False:    
-                            return render_template(
-                            'index.html',
-                            form=form, 
-                            error=Request_Error.int_z_error,
-                            ) 
-                
-                    elif 0<int(int_z)<=118:                
+                    if validate_int(int_z) == True and 0<int(int_z)<=118:
                             print(f'int_z: {int_z}')
                             density=xraylib.ElementDensity(int(int_z))
                             return render_template(
@@ -78,13 +79,12 @@ def index():
                             form=form,
                             output=density,
                             units = Request_Units.ElementDensity_u
-                            )
-                
+                            )                
                     else:
                             return render_template(
                             'index.html', 
                             form=form,  
-                            error=Request_Error.int_z_error,
+                            error=Request_Error.int_z_error
                             )
                             
                 elif select_input == 'FF_Rayl':
@@ -96,61 +96,28 @@ def index():
                             form=form,
                             output=rayl_ff,
                             units = Request_Units.ElementDensity_u
+                            )
+                    elif validate_float(float_q) == False:
+                            return render_template(
+                            'index.html', 
+                            form=form,  
+                            error=Request_Error.float_q_error
+                            )
+                    else:
+                            return render_template(
+                            'index.html', 
+                            form=form,  
+                            error=Request_Error.int_z_error
                             )    
-                        
+                
+                elif select_input == 'GetRadioNuclideDataByName':
+                    print (f'rad_nuc_name: {rad_nuc_name}')
+                    nuc_data = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))
+                    return render_template(
+                            'index.html', 
+                            form=form,
+                            output=nuc_data
+                            )
+                            
         return render_template('index.html', form=form) 
 
-        
-#------------------------------------------------------------------------------------------------------------
-@methods.route('/rayleigh_ff', methods=['GET', 'POST'])
-def rayleigh_form_factor():
-        form = Xraylib_Request()
-       
-        if request.method == 'POST':
-                int_z = request.form['int_z']
-                float_q = request.form['float_q']
-                
-                if validate_int(int_z) == False:
-                        return render_template(
-                        'rayleigh_ff.html', 
-                        title='Rayleigh Form Factor', 
-                        form=form, 
-                        int_z=int_z, 
-                        float_q=float_q, 
-                        error=Request_Error.int_z_error
-                        )
-                       
-                elif validate_float(float_q) == False:
-                        return render_template(
-                        'rayleigh_ff.html', 
-                        title='Rayleigh Form Factor', 
-                        form=form, 
-                        int_z=int_z, 
-                        float_q=float_q, 
-                        error=Request_Error.float_q_error
-                        ) 
-                elif 0<int(int_z)<=118:                
-                        print(f'int_z: {int_z}')
-                        rff = xraylib.FF_Rayl(int(int_z), float(float_q))
-                        return render_template(
-                        'rayleigh_ff.html', 
-                        title='Rayleigh Form Factor', 
-                        form=form, 
-                        int_z=int_z, 
-                        float_q=float_q,
-                        output = rff
-                        )
-                else:
-                        return render_template(
-                        'rayleigh_ff.html', 
-                        title='Rayleigh Form Factor', 
-                        form=form, 
-                        int_z=int_z, 
-                        float_q=float_q, 
-                        error=Request_Error.error
-                        )                       
-        return render_template(
-        'rayleigh_ff.html', 
-        title='Rayleigh Form Factor', 
-        form=form
-        )  
