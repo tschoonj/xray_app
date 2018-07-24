@@ -28,7 +28,7 @@ rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: k for k, v in xr
 shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
 
 rad_name_tup = [(k, v) for k, v in rad_dict.items()]
-print(rad_name_tup)
+
 
 #shell_tup = [(v, str(k)) for k, v in shell_dict.items()]
 #print(shell_tup)
