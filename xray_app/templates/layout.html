@@ -32,9 +32,21 @@
        {% block body %}
        {% endblock body %}
                     
-       {% if output %}
+       {% if output != 'nuc_data' %}
            <h2> Result: </h2>
-           {{ output }}
+                {{ output }}
+       {% else %} 
+           <table>
+           
+                <tr>
+                {% for key, value in output.items() %}
+                    <th> {{ key }} </th>
+                    <td> {{ value }} </td>
+                {% endfor%}
+                </tr>
+            
+
+           </table>
        {% endif %}
        
        

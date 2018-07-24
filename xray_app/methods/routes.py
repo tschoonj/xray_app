@@ -24,15 +24,22 @@ def validate_float(s):
 #def validate_NIST(s)
 #------------------------------------------------------------------------------------------------------------
 NISTdict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
+RADdict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
 
-RADtup = [(v, str(k)) for k, v in xraylib.__dict__.items() if k.startswith('RADIO')]
+for value in RADdict.values():
+    names = xraylib.GetRadioNuclideDataByIndex(int(value))['name']
+    print(names)
 
-#also need trans, shell, cktrans, augtrans, rad_nuc dicts
+RAD_index_tup = [(v, str(k)) for k, v in RADdict.items()]
+#RAD_name_tup = [(v, ) for v in RADdict.values()]
+
+#print(RAD_name_tup) 
+#also need trans, shell, cktrans, augtrans dicts
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
-        form.rad_nuc_index.choices = RADtup
+        form.rad_nuc_index.choices = RAD_index_tup
        
            
         if request.method == 'POST':        
@@ -103,11 +110,10 @@ def index():
                             form=form,  
                             error=Request_Error.int_z_error
                             )    
+                
                 elif select_input == 'GetRadioNuclideDataByName':
                     print (f'rad_nuc_index: {rad_nuc_index}')
                     nuc_data = xraylib.GetRadioNuclideDataByIndex(int(rad_nuc_index))
-                    
-                    html = '<table>'
                     return render_template(
                             'index.html', 
                             form=form,
