@@ -25,15 +25,14 @@ def validate_float(s):
 #------------------------------------------------------------------------------------------------------------
 NISTdict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 
-RADtup = [(str(v), str(k)) for k, v in xraylib.__dict__.items() if k.startswith('RADIO')]
+RADtup = [(v, str(k)) for k, v in xraylib.__dict__.items() if k.startswith('RADIO')]
 
 #also need trans, shell, cktrans, augtrans, rad_nuc dicts
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
-        form.rad_nuc.choices = RADtup
-        #n, n[RADdict]) for n in RADdict
+        form.rad_nuc_index.choices = RADtup
        
            
         if request.method == 'POST':        
@@ -41,9 +40,11 @@ def index():
                    #print(f'key= {key}')
                 
                 select_input = request.form.get('function')
+                rad_nuc_index = request.form.get('rad_nuc_index')
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
+                
                                 
                 if select_input == 'AtomicWeight':
                     if validate_int(int_z) == True and 0<int(int_z)<=118:                
@@ -103,13 +104,31 @@ def index():
                             error=Request_Error.int_z_error
                             )    
                 elif select_input == 'GetRadioNuclideDataByName':
-                    print (f'rad_nuc: {rad_nuc}')
-                    grndbn = xraylib.GetRadioNuclideDataByName(rad_nuc)
+                    print (f'rad_nuc_index: {rad_nuc_index}')
+                    nuc_data = xraylib.GetRadioNuclideDataByIndex(int(rad_nuc_index))
+                    
+                    html = '<table>'
                     return render_template(
                             'index.html', 
                             form=form,
-                            output=grndbn
+                            output=nuc_data
                             )
                             
         return render_template('index.html', form=form) 
-
+"""nuc_data = xraylib.GetRadioNuclideDataByIndex(int(rad_nuc_index))
+                    keys = nuc_data.keys()
+                    length = len(nuc_data.keys()) 
+                    items = ['<table>', '<tr>']
+                    
+                    for k in keys:
+                        items.append('<td>%s</td>' % k)
+                    items.append('</tr>')
+                    
+                    for i in range(length):
+                        items.append('<tr>')
+                        for k in keys:
+                            i = str(i)
+                            items.append('<td>%s</td>' % nuc_data[k][i])
+                        items.append('</tr>')
+                        
+                    items.append('</table>')"""

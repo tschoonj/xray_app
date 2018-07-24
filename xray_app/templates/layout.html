@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     {% if title %}
-      <title>Flask App - {{ title }}</title>
+        <title>Flask App - {{ title }}</title>
     {% else %}
-      <title>Flask App</title>
+        <title>Flask App</title>
     {% endif %}
     <link 
         rel="stylesheet" 
@@ -25,7 +25,7 @@
        <h1></h1>
        {% block header %}
        {% if title %}
-         <h1> {{ title }} </h1>
+           <h1> {{ title }} </h1>
        {% endif %}    
        {% endblock %}
        
@@ -33,16 +33,17 @@
        {% endblock body %}
                     
        {% if output %}
-       <h2> Result: </h2>
-       {{ output }}
+           <h2> Result: </h2>
+           {{ output }}
        {% endif %}
        
+       
        {% if units %}
-       {{units|safe}}
+           {{units|safe}}
        {% endif %}
 
        {% if error %}
-       {{error}}
+           {{error}}
        {% endif %}
        </div>
      </div>

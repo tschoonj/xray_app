@@ -50,6 +50,10 @@ $(document).ready(function(){
                 $("div.xlib").hide();
                 $("#energy").show();
                 $("#int_z_or_comp").show();
+                });
+        $("option[value='GetRadioNuclideDataByName']").click(function(){
+                $("div.xlib").hide();
+                $("#rad_nuc_index").show();
                 });         
                 
 });

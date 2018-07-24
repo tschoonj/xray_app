@@ -11,8 +11,8 @@ class Xraylib_Request(FlaskForm):
     int_z_or_comp = StringField('Element or Compound',validators=[DataRequired()]) #needs to accomodate both str and int - try/except loop!
     float_q = StringField('Momentum Transfer',validators=[DataRequired()])
     energy = StringField('Energy', validators=[DataRequired()])
-    theta = StringField(u'Theta (&#952)', validators=[DataRequired()])
-    phi = StringField(u'Phi (&#981)', validators=[DataRequired()])
+    theta = StringField(u'Theta &#952', validators=[DataRequired()])
+    phi = StringField(u'Phi &#981', validators=[DataRequired()])
     density = StringField('Density',validators=[DataRequired()])
     pz = StringField('Electron Momentum p<sub>z</sub>',validators=[DataRequired()])
     linetype = SelectField(u'Transition', 
@@ -32,7 +32,10 @@ class Xraylib_Request(FlaskForm):
     augtrans = SelectField(u'Auger Transition', 
         choices=[('','')],
         validators=[DataRequired()])
-    rad_nuc = SelectField(u'Radio Nuclide', 
+    rad_nuc_index = SelectField(u'Radio Nuclide I', 
+        choices=[],
+        validators=[DataRequired()])
+    rad_nuc_name = SelectField(u'Radio Nuclide N', 
         choices=[],
         validators=[DataRequired()])
     function = SelectField(u'Xraylib Function', 
