@@ -21,7 +21,7 @@ class Xraylib_Request(FlaskForm):
         #needs to have a choice of IUPAC, SIEGBAHN or ALL 
         #can do with dynamic select field will need extra select field though  
     shell = SelectField(u'Shell', 
-        choices=[('K_SHELL','K')],
+        choices=[],
         validators=[DataRequired()])
     cktrans = SelectField(u'Coster Kronig Trans', 
         choices=[('','L1 => L2')],

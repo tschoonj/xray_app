@@ -32,21 +32,18 @@
        {% block body %}
        {% endblock body %}
                     
-       {% if output != 'nuc_data' %}
-           <h2> Result: </h2>
-                {{ output }}
-       {% else %} 
+       {% if output is mapping %}
            <table>
-           
-                <tr>
                 {% for key, value in output.items() %}
+                    <tr>
                     <th> {{ key }} </th>
                     <td> {{ value }} </td>
+                    </tr>
                 {% endfor%}
-                </tr>
-            
-
            </table>
+       {% else %} 
+           <h2> Result: </h2>
+                {{ output }}
        {% endif %}
        
        
