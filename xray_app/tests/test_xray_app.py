@@ -2,6 +2,7 @@ import pytest
 import xraylib
 import sys
 import flask
+from bs4 import BeautifulSoup
 
 sys.path.insert(0, '..')
 app = flask.Flask(__name__)
@@ -30,6 +31,13 @@ test_input = {
 	'augtrans': '',
 	'rad_nuc': ''
 	}
+
+#def test_soup(client):
+#	rv = client.get('/')
+#	soup = BeautifulSoup(rv.data, 'html.parser')
+#	print(soup)
+#	print(soup.find(id="output"))
+
 def test_nonexistent(client):
 	rv = client.get('/nonexistent')
 	#for key in rv.__dict__:
@@ -73,6 +81,9 @@ def test_atomicweight_with_valid_input(client):
 	test_input.update({'function':'AtomicWeight', 'int_z':'5'})
 	rv = client.post('/', data=test_input)
 	val = xraylib.AtomicWeight(5)
+	soup = BeautifulSoup(rv.data, 'html.parser')
+	print(soup)
+	print(soup.find(id="output"))
 	assert 200 == rv.status_code
 	assert b'10.81' in rv.data
 	assert b'g mol<sup>-1</sup>' in rv.data

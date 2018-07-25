@@ -1,47 +1,64 @@
 from flask import g 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField
+from wtforms import StringField, SelectField, SubmitField, FormField, RadioField
 from wtforms.validators import DataRequired, NumberRange
+import xraylib #move with dicts later
+
+class TransitionForm(FlaskForm):
+    trans_not = RadioField(
+            u'Notation',
+            choices = [('IUPAC','IUPAC'),('Siegbahn','Siegbahn'),('All','All')],
+            validators = [DataRequired()])
+    trans_req = SelectField(
+            u'Transition', 
+            choices = [],
+            validators = [DataRequired()])
 
 class Xraylib_Request(FlaskForm):
-    comp = StringField('Compound',validators=[DataRequired()])
-    int_z = StringField('Element',validators=[DataRequired()])
-    int_z_or_comp = StringField('Element or Compound',validators=[DataRequired()]) #needs to accomodate both str and int - try/except loop!
-    float_q = StringField('Momentum Transfer',validators=[DataRequired()])
-    energy = StringField('Energy', validators=[DataRequired()])
-    theta = StringField(u'Theta &#952', validators=[DataRequired()])
-    phi = StringField(u'Phi &#981', validators=[DataRequired()])
-    density = StringField('Density',validators=[DataRequired()])
-    pz = StringField('Electron Momentum p<sub>z</sub>',validators=[DataRequired()])
-    linetype = SelectField(u'Transition', 
-        choices=[],
-        validators=[DataRequired()]) 
+    function = SelectField(
+        u'Xraylib Function', 
+        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
+        validators = [DataRequired()]) 
+    comp = StringField('Compound',validators = [DataRequired()])
+    int_z = StringField('Element',validators = [DataRequired()])
+    int_z_or_comp = StringField('Element or Compound',validators = [DataRequired()]) #needs to accomodate both str and int - try/except loop!
+    float_q = StringField('Momentum Transfer',validators = [DataRequired()])
+    energy = StringField('Energy', validators = [DataRequired()])
+    theta = StringField(u'Theta &#952', validators = [DataRequired()])
+    phi = StringField(u'Phi &#981', validators = [DataRequired()])
+    density = StringField('Density',validators = [DataRequired()])
+    pz = StringField('Electron Momentum p<sub>z</sub>',validators = [DataRequired()])
+    linetype = FormField(TransitionForm) 
         #needs to have a choice of IUPAC, SIEGBAHN or ALL 
         #can do with dynamic select field will need extra select field though  
-    shell = SelectField(u'Shell', 
-        choices=[],
-        validators=[DataRequired()])
-    cktrans = SelectField(u'Coster Kronig Trans', 
-        choices=[('','L1 => L2')],
-        validators=[DataRequired()])
-    nistcomp = SelectField(u'NIST Compound', 
-        choices=[],
-        validators=[DataRequired()])
-    augtrans = SelectField(u'Auger Transition', 
-        choices=[('','')],
-        validators=[DataRequired()])
-    rad_nuc_index = SelectField(u'Radio Nuclide I', 
-        choices=[],
-        validators=[DataRequired()])
-    rad_nuc_name = SelectField(u'Radio Nuclide N', 
-        choices=[],
-        validators=[DataRequired()])
-    function = SelectField(u'Xraylib Function', 
-        choices=[('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile')],
-        validators=[DataRequired()])    
-
+    shell = SelectField(
+        u'Shell', 
+        choices = [],
+        validators = [DataRequired()])
+    cktrans = SelectField(
+        u'Coster Kronig Trans', 
+        choices = [],
+        validators = [DataRequired()])
+    nistcomp = SelectField(
+        u'NIST Compound', 
+        choices = [],
+        validators = [DataRequired()])
+    augtrans = SelectField(
+        u'Auger Transition', 
+        choices = [],
+        validators = [DataRequired()])
+    rad_nuc_index = SelectField(
+        u'Radio Nuclide I', 
+        choices = [],
+        validators = [DataRequired()])
+    rad_nuc_name = SelectField(
+        u'Radio Nuclide N', 
+        choices = [],
+        validators = [DataRequired()])
     #choices(value,label)
       
+#------------------------------------------------------------------------------------------------------------
+
 class Request_Error():
         comp_error = 'Invalid input: Compound'
         int_z_error = 'Invalid input: Element'

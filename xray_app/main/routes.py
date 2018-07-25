@@ -10,4 +10,3 @@ def about():
 def plot():
         return render_template('plot.html', title = 'Plot')
   
-#url_for('static', filename='style.css')
