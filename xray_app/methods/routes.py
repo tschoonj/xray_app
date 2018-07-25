@@ -48,7 +48,6 @@ trans_S_tup = [(v, k) for k, v in trans_dict.items()]
 trans_I_tup = []
 #print(nist_tup)
 
-
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
