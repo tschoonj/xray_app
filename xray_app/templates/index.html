@@ -5,19 +5,39 @@
 <h1> Xraylib App </h1>
   
   <form method="POST" action="">  
-    <div class="form-group">
-      <label for="request"> Choose function: </label>
-             {{ form.function }}  
-    </div>
-    <br>
-  
+    
     <fieldset class = "form-group">
-       {% for field in form if field.id != 'function' %}
-            <div class = "form-group xlib" id = "{{field.id}}">
-                {{field.label}}: 
-                {{field}}
-                <br>
-            </div>    
+       <!--
+       possibly add headers or dividers to label diff functions i.e cross sections, misc, profiles, form factors
+       would need an ordered list :?
+       could also use bootstrap buttons to do radio bit then nest dropdown 
+       -->
+       {% for field in form %}
+            {% if field.id == 'linetype' %}
+                <div class = "form-group xlib" id = "{{field.id}}">
+                    {{field.label}}:
+                    {{field.trans_not(class="radio-inline")}}
+                    <br> 
+                    {{field.trans_req}}
+                </div>
+            {% elif field.id == 'csrf_token'%}
+            {% elif field.id == 'function'%}
+                <div class = "form-group" id = "{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
+                </div>
+            {% elif field.type == 'SelectField' %}
+                <div class = "form-group xlib" id = "{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
+                </div>
+                <!--make field searchable-->
+            {% else %}
+                <div class = "form-group xlib" id = "{{field.id}}">
+                    {{field.label}}: 
+                    {{field}}
+                </div>  
+            {% endif %}  
        {% endfor %}
        <p></p>
        <input 
@@ -27,6 +47,26 @@
         <br>
      </fieldset>
   </form>
+  
+{% if output is mapping %}
+    <div class="table-responsive">  
+        <table class="table">
+            {% for key, value in output.items() %}
+                <tr>
+                    <th> {{ key }} </th>
+                    <td> {{ value }} </td>
+                </tr>
+             {% endfor%}
+        </table>
+    </div>
+{% else %} 
+    <h2> Result: </h2>
+        {{ output }}
+{% endif %}
+
+{% if units %}
+    {{units|safe}}
+{% endif %}
   
 <script
         src="https://code.jquery.com/jquery-3.3.1.js"
