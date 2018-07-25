@@ -20,20 +20,29 @@ def validate_float(s):
                 return True
         except ValueError:
                 return False
+                
+def validate_str(s):
+        try:
+            str(s)
+            return True
+        except ValueError:
+            return False
 
 #def validate_NIST(s)
 #------------------------------------------------------------------------------------------------------------
 nist_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: k for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
 shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
-ck_dict = {}
+ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
 aug_dict = {}
-trans_dict = {}
-
+trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
+  
 nist_tup = [(v, k) for k, v in nist_dict.items()]
-rad_name_tup = [(v, k) for k, v in rad_dict.items()]
+rad_name_tup = [(k, v) for k, v in rad_dict.items()]
 shell_tup = [(k, k) for k, v in shell_dict.items()]
-
+ck_tup = [(v, k) for k, v in ck_dict.items()] #need to map more useful names - is it poss to do similar thing as rad_nuc 
+trans_tup = [(v, k) for k, v in trans_dict.items()]
+#print(trans_tup)
 
 
 #------------------------------------------------------------------------------------------------------------
@@ -43,6 +52,9 @@ def index():
         form.rad_nuc_name.choices = rad_name_tup
         form.shell.choices =  shell_tup
         form.nistcomp.choices = nist_tup
+        form.cktrans.choices = ck_tup
+        form.linetype.trans_req.choices = trans_tup 
+        #after separating trans_tup - need if statement on radio click so only relevant trans show JQuery 
            
         if request.method == 'POST':        
                #for key in request.form.keys():
@@ -51,7 +63,7 @@ def index():
                 select_input = request.form.get('function')
                 rad_nuc_name = request.form.get('rad_nuc_name')
                 shell = request.form.get('shell')
-                print(shell)
+                cktrans = request.form.get('cktrans')
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
@@ -128,6 +140,7 @@ def index():
                     if validate_int(int_z) == True:
                         print(f'int_z: {int_z}' + f'shell: {shell}')
                         #edge_energy=xraylib.EdgeEnergy(int(int_z), xraylib.shell)
+                        #doesn't work bc shell isnt in xraylib but
                             
         return render_template('index.html', form=form) 
 

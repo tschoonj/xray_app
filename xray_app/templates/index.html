@@ -12,12 +12,23 @@
     <br>
   
     <fieldset class = "form-group">
-       {% for field in form if field.id != 'function' and field.id != 'csrf_token' %}
-            <div class = "form-group xlib" id = "{{field.id}}">
-                {{field.label}}: 
-                {{field}}
-                <br>
-            </div>    
+       <!--
+       possibly add headers or dividers to label diff functions i.e cross sections, misc, profiles, form factors
+       would need an ordered list :?
+       could also use bootstrap buttons to do radio bit then nest dropdown 
+       -->
+       {% for field in form %}
+            {% if field.id == 'linetype' %}
+                <div class = "form-group xlib" id = "{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
+                </div>
+            {% elif field.id != 'function' and field.id != 'csrf_token' %}
+                <div class = "form-group xlib" id = "{{field.id}}">
+                    {{field.label}}: 
+                    {{field}}
+                </div>  
+            {% endif %}  
        {% endfor %}
        <p></p>
        <input 
