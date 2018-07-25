@@ -28,21 +28,25 @@ def validate_str(s):
         except ValueError:
             return False
 
-#def validate_NIST(s)
+#def validate_NIST(s) etc
 #------------------------------------------------------------------------------------------------------------
-nist_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
-rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: k for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
+nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
+rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
+#print(nist_dict)
+
 shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
 ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
 aug_dict = {}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
-  
-nist_tup = [(v, k) for k, v in nist_dict.items()]
+#print(trans_dict)  
+
+nist_tup = [(k, v) for k, v in nist_dict.items()]
 rad_name_tup = [(k, v) for k, v in rad_dict.items()]
 shell_tup = [(k, k) for k, v in shell_dict.items()]
 ck_tup = [(v, k) for k, v in ck_dict.items()] #need to map more useful names - is it poss to do similar thing as rad_nuc 
-trans_tup = [(v, k) for k, v in trans_dict.items()]
-#print(trans_tup)
+trans_S_tup = [(v, k) for k, v in trans_dict.items()]
+trans_I_tup = []
+#print(nist_tup)
 
 
 #------------------------------------------------------------------------------------------------------------
@@ -53,8 +57,10 @@ def index():
         form.shell.choices =  shell_tup
         form.nistcomp.choices = nist_tup
         form.cktrans.choices = ck_tup
-        form.linetype.trans_req.choices = trans_tup 
+        
+        form.linetype.trans_req.choices = trans_S_tup 
         #after separating trans_tup - need if statement on radio click so only relevant trans show JQuery 
+        #poss could def populate_choices in separate dict package then call here 
            
         if request.method == 'POST':        
                #for key in request.form.keys():
@@ -63,7 +69,9 @@ def index():
                 select_input = request.form.get('function')
                 rad_nuc_name = request.form.get('rad_nuc_name')
                 shell = request.form.get('shell')
-                cktrans = request.form.get('cktrans')
+                nistcomp = request.form.get('nistcomp')
+                linetype_trans_not = request.form.get('linetype-trans_not')
+                #print(linetype_trans_not)
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
@@ -75,33 +83,33 @@ def index():
                             weight = xraylib.AtomicWeight(int(int_z))
                             return render_template(
                             'index.html', 
-                            form=form,
-                            output=weight,
+                            form = form,
+                            output = weight,
                             units = Request_Units.AtomicWeight_u
                             )
                 
                     else:
                             return render_template(
                             'index.html', 
-                            form=form,
-                            error=Request_Error.int_z_error
+                            form = form,
+                            error = Request_Error.int_z_error
                             )
                                 
                 elif select_input == 'ElementDensity':
                     if validate_int(int_z) == True and 0<int(int_z)<=118:
                             print(f'int_z: {int_z}')
-                            density=xraylib.ElementDensity(int(int_z))
+                            density = xraylib.ElementDensity(int(int_z))
                             return render_template(
                             'index.html', 
-                            form=form,
-                            output=density,
+                            form = form,
+                            output = density,
                             units = Request_Units.ElementDensity_u
                             )                
                     else:
                             return render_template(
                             'index.html', 
-                            form=form,  
-                            error=Request_Error.int_z_error
+                            form = form,  
+                            error = Request_Error.int_z_error
                             )
                             
                 elif select_input == 'FF_Rayl':
@@ -110,31 +118,45 @@ def index():
                             rayl_ff=xraylib.FF_Rayl(int(int_z), float(float_q))
                             return render_template(
                             'index.html', 
-                            form=form,
-                            output=rayl_ff,
+                            form = form,
+                            output = rayl_ff,
                             units = Request_Units.ElementDensity_u
                             )
+                            
                     elif validate_float(float_q) == False:
                             return render_template(
                             'index.html', 
-                            form=form,  
+                            form = form,  
                             error=Request_Error.float_q_error
                             )
                     else:
                             return render_template(
                             'index.html', 
-                            form=form,  
-                            error=Request_Error.int_z_error
+                            form = form,  
+                            error = Request_Error.int_z_error
                             )    
                 
                 elif select_input == 'GetRadioNuclideDataByName':
                     print (f'rad_nuc_name: {rad_nuc_name}')
                     nuc_data = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))
                     return render_template(
-                            'index.html', 
-                            form=form,
-                            output=nuc_data
-                            )
+                        'index.html',
+                        form = form,
+                        output = nuc_data
+                        )
+                            
+                elif select_input == 'GetCompoundDataNISTByName':
+                    print (f'nistcomp: {nistcomp}')
+                    NIST_data = xraylib.GetCompoundDataNISTByName(str(nistcomp))
+                    return render_template(
+                        'index.html',
+                        form = form, 
+                        output = NIST_data
+                        )
+                
+                elif select_input == '':
+                    pass       
+                        
                             
                 elif select_input == 'EdgeEnergy':
                     if validate_int(int_z) == True:

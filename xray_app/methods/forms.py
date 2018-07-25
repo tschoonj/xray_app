@@ -7,7 +7,7 @@ import xraylib #move with dicts later
 class TransitionForm(FlaskForm):
     trans_not = RadioField(
             u'Notation',
-            choices = [('0','IUPAC'),('1','SIEGBAHN'),('2','ALL')],
+            choices = [('IUPAC','IUPAC'),('Siegbahn','Siegbahn'),('All','All')],
             validators = [DataRequired()])
     trans_req = SelectField(
             u'Transition', 
@@ -15,6 +15,10 @@ class TransitionForm(FlaskForm):
             validators = [DataRequired()])
 
 class Xraylib_Request(FlaskForm):
+    function = SelectField(
+        u'Xraylib Function', 
+        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
+        validators = [DataRequired()]) 
     comp = StringField('Compound',validators = [DataRequired()])
     int_z = StringField('Element',validators = [DataRequired()])
     int_z_or_comp = StringField('Element or Compound',validators = [DataRequired()]) #needs to accomodate both str and int - try/except loop!
@@ -51,13 +55,10 @@ class Xraylib_Request(FlaskForm):
         u'Radio Nuclide N', 
         choices = [],
         validators = [DataRequired()])
-    function = SelectField(
-        u'Xraylib Function', 
-        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile')],
-        validators = [DataRequired()])    
-
     #choices(value,label)
       
+#------------------------------------------------------------------------------------------------------------
+
 class Request_Error():
         comp_error = 'Invalid input: Compound'
         int_z_error = 'Invalid input: Element'
