@@ -59,12 +59,12 @@ def test_js_present(client):
 	assert 200 == rv.status_code
 	assert b"src=\"/static/main.js\""
 
-def test_index_vanilla(client):
-	rv = client.get('/')
-	assert 200 == rv.status_code
-	assert b'<div class = "form-group xlib" id = "comp">' in rv.data
-	assert b'<option value="AtomicWeight">Atomic Weight</option>' in rv.data
-	assert b'type = "submit"' in rv.data
+#def test_index_vanilla(client):
+#	rv = client.get('/')
+#	assert 200 == rv.status_code
+#	assert b'<div class = "form-group xlib" id = "comp">' in rv.data
+#	assert b'<option value="AtomicWeight">Atomic Weight</option>' in rv.data
+#	assert b'type = "submit"' in rv.data
 
 def test_plots_vanilla(client):
 	rv = client.get('/')
@@ -78,7 +78,8 @@ def test_about_vanilla(client):
 #test failures would be harder to find though
 
 class BaseTest():
-	def __init__(self): 
+	def __init__(self):
+		self.client = client
 		self.status = 'assert 200 == rv.status_code'
 		self.test_input = {
 	'comp': '', 
@@ -100,27 +101,49 @@ class BaseTest():
 	def print_text(self):
 		print(self.text)
  
-class ValidInputTests(BaseTest):
-	def __init__(self):
+class VanillaTests(BaseTest):
+	def __init__(self, client):
 		BaseTest.__init__(self)
-		self.text = 'This is a valid input test'	
+		self.text = 'This is a vanilla test'
+	#def test_vanilla(page):
+	@staticmethod
+	def test_index(client):
+	    rv = client.get('/')
+	    return rv
+		#assert 200 == rv.status_code
+		#assert b'<div class = "form-group xlib" id = "comp">' in rv.data
+
+class ValidInputTests(BaseTest):
+	def __init__(self, client):
+		BaseTest.__init__(self)
+		self.text = 'This is a valid input test'
+#	def test_index_vanilla(client):
+#		rv = client.get('/')
+#		assert 200 == rv.status_code
+#		assert b'<div class = "form-group xlib" id = "comp">' in rv.data
 
 class InvalidInputTests(BaseTest):
-        def __init__(self):
-                BaseTest.__init__(self)
-                self.text = 'This is an invalid input test'
-
+        def __init__(self, client):
+            BaseTest.__init__(self)
+            self.text = 'This is an invalid input test'
+        #def test_index_vanilla(client):
+         #   rv = client.get('/')
+          #  assert 200 == rv.status_code
+           # assert b'<div class = "form-group xlib" id = "comp">' in rv.data
+	    	
 class TestFactory(object):
 	@staticmethod
 	def new_test(test_type):
 		if test_type == 'ValidInput':
-			return ValidInputTests()
+			return ValidInputTests(client)
 		elif test_type == 'InvalidInput':
-			return InvalidInputTests()
+			return InvalidInputTests(client)
+		elif test_type == 'Vanilla':
+			return VanillaTests(client)
 		else:
 			print('Test Type does not exist')
 
-FUNCTION_TYPES = ['ValidInput', 'InvalidInput']
+FUNCTION_TYPES = ['ValidInput', 'InvalidInput', 'Vanilla']
 FUNCTION_TESTS = []
 
 for function in FUNCTION_TYPES:
@@ -128,17 +151,23 @@ for function in FUNCTION_TYPES:
 
 for i in FUNCTION_TESTS:
 	i.print_text() 
+	try:
+	    print(i)
+	    print(TestFactory().__getattributes__)
+	except:
+	    pass
+	#i.test_function eventually?
 
 def test_atomicweight_with_valid_input(client):
-	test_input.update({'function':'AtomicWeight', 'int_z':'5'})
-	rv = client.post('/', data=test_input)
-	val = xraylib.AtomicWeight(5)
-	soup = BeautifulSoup(rv.data, 'html.parser')
-	output = float(soup.find('div', id='output').string)
-	print(output)
-	assert 200 == rv.status_code
-	assert b'g mol<sup>-1</sup>' in rv.data
-	assert output == pytest.approx(val)
+    test_input.update({'function':'AtomicWeight', 'int_z':'5'})
+    rv = client.post('/', data=test_input)
+    val = xraylib.AtomicWeight(5)
+    soup = BeautifulSoup(rv.data, 'html.parser')
+    output = float(soup.find('div', id='output').string)
+    print(output)
+    assert 200 == rv.status_code
+    assert b'g mol<sup>-1</sup>' in rv.data
+    assert output == pytest.approx(val)
 
 def test_atomicweight_with_invalid_input_int(client):
 	test_input.update({'function':'AtomicWeight', 'int_z':'0'})
