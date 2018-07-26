@@ -77,17 +77,68 @@ def test_about_vanilla(client):
 #could possibly make an if function with valid input test and it loops
 #test failures would be harder to find though
 
+class BaseTest():
+	def __init__(self): 
+		self.status = 'assert 200 == rv.status_code'
+		self.test_input = {
+	'comp': '', 
+        'int_z':'',
+        'int_z_or_comp': '', 
+        'float_q': '', 
+        'linetype': '', 
+        'shell': '', 
+        'energy': '', 
+        'theta': '', 
+        'phi': '', 
+        'density': '', 
+        'pz': '', 
+        'cktrans': '', 
+        'nistcomp': '', 
+        'augtrans': '', 
+        'rad_nuc': ''
+        }
+	def print_text(self):
+		print(self.text)
+ 
+class ValidInputTests(BaseTest):
+	def __init__(self):
+		BaseTest.__init__(self)
+		self.text = 'This is a valid input test'	
+
+class InvalidInputTests(BaseTest):
+        def __init__(self):
+                BaseTest.__init__(self)
+                self.text = 'This is an invalid input test'
+
+class TestFactory(object):
+	@staticmethod
+	def new_test(test_type):
+		if test_type == 'ValidInput':
+			return ValidInputTests()
+		elif test_type == 'InvalidInput':
+			return InvalidInputTests()
+		else:
+			print('Test Type does not exist')
+
+FUNCTION_TYPES = ['ValidInput', 'InvalidInput']
+FUNCTION_TESTS = []
+
+for function in FUNCTION_TYPES:
+	FUNCTION_TESTS.append(TestFactory().new_test(function))
+
+for i in FUNCTION_TESTS:
+	i.print_text() 
+
 def test_atomicweight_with_valid_input(client):
 	test_input.update({'function':'AtomicWeight', 'int_z':'5'})
 	rv = client.post('/', data=test_input)
 	val = xraylib.AtomicWeight(5)
 	soup = BeautifulSoup(rv.data, 'html.parser')
-	print(soup)
-	print(soup.find(id="output"))
+	output = float(soup.find('div', id='output').string)
+	print(output)
 	assert 200 == rv.status_code
-	assert b'10.81' in rv.data
 	assert b'g mol<sup>-1</sup>' in rv.data
-#	assert pytest.approx(val) in rv.data
+	assert output == pytest.approx(val)
 
 def test_atomicweight_with_invalid_input_int(client):
 	test_input.update({'function':'AtomicWeight', 'int_z':'0'})
