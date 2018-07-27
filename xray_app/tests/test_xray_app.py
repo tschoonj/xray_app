@@ -2,6 +2,8 @@ import pytest
 import xraylib
 import sys
 import flask
+import random
+from abc import abstractmethod, ABC
 from bs4 import BeautifulSoup
 
 sys.path.insert(0, '..')
@@ -32,12 +34,129 @@ test_input = {
 	'rad_nuc': ''
 	}
 
-#def test_soup(client):
-#	rv = client.get('/')
-#	soup = BeautifulSoup(rv.data, 'html.parser')
-#	print(soup)
-#	print(soup.find(id="output"))
+#----------------------------------------------------------------------------
+from abc import abstractmethod, ABC
+import random
 
+def main():
+    vanilla_tests = give_me_tests(Test_VanillaFactory)
+    print('{} vanilla tests'.format(len(vanilla_tests)))
+    for vanilla_test in vanilla_tests:
+        print_test(vanilla_test)
+
+def print_test(test, show_repr=False, show_hierarchy=False ):
+    print(str(test))
+    if show_repr:
+        print(repr(test))
+    if show_hierarchy:
+        print(inspect.getmro(test.__class__))
+        print('\n')
+
+def give_me_tests(factories, test_type=None):
+    #interface between client and Factory class
+    #factories list of factory classses or one
+    #test_typ str passes to making method
+    #returns a list of objects made by the Factory classes
+    if not hasattr(factories, '__len__'):
+        factories = [factories]
+    products = list()
+    for factory in factories:
+        product = factory.make_test(test_type)
+        products.append(product)
+        
+    return products
+
+class TestFactory():
+    #abstract factory class to make tests
+    #must be subclassed by factory class that calls the tests method
+    @classmethod
+    @abstractmethod
+    def products(cls):
+        pass
+    
+    @classmethod
+    @abstractmethod
+    def make_test(cls, test_type=None):
+        test_name = random.choice(cls.products())
+        this_module = __import__(__name__)
+        test_class = getattr(this_module, test_name)
+        test = test_class(factory_name=cls.__name__)
+        if test_type is not None:
+            test.test_type = test_type
+        return test   
+    
+    @classmethod
+    @abstractmethod
+    def test_type(cls):
+        return 'vanilla'
+
+class _Test(ABC):
+    #base abstract class for tests.
+    def __init__(self, factory_name=None):
+        self._manufactured = factory_name
+        self._test_type = 'vanilla'
+    def __str__(self):
+        return 'made by:{}, {}, test type: {}, testing: {}'.format(self.manufactured, self.__class__.__name__, self.test_type, self.test_page)
+    
+    @property
+    @abstractmethod
+    def test_page(self):
+        pass
+    
+    @property
+    def test_type(self):
+        return self._test_type
+    
+    @test_type.setter
+    def test_type(self, new_type):
+        self._test_type = new_type
+        
+    @property
+    def manufactured(self):
+        return self._manufactured
+
+    @manufactured.setter
+    def manufactured(self, factory_name):
+        self._manufactured = factory_name    
+            
+class Test_VanillaFactory(TestFactory):
+    @classmethod
+    @abstractmethod
+    def products(cls):
+        return tuple(['test_index', 'test_about', 'test_plot'])
+
+class _Vanilla(_Test):
+    #basic concrete class for vanilla tests
+    @property
+    def test_type(self):
+        return 'Vanilla'
+        
+class test_index(_Vanilla):
+    @property
+    def test_page(self):
+        return 'index'
+        
+class test_about(_Vanilla):
+    @property
+    def test_page(self):
+        return 'about'
+
+class test_plot(_Vanilla):
+    @property
+    def test_page(self):
+        return 'plot'
+    
+        
+class Test_InvalidFactory(TestFactory):
+    @classmethod
+    @abstractmethod
+    def products(cls):
+        return tuple(['_int_z', '_float_q', '_etc'])
+        
+if __name__ == '__main__':
+    main()    
+#----------------------------------------------------------------------------    
+            
 def test_nonexistent(client):
 	rv = client.get('/nonexistent')
 	#for key in rv.__dict__:
@@ -59,12 +178,12 @@ def test_js_present(client):
 	assert 200 == rv.status_code
 	assert b"src=\"/static/main.js\""
 
-#def test_index_vanilla(client):
-#	rv = client.get('/')
-#	assert 200 == rv.status_code
-#	assert b'<div class = "form-group xlib" id = "comp">' in rv.data
-#	assert b'<option value="AtomicWeight">Atomic Weight</option>' in rv.data
-#	assert b'type = "submit"' in rv.data
+def test_index_vanilla(client):
+	rv = client.get('/')
+	assert 200 == rv.status_code
+	assert b'<div class = "form-group xlib" id = "comp">' in rv.data
+	assert b'<option value="AtomicWeight">Atomic Weight</option>' in rv.data
+	assert b'type = "submit"' in rv.data
 
 def test_plots_vanilla(client):
 	rv = client.get('/')
@@ -76,87 +195,6 @@ def test_about_vanilla(client):
 
 #could possibly make an if function with valid input test and it loops
 #test failures would be harder to find though
-
-class BaseTest():
-	def __init__(self):
-		self.client = client
-		self.status = 'assert 200 == rv.status_code'
-		self.test_input = {
-	'comp': '', 
-        'int_z':'',
-        'int_z_or_comp': '', 
-        'float_q': '', 
-        'linetype': '', 
-        'shell': '', 
-        'energy': '', 
-        'theta': '', 
-        'phi': '', 
-        'density': '', 
-        'pz': '', 
-        'cktrans': '', 
-        'nistcomp': '', 
-        'augtrans': '', 
-        'rad_nuc': ''
-        }
-	def print_text(self):
-		print(self.text)
- 
-class VanillaTests(BaseTest):
-	def __init__(self, client):
-		BaseTest.__init__(self)
-		self.text = 'This is a vanilla test'
-	#def test_vanilla(page):
-	@staticmethod
-	def test_index(client):
-	    rv = client.get('/')
-	    return rv
-		#assert 200 == rv.status_code
-		#assert b'<div class = "form-group xlib" id = "comp">' in rv.data
-
-class ValidInputTests(BaseTest):
-	def __init__(self, client):
-		BaseTest.__init__(self)
-		self.text = 'This is a valid input test'
-#	def test_index_vanilla(client):
-#		rv = client.get('/')
-#		assert 200 == rv.status_code
-#		assert b'<div class = "form-group xlib" id = "comp">' in rv.data
-
-class InvalidInputTests(BaseTest):
-        def __init__(self, client):
-            BaseTest.__init__(self)
-            self.text = 'This is an invalid input test'
-        #def test_index_vanilla(client):
-         #   rv = client.get('/')
-          #  assert 200 == rv.status_code
-           # assert b'<div class = "form-group xlib" id = "comp">' in rv.data
-	    	
-class TestFactory(object):
-	@staticmethod
-	def new_test(test_type):
-		if test_type == 'ValidInput':
-			return ValidInputTests(client)
-		elif test_type == 'InvalidInput':
-			return InvalidInputTests(client)
-		elif test_type == 'Vanilla':
-			return VanillaTests(client)
-		else:
-			print('Test Type does not exist')
-
-FUNCTION_TYPES = ['ValidInput', 'InvalidInput', 'Vanilla']
-FUNCTION_TESTS = []
-
-for function in FUNCTION_TYPES:
-	FUNCTION_TESTS.append(TestFactory().new_test(function))
-
-for i in FUNCTION_TESTS:
-	i.print_text() 
-	try:
-	    print(i)
-	    print(TestFactory().__getattributes__)
-	except:
-	    pass
-	#i.test_function eventually?
 
 def test_atomicweight_with_valid_input(client):
     test_input.update({'function':'AtomicWeight', 'int_z':'5'})

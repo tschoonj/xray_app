@@ -40,6 +40,7 @@ aug_dict = {}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
 #print(trans_dict)  
 
+#MAKE A TUP FACTORY
 nist_tup = [(k, v) for k, v in nist_dict.items()]
 rad_name_tup = [(k, v) for k, v in rad_dict.items()]
 shell_tup = [(k, k) for k, v in shell_dict.items()]
@@ -76,7 +77,7 @@ def index():
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
                 
-                                
+                #template render factory??               
                 if select_input == 'AtomicWeight':
                     if validate_int(int_z) == True and 0<int(int_z)<=118:                
                             print(f'int_z: {int_z}')
