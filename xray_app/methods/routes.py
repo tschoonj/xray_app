@@ -36,18 +36,21 @@ rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xr
 
 shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
 ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
-aug_dict = {}
+aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
-#print(trans_dict)  
+#print(aug_dict)  
 
 #MAKE A TUP FACTORY
 nist_tup = [(k, v) for k, v in nist_dict.items()]
 rad_name_tup = [(k, v) for k, v in rad_dict.items()]
 shell_tup = [(k, k) for k, v in shell_dict.items()]
-ck_tup = [(v, k) for k, v in ck_dict.items()] #need to map more useful names - is it poss to do similar thing as rad_nuc 
-trans_S_tup = [(v, k) for k, v in trans_dict.items()]
-trans_I_tup = []
-#print(nist_tup)
+ck_tup = [(v, k) for k, v in ck_dict.items()] #need to map more useful names - is it poss to do similar thing as rad_nuc
+aug_tup = [(v, k) for k, v in aug_dict.items()]
+trans_tup = [(v, k) for k, v in trans_dict.items()]
+trans_I_tup =  trans_tup[0:383]
+trans_S_tup = trans_tup[:382:-1]
+trans_S_tup = trans_S_tup[::-1]
+
 
 
 #------------------------------------------------------------------------------------------------------------

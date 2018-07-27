@@ -3,6 +3,7 @@ import xraylib
 import sys
 import flask
 import random
+
 from abc import abstractmethod, ABC
 from bs4 import BeautifulSoup
 
@@ -186,7 +187,7 @@ def test_index_vanilla(client):
 	assert b'type = "submit"' in rv.data
 
 def test_plots_vanilla(client):
-	rv = client.get('/')
+	rv = client.get('/plot')
 	assert 200 == rv.status_code
 	
 def test_about_vanilla(client):
