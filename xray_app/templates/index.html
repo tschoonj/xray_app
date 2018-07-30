@@ -5,7 +5,6 @@
 <h1> Xraylib App </h1>
   
   <form method="POST" action="">  
-    
     <fieldset class = "form-group">
        <!--
        possibly add headers or dividers to label diff functions i.e cross sections, misc, profiles, form factors
@@ -72,7 +71,13 @@
         {{units|safe}}
     </div>
 {% endif %}
-  
+
+{% if error %}
+           {{error}}
+{% endif %}
+
+{% if code_example %}
+{% endif %}  
 <script
         src="https://code.jquery.com/jquery-3.3.1.js"
         integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
