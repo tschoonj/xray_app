@@ -14,6 +14,16 @@ class TransitionForm(FlaskForm):
             choices = [],
             validators = [DataRequired()])
 
+class TransitionForm(FlaskForm):
+    trans_not = RadioField(
+            u'Notation',
+            choices = [('IUPAC','IUPAC'),('Siegbahn','Siegbahn'),('All','All')],
+            validators = [DataRequired()])
+    trans_req = SelectField(
+            u'Transition', 
+            choices = [],
+            validators = [DataRequired()])
+
 class Xraylib_Request(FlaskForm):
     function = SelectField(
         u'Xraylib Function', 
