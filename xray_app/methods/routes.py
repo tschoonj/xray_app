@@ -43,7 +43,6 @@ aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
 cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS')} 
 
-#MAKE A TUP FACTORY?
 def make_tup(_dict):
     tup = [(k, k) for k, v in _dict.items()]
     return tup

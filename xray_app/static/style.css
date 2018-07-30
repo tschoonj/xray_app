@@ -6,4 +6,7 @@
     display:block
 }
 
+div#output, div#units {
+    display :inline-block
+}
 /*hide all inputs as you addd them*/
