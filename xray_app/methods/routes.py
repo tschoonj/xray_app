@@ -40,7 +40,10 @@ aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
 #print(aug_dict)  
 
-#MAKE A TUP FACTORY
+#MAKE A TUP FACTORY?
+def make_tup(_dict):
+    tup = [(k, v) for k, v in _dict.items()]
+    return tup 
 nist_tup = [(k, v) for k, v in nist_dict.items()]
 rad_name_tup = [(k, v) for k, v in rad_dict.items()]
 shell_tup = [(k, k) for k, v in shell_dict.items()]
@@ -62,7 +65,8 @@ def index():
         form.nistcomp.choices = nist_tup
         form.cktrans.choices = ck_tup
         
-        form.linetype.trans_req.choices = trans_S_tup 
+        form.linetype.trans_iupac.choices = trans_I_tup
+        form.linetype.trans_siegbahn.choices = trans_S_tup 
         #after separating trans_tup - need if statement on radio click so only relevant trans show JQuery 
         #poss could def populate_choices in separate dict package then call here 
            
@@ -74,8 +78,8 @@ def index():
                 rad_nuc_name = request.form.get('rad_nuc_name')
                 shell = request.form.get('shell')
                 nistcomp = request.form.get('nistcomp')
-                linetype_trans_not = request.form.get('linetype-trans_not')
-                #print(linetype_trans_not)
+                linetype_trans_notation = request.form.get('linetype-trans_notation')
+                #print(linetype_trans_notation)
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']

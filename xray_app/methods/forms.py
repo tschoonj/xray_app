@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, NumberRange
 import xraylib #move with dicts later
 
 class TransitionForm(FlaskForm):
-    trans_not = RadioField(
+    trans_notation = RadioField(
             u'Notation',
             choices = [('IUPAC','IUPAC'),('Siegbahn','Siegbahn'),('All','All')],
             validators = [DataRequired()])
