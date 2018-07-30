@@ -9,17 +9,11 @@ class TransitionForm(FlaskForm):
             u'Notation',
             choices = [('IUPAC','IUPAC'),('Siegbahn','Siegbahn'),('All','All')],
             validators = [DataRequired()])
-    trans_req = SelectField(
+    trans_iupac = SelectField(
             u'Transition', 
             choices = [],
             validators = [DataRequired()])
-
-class TransitionForm(FlaskForm):
-    trans_not = RadioField(
-            u'Notation',
-            choices = [('IUPAC','IUPAC'),('Siegbahn','Siegbahn'),('All','All')],
-            validators = [DataRequired()])
-    trans_req = SelectField(
+    trans_siegbahn = SelectField(
             u'Transition', 
             choices = [],
             validators = [DataRequired()])

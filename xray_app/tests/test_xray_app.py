@@ -17,24 +17,7 @@ def client():
 	client = xray_app.app.test_client()
 	yield client
 
-test_input = {
-	'comp': '', 
-	'int_z':'',
-	'int_z_or_comp': '',
-	'float_q': '',
-	'linetype': '',
-	'shell': '',
-	'energy': '',
-	'theta': '',
-	'phi': '',
-	'density': '',
-	'pz': '',
-	'cktrans': '',
-	'nistcomp': '',
-	'augtrans': '',
-	'rad_nuc': ''
-	}
-
+    
 #----------------------------------------------------------------------------
 from abc import abstractmethod, ABC
 import random
@@ -124,7 +107,7 @@ class Test_VanillaFactory(TestFactory):
     @classmethod
     @abstractmethod
     def products(cls):
-        return tuple(['test_index', 'test_about', 'test_plot'])
+        return tuple(['Test_Index', 'Test_About', 'Test_Plot'])
 
 class _Vanilla(_Test):
     #basic concrete class for vanilla tests
@@ -132,17 +115,17 @@ class _Vanilla(_Test):
     def test_type(self):
         return 'Vanilla'
         
-class test_index(_Vanilla):
+class Test_Index(_Vanilla):
     @property
     def test_page(self):
         return 'index'
         
-class test_about(_Vanilla):
+class Test_About(_Vanilla):
     @property
     def test_page(self):
         return 'about'
 
-class test_plot(_Vanilla):
+class Test_Plot(_Vanilla):
     @property
     def test_page(self):
         return 'plot'
@@ -157,7 +140,29 @@ class Test_InvalidFactory(TestFactory):
 if __name__ == '__main__':
     main()    
 #----------------------------------------------------------------------------    
-            
+test_input = {
+	'comp': '', 
+	'int_z':'',
+	'int_z_or_comp': '',
+	'float_q': '',
+	'linetype': '',
+	'shell': '',
+	'energy': '',
+	'theta': '',
+	'phi': '',
+	'density': '',
+	'pz': '',
+	'cktrans': '',
+	'nistcomp': '',
+	'augtrans': '',
+	'rad_nuc': ''
+	}
+
+def soup_output(rv):
+    soup = BeautifulSoup(rv.data, 'html.parser')
+    output = float(soup.find('div', id='output').string)
+    return output            
+
 def test_nonexistent(client):
 	rv = client.get('/nonexistent')
 	#for key in rv.__dict__:
@@ -196,29 +201,44 @@ def test_about_vanilla(client):
 
 #could possibly make an if function with valid input test and it loops
 #test failures would be harder to find though
+def calc_val(function, value):
+    function = getattr(xraylib, function)
+    val = function(value)
+    return val
 
-def test_atomicweight_with_valid_input(client):
-    test_input.update({'function':'AtomicWeight', 'int_z':'5'})
-    rv = client.post('/', data=test_input)
-    val = xraylib.AtomicWeight(5)
-    soup = BeautifulSoup(rv.data, 'html.parser')
-    output = float(soup.find('div', id='output').string)
-    print(output)
-    assert 200 == rv.status_code
-    assert b'g mol<sup>-1</sup>' in rv.data
-    assert output == pytest.approx(val)
-
-def test_atomicweight_with_invalid_input_int(client):
-	test_input.update({'function':'AtomicWeight', 'int_z':'0'})
-	rv = client.post('/', data=test_input)
-	assert 200 == rv.status_code
-	assert b'Invalid input' in rv.data
-
-def test_atomicweight_with_invalid_input_str(client):
-	test_input.update({'function':'AtomicWeight', 'int_z':'a'})
-	rv = client.post('/', data=test_input)
-	assert 200 == rv.status_code
-	assert b'Invalid input' in rv.data
+def test_atomicweight(client):
+    try:
+        test_input.update({'function':'AtomicWeight', 'int_z':'5'})
+        rv = client.post('/', data=test_input)
+        val = calc_val('AtomicWeight', 5)
+        output = soup_output(rv)
+        print(output)
+        assert 200 == rv.status_code
+        assert b'g mol<sup>-1</sup>' in rv.data
+        assert output == pytest.approx(val)
+    except ValueError:
+        print("Valid Test Failed: Value Error")
+    except TypeError:
+        print("Test Failed: Type Error")
+        
+    try:
+        test_input.update({'function':'AtomicWeight', 'int_z':'0'})
+        rv = client.post('/', data=test_input)
+        assert 200 == rv.status_code
+        assert b'Invalid input' in rv.data
+    except:
+        print("Invalid Value Error")
+        
+    try:
+        test_input.update({'function':'AtomicWeight', 'int_z':'a'})
+        rv = client.post('/', data=test_input)
+        assert 200 == rv.status_code
+        assert b'Invalid input' in rv.data
+    except:
+        print("Invalid Type Error")
+    #do try/except loop
+    #try funct(val, inval)
+    #except ValueError "testfailed " and TypeError
 
 def test_elementdensity_with_valid_input(client):
 	test_input.update({'function':'ElementDensity', 'int_z':'5'})
