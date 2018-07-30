@@ -25,6 +25,7 @@ def vanilla_test(client, rv):
 def invalid_input_test(client, rv):
     assert 200 == rv.status_code
     assert b'Invalid input' in rv.data
+    print('Invalid Input Tested')
 
 def function_test(client, rv, function, *value):
     test_input[str(function)] = 'function'
@@ -152,14 +153,44 @@ def test_elementdensity(client):
         test_input.update({'function':'ElementDensity', 'int_z':'0'})
         rv = client.post('/', data=test_input)
         invalid_input_test(client, rv)
-    except:
+    except ValueError:
         print("Invalid Value Error")
         
     try:
         test_input.update({'function':'ElementDensity', 'int_z':'a'})
         rv = client.post('/', data=test_input)
         invalid_input_test(client, rv)
-    except:
+    except TypeError:
         print("Invalid Type Error")
-
-#FF_Rayl and RadNuc
+#----------------------------------------------------------------------------                        
+def test_ff_rayl(client):
+    try:
+        test_input.update({'function':'FF_Rayl', 'int_z':'5', 'float_q':'0.5'})
+        rv = client.post('/', data=test_input)
+        function_test(client, rv, 'FF_Rayl', 5, 0.5)
+        
+    except ValueError:
+        print("Valid Test Failed: Value Error")
+    except TypeError:
+        print("Test Failed: Type Error")
+        
+    try:
+        test_input.update({'function':'FF_Rayl', 'int_z':'0'})
+        rv = client.post('/', data=test_input)
+        invalid_input_test(client, rv)
+    except ValueError:
+        print("Invalid Value Error: Z")
+    
+    try:
+        test_input.update({'function':'FF_Rayl', 'int_z':'5', 'float_q':'a'})
+        rv = client.post('/', data=test_input)
+        invalid_input_test(client, rv)
+    except TypeError:
+        print("Invalid Type Error: Q")
+            
+    try:
+        test_input.update({'function':'FF_Rayl', 'int_z':'a', 'float_q':'0.5'})
+        rv = client.post('/', data=test_input)
+        invalid_input_test(client, rv)
+    except TypeError:
+        print("Invalid Type Error")

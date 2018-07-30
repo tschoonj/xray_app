@@ -130,14 +130,13 @@ def index():
                             )
                             
                 elif select_input == 'FF_Rayl':
-                    if validate_int(int_z) == True and validate_float(float_q) == True:
+                    if validate_int(int_z) == True and validate_float(float_q) == True and 0<int(int_z)<=118:
                             print(f'int_z: {int_z}' + f'float_q: {float_q}')
                             rayl_ff=xraylib.FF_Rayl(int(int_z), float(float_q))
                             return render_template(
                             'index.html', 
                             form = form,
-                            output = rayl_ff,
-                            units = Request_Units.ElementDensity_u
+                            output = rayl_ff
                             )
                             
                     elif validate_float(float_q) == False:
