@@ -42,22 +42,19 @@ trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} 
 
 #MAKE A TUP FACTORY?
 def make_tup(_dict):
-    tup = [(k, v) for k, v in _dict.items()]
+    tup = [(k, k) for k, v in _dict.items()]
     return tup
 
 nist_tup = make_tup(nist_dict)     
-nist_tup = [(k, v) for k, v in nist_dict.items()]
-rad_name_tup = [(k, v) for k, v in rad_dict.items()]
-shell_tup = [(k, k) for k, v in shell_dict.items()]
-ck_tup = [(v, k) for k, v in ck_dict.items()] #need to map more useful names - is it poss to do similar thing as rad_nuc
-aug_tup = [(v, k) for k, v in aug_dict.items()]
+#nist_tup = [(k, v) for k, v in nist_dict.items()]
+rad_name_tup = make_tup(rad_dict)
+shell_tup = make_tup(shell_dict)
+ck_tup = make_tup(ck_dict) #need to map more useful names - is it poss to do similar thing as rad_nuc
+aug_tup = make_tup(aug_dict)
 trans_tup = [(v, k) for k, v in trans_dict.items()]
 trans_I_tup =  trans_tup[0:383]
 trans_S_tup = trans_tup[:382:-1]
 trans_S_tup = trans_S_tup[::-1]
-
-
-
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
@@ -175,6 +172,7 @@ def index():
                         print(f'int_z: {int_z}' + f'shell: {shell}')
                         #edge_energy=xraylib.EdgeEnergy(int(int_z), xraylib.shell)
                         #doesn't work bc shell isnt in xraylib but
+                        #getattr method
                             
         return render_template('index.html', form=form) 
 
