@@ -5,7 +5,6 @@
 <h1> Xraylib App </h1>
   
   <form method="POST" action="">  
-    
     <fieldset class = "form-group">
        <!--
        possibly add headers or dividers to label diff functions i.e cross sections, misc, profiles, form factors
@@ -16,9 +15,10 @@
             {% if field.id == 'linetype' %}
                 <div class = "form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
-                    {{field.trans_not(class="radio-inline")}}
+                    {{field.trans_notation(class="radio-inline")}}
                     <br> 
-                    {{field.trans_req}}
+                    {{field.trans_iupac}}
+                    {{field.trans_siegbahn}}
                 </div>
             {% elif field.id == 'csrf_token'%}
             {% elif field.id == 'function'%}
@@ -61,13 +61,20 @@
     </div>
 {% else %} 
     <h2> Result: </h2>
-        {{ output }}
+        <div id = "output">
+            {{ output }}
+        </div>
 {% endif %}
 
 {% if units %}
-    {{units|safe}}
+    <div id = "units">    
+        {{units|safe}}
+    </div>
 {% endif %}
-  
+
+{% if error %}
+           {{error}}
+{% endif %} 
 <script
         src="https://code.jquery.com/jquery-3.3.1.js"
         integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="

@@ -30,23 +30,35 @@ def validate_str(s):
 
 #def validate_NIST(s) etc
 #------------------------------------------------------------------------------------------------------------
+def render_error(error):
+    pass
+#------------------------------------------------------------------------------------------------------------
 nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
 #print(nist_dict)
 
 shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
 ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
-aug_dict = {}
+aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
-#print(trans_dict)  
+cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS')} 
 
-nist_tup = [(k, v) for k, v in nist_dict.items()]
-rad_name_tup = [(k, v) for k, v in rad_dict.items()]
-shell_tup = [(k, k) for k, v in shell_dict.items()]
-ck_tup = [(v, k) for k, v in ck_dict.items()] #need to map more useful names - is it poss to do similar thing as rad_nuc 
-trans_S_tup = [(v, k) for k, v in trans_dict.items()]
-trans_I_tup = []
-#print(nist_tup)
+#MAKE A TUP FACTORY?
+def make_tup(_dict):
+    tup = [(k, k) for k, v in _dict.items()]
+    return tup
+
+cs_tup = make_tup(cs_dict)
+nist_tup = make_tup(nist_dict)     
+#nist_tup = [(k, v) for k, v in nist_dict.items()]
+rad_name_tup = make_tup(rad_dict)
+shell_tup = make_tup(shell_dict)
+ck_tup = make_tup(ck_dict) #need to map more useful names - is it poss to do similar thing as rad_nuc
+aug_tup = make_tup(aug_dict)
+trans_tup = [(v, k) for k, v in trans_dict.items()]
+trans_I_tup =  trans_tup[0:383]
+trans_S_tup = trans_tup[:382:-1]
+trans_S_tup = trans_S_tup[::-1]
 
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
@@ -56,8 +68,10 @@ def index():
         form.shell.choices =  shell_tup
         form.nistcomp.choices = nist_tup
         form.cktrans.choices = ck_tup
+        form.function.choices = form.function.choices + cs_tup
         
-        form.linetype.trans_req.choices = trans_S_tup 
+        form.linetype.trans_iupac.choices = trans_I_tup
+        form.linetype.trans_siegbahn.choices = trans_S_tup 
         #after separating trans_tup - need if statement on radio click so only relevant trans show JQuery 
         #poss could def populate_choices in separate dict package then call here 
            
@@ -69,13 +83,17 @@ def index():
                 rad_nuc_name = request.form.get('rad_nuc_name')
                 shell = request.form.get('shell')
                 nistcomp = request.form.get('nistcomp')
-                linetype_trans_not = request.form.get('linetype-trans_not')
-                #print(linetype_trans_not)
+                linetype_trans_notation = request.form.get('linetype-trans_notation')
+                linetype_trans_iupac = request.form.get('linetype-trans_iupac')
+                linetype_trans_siegbahn = request.form.get('linetype-trans_siegbahn')
+                code_example = request.form.get('code_example')
+                print(shell)
+                #print(linetype_trans_notation)
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
                 
-                                
+                #template render factory??               
                 if select_input == 'AtomicWeight':
                     if validate_int(int_z) == True and 0<int(int_z)<=118:                
                             print(f'int_z: {int_z}')
@@ -84,7 +102,8 @@ def index():
                             'index.html', 
                             form = form,
                             output = weight,
-                            units = Request_Units.AtomicWeight_u
+                            units = Request_Units.AtomicWeight_u,
+                            code_example = code_example
                             )
                 
                     else:
@@ -135,6 +154,23 @@ def index():
                             error = Request_Error.int_z_error
                             )    
                 
+                elif select_input == 'EdgeEnergy':
+                    if validate_int(int_z) == True:
+                        print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                        shell = getattr(xraylib, shell)
+                        edge_energy = xraylib.EdgeEnergy(int(int_z), shell)
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            output = edge_energy
+                            )
+                    else:
+                        return render_template(
+                            'index.html', 
+                            form = form,  
+                            error = Request_Error.int_z_error
+                            )
+                        
                 elif select_input == 'GetRadioNuclideDataByName':
                     print (f'rad_nuc_name: {rad_nuc_name}')
                     nuc_data = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))
@@ -157,11 +193,9 @@ def index():
                     pass       
                         
                             
-                elif select_input == 'EdgeEnergy':
-                    if validate_int(int_z) == True:
-                        print(f'int_z: {int_z}' + f'shell: {shell}')
-                        #edge_energy=xraylib.EdgeEnergy(int(int_z), xraylib.shell)
+                
                         #doesn't work bc shell isnt in xraylib but
+                        #getattr method
                             
         return render_template('index.html', form=form) 
 
