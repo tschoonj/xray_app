@@ -16,7 +16,7 @@
             {% if field.id == 'linetype' %}
                 <div class = "form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
-                    {{field.trans_not(class="radio-inline")}}
+                    {{field.trans_notation(class="radio-inline")}}
                     <br> 
                     {{field.trans_req}}
                 </div>
@@ -61,11 +61,17 @@
     </div>
 {% else %} 
     <h2> Result: </h2>
-        {{ output }}
+
+        <div id = "output">
+            {{ output }}
+        </div>
 {% endif %}
 
 {% if units %}
-    {{units|safe}}
+    <div id = "units">    
+        {{units|safe}}
+    </div>
+
 {% endif %}
   
 <script

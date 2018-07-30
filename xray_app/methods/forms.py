@@ -2,6 +2,17 @@ from flask import g
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SubmitField, FormField, RadioField
 from wtforms.validators import DataRequired, NumberRange
+import xraylib #move with dicts later
+
+class TransitionForm(FlaskForm):
+    trans_notation = RadioField(
+            u'Notation',
+            choices = [('IUPAC','IUPAC'),('Siegbahn','Siegbahn'),('All','All')],
+            validators = [DataRequired()])
+    trans_req = SelectField(
+            u'Transition', 
+            choices = [],
+            validators = [DataRequired()])
 
 class TransitionForm(FlaskForm):
     trans_not = RadioField(
