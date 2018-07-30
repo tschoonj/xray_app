@@ -30,6 +30,9 @@ def validate_str(s):
 
 #def validate_NIST(s) etc
 #------------------------------------------------------------------------------------------------------------
+def render_error(error):
+    pass
+#------------------------------------------------------------------------------------------------------------
 nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
 #print(nist_dict)
@@ -38,13 +41,13 @@ shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
 ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
 aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
-#print(aug_dict)  
+cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS')} 
 
-#MAKE A TUP FACTORY?
 def make_tup(_dict):
     tup = [(k, k) for k, v in _dict.items()]
     return tup
 
+cs_tup = make_tup(cs_dict)
 nist_tup = make_tup(nist_dict)     
 #nist_tup = [(k, v) for k, v in nist_dict.items()]
 rad_name_tup = make_tup(rad_dict)
@@ -55,6 +58,7 @@ trans_tup = [(v, k) for k, v in trans_dict.items()]
 trans_I_tup =  trans_tup[0:383]
 trans_S_tup = trans_tup[:382:-1]
 trans_S_tup = trans_S_tup[::-1]
+
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
@@ -63,6 +67,7 @@ def index():
         form.shell.choices =  shell_tup
         form.nistcomp.choices = nist_tup
         form.cktrans.choices = ck_tup
+        form.function.choices = form.function.choices + cs_tup
         
         form.linetype.trans_iupac.choices = trans_I_tup
         form.linetype.trans_siegbahn.choices = trans_S_tup 
@@ -80,6 +85,8 @@ def index():
                 linetype_trans_notation = request.form.get('linetype-trans_notation')
                 linetype_trans_iupac = request.form.get('linetype-trans_iupac')
                 linetype_trans_siegbahn = request.form.get('linetype-trans_siegbahn')
+                code_example = request.form.get('code_example')
+                print(shell)
                 #print(linetype_trans_notation)
                 
                 int_z = request.form['int_z']
@@ -94,7 +101,8 @@ def index():
                             'index.html', 
                             form = form,
                             output = weight,
-                            units = Request_Units.AtomicWeight_u
+                            units = Request_Units.AtomicWeight_u,
+                            code_example = code_example
                             )
                 
                     else:
@@ -145,6 +153,23 @@ def index():
                             error = Request_Error.int_z_error
                             )    
                 
+                elif select_input == 'EdgeEnergy':
+                    if validate_int(int_z) == True:
+                        print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                        shell = getattr(xraylib, shell)
+                        edge_energy = xraylib.EdgeEnergy(int(int_z), shell)
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            output = edge_energy
+                            )
+                    else:
+                        return render_template(
+                            'index.html', 
+                            form = form,  
+                            error = Request_Error.int_z_error
+                            )
+                        
                 elif select_input == 'GetRadioNuclideDataByName':
                     print (f'rad_nuc_name: {rad_nuc_name}')
                     nuc_data = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))
@@ -167,10 +192,7 @@ def index():
                     pass       
                         
                             
-                elif select_input == 'EdgeEnergy':
-                    if validate_int(int_z) == True:
-                        print(f'int_z: {int_z}' + f'shell: {shell}')
-                        #edge_energy=xraylib.EdgeEnergy(int(int_z), xraylib.shell)
+                
                         #doesn't work bc shell isnt in xraylib but
                         #getattr method
                             
