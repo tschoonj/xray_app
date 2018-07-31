@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, url_for
+from xray_app.main.plot import TestClass 
 
 main = Blueprint('main', __name__)
 

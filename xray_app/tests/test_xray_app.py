@@ -136,7 +136,7 @@ def test_atomicweight(client):
     #do try/except loop
     #try funct(val, inval)
     #except ValueError "testfailed " and TypeError
-
+#----------------------------------------------------------------------------
 def test_elementdensity(client):
     try:
         test_input.update({'function':'ElementDensity', 'int_z':'5'})

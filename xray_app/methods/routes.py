@@ -63,14 +63,16 @@ trans_S_tup = trans_S_tup[::-1]
 @methods.route("/", methods=['GET', 'POST'])
 def index():
         form = Xraylib_Request()
-        form.rad_nuc_name.choices = rad_name_tup
-        form.shell.choices =  shell_tup
-        form.nistcomp.choices = nist_tup
-        form.cktrans.choices = ck_tup
         form.function.choices = form.function.choices + cs_tup
         
         form.linetype.trans_iupac.choices = trans_I_tup
-        form.linetype.trans_siegbahn.choices = trans_S_tup 
+        form.linetype.trans_siegbahn.choices = trans_S_tup
+        form.shell.choices =  shell_tup
+        form.cktrans.choices = ck_tup
+        form.nistcomp.choices = nist_tup
+        form.augtrans.choices = aug_tup
+        form.rad_nuc_name.choices = rad_name_tup
+          
         #after separating trans_tup - need if statement on radio click so only relevant trans show JQuery 
         #poss could def populate_choices in separate dict package then call here 
            
@@ -79,18 +81,28 @@ def index():
                    #print(f'key= {key}')
                 
                 select_input = request.form.get('function')
-                rad_nuc_name = request.form.get('rad_nuc_name')
-                shell = request.form.get('shell')
-                nistcomp = request.form.get('nistcomp')
+                code_example = request.form.get('code_example')
+                
                 linetype_trans_notation = request.form.get('linetype-trans_notation')
                 linetype_trans_iupac = request.form.get('linetype-trans_iupac')
                 linetype_trans_siegbahn = request.form.get('linetype-trans_siegbahn')
-                code_example = request.form.get('code_example')
-                print(shell)
+                cktrans = request.form.get('cktrans')
+                nistcomp = request.form.get('nistcomp')
+                augtrans = request.form.get('augtrans')
+                rad_nuc_name = request.form.get('rad_nuc_name')
+                shell = request.form.get('shell')
+                #print(shell)
                 #print(linetype_trans_notation)
                 
                 int_z = request.form['int_z']
                 float_q = request.form['float_q']
+                comp = request.form['comp']
+                int_z_or_comp = request.form['int_z_or_comp']
+                energy = request.form['energy']
+                theta = request.form['theta']
+                phi = request.form['phi']
+                density = request.form['density']
+                pz = request.form['pz']
                 
                 #template render factory??               
                 if select_input == 'AtomicWeight':
