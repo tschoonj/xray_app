@@ -29,9 +29,7 @@ def validate_str(s):
             return False
 
 #def validate_NIST(s) etc
-#------------------------------------------------------------------------------------------------------------
-def render_error(error):
-    pass
+
 #------------------------------------------------------------------------------------------------------------
 nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
@@ -41,8 +39,8 @@ shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
 ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
 aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')} #needs to split into 2 tuples for diff select fields S or I and then I has 2 fields
-cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS')} 
-
+cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS_')} 
+      
 def make_tup(_dict):
     tup = [(k, k) for k, v in _dict.items()]
     return tup
@@ -52,7 +50,7 @@ nist_tup = make_tup(nist_dict)
 #nist_tup = [(k, v) for k, v in nist_dict.items()]
 rad_name_tup = make_tup(rad_dict)
 shell_tup = make_tup(shell_dict)
-ck_tup = make_tup(ck_dict) #need to map more useful names - is it poss to do similar thing as rad_nuc
+ck_tup = make_tup(ck_dict) #need to map more useful names - is it poss to do similar thing as rad_nuc (.replace())
 aug_tup = make_tup(aug_dict)
 trans_tup = [(v, k) for k, v in trans_dict.items()]
 trans_I_tup =  trans_tup[0:383]
@@ -73,6 +71,14 @@ def index():
         form.augtrans.choices = aug_tup
         form.rad_nuc_name.choices = rad_name_tup
           
+        """def render_error(error):
+            print(error)
+            return render_template(
+                            'index.html', 
+                            form = form,
+                            error = getattr(Request_Error, error)
+                            )"""
+
         #after separating trans_tup - need if statement on radio click so only relevant trans show JQuery 
         #poss could def populate_choices in separate dict package then call here 
            

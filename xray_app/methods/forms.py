@@ -95,6 +95,6 @@ class Request_Units():
         FluorYield_u = ''
         ElectronConfig_u = ''
         CS_u = 'cm<sup>2</sup> g<sup>-1</sup>'
-        CSb_u = ''
+        CSb_u = 'barnes atom<sup>-1</sup>'
         
  #<sup></sup>       
