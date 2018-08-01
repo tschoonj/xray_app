@@ -1,7 +1,11 @@
 from flask import Blueprint, render_template, request, url_for, make_response
 from xray_app.main.forms import Xraylib_Request_Plot
+
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+from io import BytesIO
+
 import xraylib
 
 from xray_app.methods.routes import cs_tup
@@ -14,25 +18,26 @@ def about():
 
 @main.route("/plot/fig.png")
 def fig():
-    form = Xraylib_Request_Plot()
-    form.function.choices = form.function.choices + cs_tup
-    import matplotlib.pyplot as plt
-    from io import BytesIO
+
     
     x = []
     y = []
 
-    def graph_data():   
+    def graph_data(function):   
+        function = getattr(xraylib, function)
         for i in range(1, 20, 1):
             x.append(i)
-            y.append(xraylib.ElementDensity(i)) #change to elementdensity
+            y.append(float(function(i)))
 
     def print_data(*lsts):
         lst = zip(*lsts)    
         for value in lst:
             print(value)
+    
+    def make_plot(function, *labels, dpi):
+        pass
             
-    graph_data()
+    graph_data('ElementDensity')
     fig = Figure()
     fig, ax = plt.subplots()
     ax.plot(x, y, label='Fig 1')
@@ -52,7 +57,7 @@ def fig():
     response.headers['Content-Type'] = 'image/png'
     return response
 
-@main.route("/plot")
+@main.route("/plot", methods=['GET', 'POST'])
 def plot():
     form = Xraylib_Request_Plot()
     form.function.choices = form.function.choices + cs_tup
@@ -97,17 +102,9 @@ def plot():
         #print(f'key= {key}')
                 
         select_input = request.form.get('function')
-        int_z = request.form['int_z']
-        float_q = request.form['float_q']
-        comp = request.form['comp']
-        int_z_or_comp = request.form['int_z_or_comp']
-        energy = request.form['energy']
-        theta = request.form['theta']
-        phi = request.form['phi']
-        density = request.form['density']
-        pz = request.form['pz']
+        
                 
-        return render_template('plot.html', form = form, title = 'Plot', figure = fig.png)
+        return render_template('plot.html', form = form, title = 'Plot')
                 
     return render_template('plot.html', title = 'Plot', form = form)
   

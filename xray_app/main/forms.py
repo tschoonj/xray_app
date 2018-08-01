@@ -16,3 +16,15 @@ class Xraylib_Request_Plot(FlaskForm):
         u'End',
         validators = [DataRequired()]
         )
+        
+class Units():
+    pass
+
+class Labels():
+    pass
+    
+class XLabels(Labels):
+    pass
+    
+class YLabels(Labels):
+    pass

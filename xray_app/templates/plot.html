@@ -17,9 +17,7 @@
             formnovalidate>
     </fieldset>
     </form>
-    {% if figure %}
-        <img src="{{ url_for(fig.png) }}" >
-    {% else %}
-        Image doesn't work
-    {% endif %}
+{% if request.method == 'POST'%}
+<img src="{{ url_for('main.fig') }}" alt="Image doesn't work">
+{% endif %}
 {% endblock body%}
