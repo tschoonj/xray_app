@@ -27,9 +27,7 @@ def invalid_input_test(client, rv):
     assert b'Invalid input' in rv.data
     print('Invalid Input Tested')
 
-def function_test(client, rv, function, *value):
-    test_input[str(function)] = 'function'
-    
+def output_test(client, rv, function, *value):
     output = soup_output(rv)
     output = float(output.replace(" ",""))
     print(output)
@@ -66,10 +64,8 @@ def calc_val(function, *value):
     function = getattr(xraylib, function)
     val = float(function(*value))
     return val
-    
-
+  
 #----------------------------------------------------------------------------                
-
 def test_nonexistent(client):
 	rv = client.get('/nonexistent')
 	#for key in rv.__dict__:
@@ -107,77 +103,57 @@ def test_about_vanilla(client):
 	vanilla_test(client, rv)
 
 #----------------------------------------------------------------------------                
+"""def function_test(client, function, **values):
+    #for function in xraylib:
+    function_input = dict(test_input, function = str(function), **values)
+    rv = client.post('/', data = function_input)
+    print(**values)
+    output_test(client, rv, function)"""
 
 def test_atomicweight(client):
-    try:
-        test_input.update({'function':'AtomicWeight', 'int_z':'5'})
-        rv = client.post('/', data=test_input)
-        function_test(client, rv, 'AtomicWeight', 5)
-        assert b'g mol<sup>-1</sup>' in rv.data
-    except ValueError:
-        print("Valid Test Failed: Value Error")
-    except TypeError:
-        print("Test Failed: Type Error")
-        
-    try:
-        test_input.update({'function':'AtomicWeight', 'int_z':'0'})
-        rv = client.post('/', data=test_input)
-        invalid_input_test(client, rv)
-    except:
-        print("Invalid Value Error")
-        
-    try:
-        test_input.update({'function':'AtomicWeight', 'int_z':'a'})
-        rv = client.post('/', data=test_input)
-        invalid_input_test(client, rv)
-    except:
-        print("Invalid Type Error")
-    #do try/except loop
-    #try funct(val, inval)
-    #except ValueError "testfailed " and TypeError
+    #function_test(client, 'AtomicWeight', test_input)
+    function_input = dict(test_input, function = 'AtomicWeight', int_z = '5')
+    rv = client.post('/', data = function_input)
+    output_test(client, rv, 'AtomicWeight', 5)
+    assert b'g mol<sup>-1</sup>' in rv.data
+     
+    function_input = dict(test_input, function = 'AtomicWeight', int_z = '0')
+    rv = client.post('/', data = function_input)
+    invalid_input_test(client, rv)
+    
+    function_input = dict(test_input, function = 'AtomicWeight', int_z = 'a')
+    rv = client.post('/', data = function_input)
+    invalid_input_test(client, rv)
 #----------------------------------------------------------------------------
 def test_elementdensity(client):
-    copy = dict(test_input, function='ElementDensity', int_z='5')
-    copy = dict(test_input, **{'function':'ElementDensity', 'int_z':'5'})
-    try:
-        test_input.update({'function':'ElementDensity', 'int_z':'5'})
-        rv = client.post('/', data=test_input)
-        function_test(client, rv, 'ElementDensity', 5)
-        assert b'g cm<sup>-3</sup>' in rv.data
-    except ValueError:
-        print("Valid Test Failed: Value Error")
-    except TypeError:
-        print("Test Failed: Type Error")
-        
-    try:
-        test_input.update({'function':'ElementDensity', 'int_z':'0'})
-        rv = client.post('/', data=test_input)
-        invalid_input_test(client, rv)
-    except ValueError:
-        print("Invalid Value Error")
-        
-    try:
-        test_input.update({'function':'ElementDensity', 'int_z':'a'})
-        rv = client.post('/', data=test_input)
-        invalid_input_test(client, rv)
-    except TypeError:
-        print("Invalid Type Error")
+    function_input = dict(test_input, function = 'ElementDensity', int_z = '5')
+    rv = client.post('/', data = function_input)
+    output_test(client, rv, 'ElementDensity', 5)
+    assert b'g cm<sup>-3</sup>' in rv.data
+
+    function_input = dict(test_input, function = 'ElementDensity', int_z = '0')
+    rv = client.post('/', data = function_input)
+    invalid_input_test(client, rv)
+
+    function_input = dict(test_input, function = 'ElementDensity', int_z = 'a')
+    rv = client.post('/', data = function_input)
+    invalid_input_test(client, rv)
 #----------------------------------------------------------------------------                        
 def test_ff_rayl(client):
-    test_input.update({'function':'FF_Rayl', 'int_z':'5', 'float_q':'0.5'})
-    rv = client.post('/', data=test_input)
-    function_test(client, rv, 'FF_Rayl', 5, 0.5)
+    function_input = dict(test_input, function = 'FF_Rayl', int_z = '5', float_q = '0.5')
+    rv = client.post('/', data = function_input)
+    output_test(client, rv, 'FF_Rayl', 5, 0.5)
 
-    test_input.update({'function':'FF_Rayl', 'int_z':'0'})
-    rv = client.post('/', data=test_input)
+    function_input = dict(test_input, function = 'FF_Rayl', int_z = '0', float_q = '0.5')
+    rv = client.post('/', data = function_input)
     invalid_input_test(client, rv)
 
-    test_input.update({'function':'FF_Rayl', 'int_z':'5', 'float_q':'a'})
-    rv = client.post('/', data=test_input)
+    function_input = dict(test_input, function = 'FF_Rayl', int_z = 'a', float_q = '0.5')
+    rv = client.post('/', data = function_input)
     invalid_input_test(client, rv)
 
-    test_input.update({'function':'FF_Rayl', 'int_z':'a', 'float_q':'0.5'})
-    rv = client.post('/', data=test_input)
+    function_input = dict(test_input, function = 'FF_Rayl', int_z = '5', float_q = 'a')
+    rv = client.post('/', data = function_input)
     invalid_input_test(client, rv)
 #----------------------------------------------------------------------------
 def test_(client):
