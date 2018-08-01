@@ -1,5 +1,25 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-{{plot}}
+    <form method="POST" action="">  
+    <fieldset class = "form-group">
+        {% for field in form %}
+            {% if field.id != 'csrf_token' %}
+                <div class = "form-group" id = "{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
+                </div>
+            {% endif %}
+        {% endfor %}    
+    <input 
+            type = "submit" 
+            value = "Submit"
+            formnovalidate>
+    </fieldset>
+    </form>
+    {% if figure %}
+        <img src="{{ url_for(fig.png) }}" >
+    {% else %}
+        Image doesn't work
+    {% endif %}
 {% endblock body%}
