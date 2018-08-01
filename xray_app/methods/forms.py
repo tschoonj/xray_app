@@ -21,7 +21,7 @@ class TransitionForm(FlaskForm):
 class Xraylib_Request(FlaskForm):
     function = SelectField(
         u'Xraylib Function', 
-        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('CS_Photo_Partial','Partial Photoionization CS'), ('CS_Total','Total CS'), ('CS_Photo','Photoionization CS'), ('CS_Rayl','Rayleigh CS'), ('CS_Compt','Compton CS'), ('CSb_Total','Total CSb'), ('CSb_Photo','Photoionization CSb'), ('CSb_Rayl','Rayleigh CSb'), ('CSb_Compt','Compton CSb'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
+        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
         validators = [DataRequired()]) 
     comp = StringField('Compound',validators = [DataRequired()])
     int_z = StringField('Element',validators = [DataRequired()])
@@ -60,28 +60,31 @@ class Xraylib_Request(FlaskForm):
         choices = [],
         validators = [DataRequired()])
     #choices(value,label)
+    code_example = SelectField(
+        u'Code Example', 
+        choices = [('c++','C/C++/Objective-C'), ('fortran','Fortran 2003/2008'), ('perl','Perl'), ('idl','IDL'), ('py','Python'), ('java','Java'), ('c#','C#/.NET'), ('lua','LUA'), ('ruby','Ruby'), ('php','PHP')],
+        validators = [DataRequired()])
       
 #------------------------------------------------------------------------------------------------------------
-
 class Request_Error():
-        comp_error = 'Invalid input: Compound'
-        int_z_error = 'Invalid input: Element'
-        int_z_or_comp_error = 'Invalid input: Element or Compound'
-        float_q_error = 'Invalid input : Momentum Transfer.'
-        linetype_error = 'Invalid input: Linetype'
-        shell_error = 'Invalid input: Shell'
-        energy_error = 'Invalid input: Energy'
-        theta_error = 'Invalid input: Theta'
-        phi_error = 'Invalid input: Phi'
-        density_error = 'Invalid input: Density'
-        pz_error = 'Invalid input: Pz'
-        cktrans_error = 'Invalid input: cktrans'
-        nistcomp_error = 'Invalid input: nistcomp'
-        augtrans_error = 'Invalid input: augtrans'
-        rad_nuc_error = 'Invalid input: rad_nuc_'    
-        error = 'Please enter valid input.'
+    comp_error = 'Invalid input: Compound'
+    int_z_error = 'Invalid input: Element'
+    int_z_or_comp_error = 'Invalid input: Element or Compound'
+    float_q_error = 'Invalid input : Momentum Transfer.'
+    linetype_error = 'Invalid input: Linetype'
+    shell_error = 'Invalid input: Shell'
+    energy_error = 'Invalid input: Energy'
+    theta_error = 'Invalid input: Theta'
+    phi_error = 'Invalid input: Phi'
+    density_error = 'Invalid input: Density'
+    pz_error = 'Invalid input: Pz'
+    cktrans_error = 'Invalid input: cktrans'
+    nistcomp_error = 'Invalid input: nistcomp'
+    augtrans_error = 'Invalid input: augtrans'
+    rad_nuc_error = 'Invalid input: rad_nuc_'    
+    error = 'Please enter valid input.'
 #then when you need error you do error = request_error.error_name
-#might be more efficient doing an % if error.xxxx %?
+
 
 class Request_Units():
         AtomicWeight_u = 'g mol<sup>-1</sup>'
@@ -92,6 +95,6 @@ class Request_Units():
         FluorYield_u = ''
         ElectronConfig_u = ''
         CS_u = 'cm<sup>2</sup> g<sup>-1</sup>'
-        CSb_u = ''
+        CSb_u = 'barnes atom<sup>-1</sup>'
         
  #<sup></sup>       

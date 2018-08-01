@@ -1,4 +1,23 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+    <form method="POST" action="">  
+    <fieldset class = "form-group">
+        {% for field in form %}
+            {% if field.id != 'csrf_token' %}
+                <div class = "form-group" id = "{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
+                </div>
+            {% endif %}
+        {% endfor %}    
+    <input 
+            type = "submit" 
+            value = "Submit"
+            formnovalidate>
+    </fieldset>
+    </form>
+{% if request.method == 'POST'%}
+<img src="{{ url_for('main.fig') }}" alt="Image doesn't work">
+{% endif %}
 {% endblock body%}
