@@ -18,6 +18,6 @@
     </fieldset>
     </form>
 {% if request.method == 'POST'%}
-<img src="{{ url_for('main.fig') }}" alt="Image doesn't work">
+<img src="data:image/png;base64,{{plot}}" alt="Image doesn't work">
 {% endif %}
 {% endblock body%}

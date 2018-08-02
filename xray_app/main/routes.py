@@ -5,6 +5,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from io import BytesIO
+import base64
 
 import xraylib
 
@@ -18,94 +19,59 @@ def about():
 
 @main.route("/plot/fig.png")
 def fig():
-
+    pass
     
-    x = []
-    y = []
-
-    def graph_data(function):   
-        function = getattr(xraylib, function)
-        for i in range(1, 20, 1):
-            x.append(i)
-            y.append(float(function(i)))
-
-    def print_data(*lsts):
-        lst = zip(*lsts)    
-        for value in lst:
-            print(value)
     
-    def make_plot(function, *labels, dpi):
-        pass
-            
-    graph_data('ElementDensity')
-    fig = Figure()
-    fig, ax = plt.subplots()
-    ax.plot(x, y, label='Fig 1')
-    ax.set(xlabel='X', ylabel='Y')
-    ax.legend()
-    
-    canvas = FigureCanvas(fig)
-    fig.savefig('fig.png', dpi=80)
-    
-    png_output = BytesIO()
-    print(png_output.getvalue())
-    print(canvas.print_png)
-    canvas.print_png(png_output)
     #return png_output.getvalue()
     #canvas.print_png(png_output.getvalue()) #THIS IS THE PROBLEM
-    response=make_response(png_output.getvalue())
-    response.headers['Content-Type'] = 'image/png'
-    return response
+    #response=make_response(png_output.getvalue())
+    #response.headers['Content-Type'] = 'image/png'
+    #return response
 
 @main.route("/plot", methods=['GET', 'POST'])
 def plot():
     form = Xraylib_Request_Plot()
     form.function.choices = form.function.choices + cs_tup
-    """import matplotlib.pyplot as plt
-    from io import BytesIO
-    
-    x = []
-    y = []
-
-    def graph_data():   
-        for i in range(1, 20, 1):
-            x.append(i)
-            y.append(xraylib.ElementDensity(i)) #change to elementdensity
-
-    def print_data(*lsts):
-        lst = zip(*lsts)    
-        for value in lst:
-            print(value)
-            
-    graph_data()
-    fig = Figure()
-    fig, ax = plt.subplots()
-    ax.plot(x, y, label='Fig 1')
-    ax.set(xlabel='X', ylabel='Y')
-    ax.legend()
-    
-    canvas = FigureCanvas(fig)
-    fig.savefig('fig.png', dpi=80)
-    
-    png_output = BytesIO()
-    print(png_output.getvalue())
-    print(canvas.print_png)
-    canvas.print_png(png_output)
-    #return png_output.getvalue()
-    #canvas.print_png(png_output.getvalue()) #THIS IS THE PROBLEM
-    response=make_response(png_output.getvalue())
-    response.headers['Content-Type'] = 'image/png'
-    return response   """   
-    
+   
     if request.method == 'POST':        
         #for key in request.form.keys():
         #print(f'key= {key}')
                 
         select_input = request.form.get('function')
-        
-                
-        return render_template('plot.html', form = form, title = 'Plot')
+
+        plot = make_plot(str(select_input), 'Element', 'Weight')
+                  
+        return render_template('plot.html', form = form, title = 'Plot', plot=plot)
                 
     return render_template('plot.html', title = 'Plot', form = form)
   
-  
+def graph_data(function):   
+    pass
+
+def print_data(*lsts):
+    lst = zip(*lsts)    
+    for value in lst:
+            print(value)
+    
+def make_plot(function, xaxis, yaxis):
+    x = []
+    y = [] 
+    xrl_function = getattr(xraylib, function)
+    for i in range(1, 20, 1):
+            x.append(i)
+            y.append(float(xrl_function(i)))
+            
+    fig = Figure()
+    canvas = FigureCanvas(fig)
+            
+    fig, ax = plt.subplots()
+    ax.plot(x, y)
+    ax.set(title = function, xlabel = xaxis, ylabel = yaxis)            
+            
+    img = BytesIO()
+    plt.savefig(img, format='png')
+    plt.close()
+    img_bytes = img.getvalue()
+    img.close()
+    img64 = str(base64.b64encode(img_bytes), encoding='utf-8')
+    return img64  
