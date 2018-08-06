@@ -9,6 +9,11 @@
                     {{field.label}}:
                     {{field}}
                 </div>
+            {% elif field.id == 'variables' %}
+                <div class = "form-group xlib" id = "{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
+                </div>          
             {% endif %}
         {% endfor %}    
     <input 
@@ -18,6 +23,9 @@
     </fieldset>
     </form>
 {% if request.method == 'POST'%}
-<img src="data:image/png;base64,{{plot}}" alt="Image doesn't work">
+    <img src="data:image/png;base64,{{plot}}" alt="Image doesn't work">
+    {% if table %}
+        {{table}}
+    {% endif %}
 {% endif %}
 {% endblock body%}
