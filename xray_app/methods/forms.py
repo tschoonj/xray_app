@@ -85,16 +85,23 @@ class Request_Error():
     error = 'Please enter valid input.'
 #then when you need error you do error = request_error.error_name
 
-
+"""class Code_Examples():
+    def __init__(self, language, function):
+        self.language = language
+        self.function = function
+    def example:
+        example = 
+"""        
+        
 class Request_Units():
-        AtomicWeight_u = 'g mol<sup>-1</sup>'
-        ElementDensity_u = 'g cm<sup>-3</sup>'
-        LineEnergy_u = 'keV'
-        EdgeEnergy_u = 'keV'
-        RadRate_u = ''
-        FluorYield_u = ''
-        ElectronConfig_u = ''
-        CS_u = 'cm<sup>2</sup> g<sup>-1</sup>'
-        CSb_u = 'barnes atom<sup>-1</sup>'
+    AtomicWeight_u = 'g mol<sup>-1</sup>'
+    ElementDensity_u = 'g cm<sup>-3</sup>'
+    LineEnergy_u = 'keV'
+    EdgeEnergy_u = 'keV'
+    RadRate_u = ''
+    FluorYield_u = ''
+    ElectronConfig_u = ''
+    CS_u = 'cm<sup>2</sup> g<sup>-1</sup>'
+    CSb_u = 'barnes atom<sup>-1</sup>'
         
  #<sup></sup>       

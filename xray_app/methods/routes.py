@@ -40,7 +40,9 @@ def validate_int_or_str(s):
             return False
             
 #def validate_NIST(s) etc
-
+#------------------------------------------------------------------------------------------------------------
+def code_example(function):
+    
 #------------------------------------------------------------------------------------------------------------
 nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
@@ -115,13 +117,12 @@ def index():
             if select_input == 'AtomicWeight':
                 if validate_int(int_z) == True and 0<int(int_z)<=118:                
                     print(f'int_z: {int_z}')
-                    weight = xraylib.AtomicWeight(int(int_z))
+                    weight = xraylib.AtomicWeight(int(int_z)) 
                     return render_template(
                         'index.html', 
                         form = form,
                         output = weight,
-                        units = Request_Units.AtomicWeight_u,
-                        code_example = code_example
+                        units = Request_Units.AtomicWeight_u
                         )
                 #accomodate symbol
                 else:
@@ -234,6 +235,7 @@ def index():
                 
             elif select_input == 'CS_Total':
                 print(f'int_z_or_comp: {int_z_or_comp}' + f'energy: {energy}')
+                #need to add in CSb
                 if validate_int_or_str(int_z_or_comp) == True and validate_float(energy):
                     #NOTE comp input is case sensitive
                     try:
