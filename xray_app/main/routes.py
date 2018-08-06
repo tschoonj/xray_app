@@ -5,10 +5,19 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from io import BytesIO
+import base64
 
 import xraylib
 
-from xray_app.methods.routes import cs_tup
+from xray_app.methods.routes import cs_dict, make_tup, validate_int
+
+def delete_keys(key, _dict):
+    if key in _dict:
+        del _dict[key]
+        
+delete_keys('CS_KN', cs_dict)
+cs_tup = make_tup(cs_dict)
+#need to remove uncessary functions from cs tup e.g. CN_KN
 
 main = Blueprint('main', __name__)
 
@@ -16,96 +25,78 @@ main = Blueprint('main', __name__)
 def about():
     return render_template('about.html', title = 'About ')
 
-@main.route("/plot/fig.png")
-def fig():
-
-    
-    x = []
-    y = []
-
-    def graph_data(function):   
-        function = getattr(xraylib, function)
-        for i in range(1, 20, 1):
-            x.append(i)
-            y.append(float(function(i)))
-
-    def print_data(*lsts):
-        lst = zip(*lsts)    
-        for value in lst:
-            print(value)
-    
-    def make_plot(function, *labels, dpi):
-        pass
-            
-    graph_data('ElementDensity')
-    fig = Figure()
-    fig, ax = plt.subplots()
-    ax.plot(x, y, label='Fig 1')
-    ax.set(xlabel='X', ylabel='Y')
-    ax.legend()
-    
-    canvas = FigureCanvas(fig)
-    fig.savefig('fig.png', dpi=80)
-    
-    png_output = BytesIO()
-    print(png_output.getvalue())
-    print(canvas.print_png)
-    canvas.print_png(png_output)
-    #return png_output.getvalue()
-    #canvas.print_png(png_output.getvalue()) #THIS IS THE PROBLEM
-    response=make_response(png_output.getvalue())
-    response.headers['Content-Type'] = 'image/png'
-    return response
-
 @main.route("/plot", methods=['GET', 'POST'])
 def plot():
     form = Xraylib_Request_Plot()
     form.function.choices = form.function.choices + cs_tup
-    """import matplotlib.pyplot as plt
-    from io import BytesIO
-    
-    x = []
-    y = []
-
-    def graph_data():   
-        for i in range(1, 20, 1):
-            x.append(i)
-            y.append(xraylib.ElementDensity(i)) #change to elementdensity
-
-    def print_data(*lsts):
-        lst = zip(*lsts)    
-        for value in lst:
-            print(value)
-            
-    graph_data()
-    fig = Figure()
-    fig, ax = plt.subplots()
-    ax.plot(x, y, label='Fig 1')
-    ax.set(xlabel='X', ylabel='Y')
-    ax.legend()
-    
-    canvas = FigureCanvas(fig)
-    fig.savefig('fig.png', dpi=80)
-    
-    png_output = BytesIO()
-    print(png_output.getvalue())
-    print(canvas.print_png)
-    canvas.print_png(png_output)
-    #return png_output.getvalue()
-    #canvas.print_png(png_output.getvalue()) #THIS IS THE PROBLEM
-    response=make_response(png_output.getvalue())
-    response.headers['Content-Type'] = 'image/png'
-    return response   """   
+    #not all of these are needed delete as necessary
     
     if request.method == 'POST':        
         #for key in request.form.keys():
         #print(f'key= {key}')
                 
         select_input = request.form.get('function')
+        range_start = request.form['range_start']
+        range_end = request.form['range_end']
+        
+        #int_z = request.form['variable-int_z']
+        #float_q = request.form['variable-float_q']
+        #comp = request.form['variable-comp']
+        int_z_or_comp = request.form['variable-int_z_or_comp']
+        energy = request.form['variable-energy']
+        #theta = request.form['variable-theta']
+        #phi = request.form['variable-phi']
+        #density = request.form['variable-density']
+        #pz = request.form['variable-pz']
+        
+        if select_input.startswith('CS'):
+            #need validation of requests
+            plot = make_plot(select_input, 'Energy ($keV$)', r'Cross Section ($cm^{2} g^{-1}$)', range_start, range_end, int_z_or_comp)
+            return render_template('plot.html', form = form, title = 'Plot', plot=plot)
+        
+        elif select_input.startswith('DCS'):
+            plot = make_plot(select_input, 'Scattering Angle', 'Differential Cross Section', range_start, range_end)
+            pass
+             
+        return render_template('plot.html', form = form, title = 'Plot', plot=plot)
+        
         
                 
-        return render_template('plot.html', form = form, title = 'Plot')
-                
     return render_template('plot.html', title = 'Plot', form = form)
-  
-  
+
+def print_data(*lsts):
+    lst = zip(*lsts)    
+    for value in lst:
+            print(value)
+    
+def make_plot(function, xaxis, yaxis, range_start, range_end, variable):
+    x = []
+    y = [] 
+    xrl_function = getattr(xraylib, function)
+    if validate_int(variable) == True:
+        for i in range(int(range_start), int(range_end), 1):
+            x.append(i)
+            y.append(float(xrl_function(int(variable), i)))
+    else:
+        for i in range(int(range_start), int(range_end), 1):
+            xrl_function = getattr(xraylib, function + '_CP')
+            x.append(i)
+            y.append(float(xrl_function(str(variable), i)))     
+    #print_data(x, y)
+    
+    fig = Figure()
+    canvas = FigureCanvas(fig)
+            
+    fig, ax = plt.subplots()
+    ax.plot(x, y)
+    ax.set(title = function + ': ' + variable, xlabel = 'log[ ' + xaxis + ' ]', ylabel = 'log[ ' + yaxis + ' ]')            
+    plt.yscale('log')
+    plt.xscale('log')
+            
+    img = BytesIO()
+    plt.savefig(img, format='png')
+    plt.close()
+    img_bytes = img.getvalue()
+    img.close()
+    img64 = str(base64.b64encode(img_bytes), encoding='utf-8')
+    return img64  
