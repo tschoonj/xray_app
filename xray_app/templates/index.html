@@ -67,13 +67,11 @@
 {% else %} 
 <h2> Result: </h2>
     <div id = "output">
+        {% if units %}  
+        {{ output }}{{units|safe}}
+        {% else %}
         {{ output }}
-    </div>
-{% endif %}
-
-{% if units %}
-    <div id = "units">    
-        {{units|safe}}
+        {% endif %}
     </div>
 {% endif %}
 

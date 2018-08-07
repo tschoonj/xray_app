@@ -207,7 +207,7 @@ def index():
                         form = form,  
                         error = Request_Error.int_z_error
                         )
-                        
+
             elif select_input == 'FF_Rayl':
                 if validate_int(int_z) == True and validate_float(float_q) == True and 0<int(int_z)<=118:
                     print(f'int_z: {int_z}' + f'float_q: {float_q}')
@@ -342,7 +342,7 @@ def index():
                     return render_template(
                         'index.html', 
                         form = form,  
-                        error = Request_Error.int_z_error
+                        error = Request_Error.error
                         )
                         
             elif select_input == 'EdgeEnergy':
@@ -361,24 +361,92 @@ def index():
                         form = form,  
                         error = Request_Error.int_z_error
                         )
-                       
-            elif select_input == 'GetRadioNuclideDataByName':
-                print (f'rad_nuc_name: {rad_nuc_name}')
-                output = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))
-                return render_template(
-                    'index.html',
-                    form = form,
-                    output = output
-                    )
-                
-            elif select_input == 'GetCompoundDataNISTByName':
-                print (f'nistcomp: {nistcomp}')
-                output = xraylib.GetCompoundDataNISTByName(str(nistcomp))
-                return render_template(
-                    'index.html',
-                    form = form, 
-                    output = output
-                    )
+                        
+            elif select_input == 'FluorYield':
+                if validate_int(int_z) == True:
+                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                    shell = getattr(xraylib, shell)
+                    output = xraylib.FluorYield(int(int_z), shell)
+                    return render_template(
+                        'index.html', 
+                        form = form,
+                        output = output
+                        )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_error
+                        )
+                        
+            elif select_input == 'AugerYield':
+                if validate_int(int_z) == True:
+                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                    shell = getattr(xraylib, shell)
+                    output = xraylib.AugerYield(int(int_z), shell)
+                    return render_template(
+                        'index.html', 
+                        form = form,
+                        output = output
+                        )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_error
+                        )   
+            
+            elif select_input == 'JumpFactor':
+                if validate_int(int_z) == True:
+                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                    shell = getattr(xraylib, shell)
+                    output = xraylib.JumpFactor(int(int_z), shell)
+                    return render_template(
+                        'index.html', 
+                        form = form,
+                        output = output
+                        )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_error
+                        )
+                        
+            elif select_input == 'AtomicLevelWidth':
+                if validate_int(int_z) == True:
+                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                    shell = getattr(xraylib, shell)
+                    output = xraylib.AtomicLevelWidth(int(int_z), shell)
+                    return render_template(
+                        'index.html', 
+                        form = form,
+                        output = output
+                        )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_error
+                        ) 
+                             
+            elif select_input == 'ElectronConfig':
+                if validate_int(int_z) == True:
+                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                    shell = getattr(xraylib, shell)
+                    output = xraylib.ElectronConfig(int(int_z), shell)
+                    return render_template(
+                        'index.html', 
+                        form = form,
+                        output = output,
+                        units = Request_Units.ElectronConfig_u 
+                        )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_error
+                        )
                 
             elif select_input == 'CS_Total':
                 print(f'int_z_or_comp: {int_z_or_comp}' + f'energy: {energy}')
@@ -484,6 +552,24 @@ def index():
                             'index.html', 
                             form = form,
                             error=error
-                            )           
+                            )
+                              
+            elif select_input == 'GetRadioNuclideDataByName':
+                print (f'rad_nuc_name: {rad_nuc_name}')
+                output = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))
+                return render_template(
+                    'index.html',
+                    form = form,
+                    output = output
+                    )
+                
+            elif select_input == 'GetCompoundDataNISTByName':
+                print (f'nistcomp: {nistcomp}')
+                output = xraylib.GetCompoundDataNISTByName(str(nistcomp))
+                return render_template(
+                    'index.html',
+                    form = form, 
+                    output = output
+                    )         
         return render_template('index.html', form=form) 
 

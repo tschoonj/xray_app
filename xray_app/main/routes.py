@@ -53,15 +53,9 @@ def plot():
             #need validation of requests
             plot = make_plot(select_input, 'Energy ($keV$)', r'Cross Section ($cm^{2} g^{-1}$)', range_start, range_end, int_z_or_comp)
             return render_template('plot.html', form = form, title = 'Plot', plot=plot)
-        
-        elif select_input.startswith('DCS'):
-            plot = make_plot(select_input, 'Scattering Angle', 'Differential Cross Section', range_start, range_end)
-            pass
              
         return render_template('plot.html', form = form, title = 'Plot', plot=plot)
-        
-        
-                
+           
     return render_template('plot.html', title = 'Plot', form = form)
 
 def print_data(*lsts):
@@ -69,7 +63,7 @@ def print_data(*lsts):
     for value in lst:
             print(value)
     
-def make_plot(function, xaxis, yaxis, range_start, range_end, variable):
+def make_plot(function, xlabel, ylabel, range_start, range_end, variable):
     x = []
     y = [] 
     xrl_function = getattr(xraylib, function)
@@ -89,7 +83,9 @@ def make_plot(function, xaxis, yaxis, range_start, range_end, variable):
             
     fig, ax = plt.subplots()
     ax.plot(x, y)
-    ax.set(title = function + ': ' + variable, xlabel = 'log[ ' + xaxis + ' ]', ylabel = 'log[ ' + yaxis + ' ]')            
+    ax.set(title = function + ': ' + variable, xlabel = 'log[ ' + xlabel + ' ]', ylabel = 'log[ ' + ylabel + ' ]')            
+    
+    #toggle with boolean?
     plt.yscale('log')
     plt.xscale('log')
             

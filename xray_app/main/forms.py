@@ -6,7 +6,7 @@ from xray_app.methods.forms import TransitionForm
 class VariableForm(FlaskForm):
     #comp = StringField('Compound',validators = [DataRequired()])
     #int_z = StringField('Element',validators = [DataRequired()])
-    int_z_or_comp = StringField('Element or Compound',validators = [DataRequired()]) #needs to accomodate both str and int - try/except loop!
+    int_z_or_comp = StringField('Element or Compound',validators = [DataRequired()])
     #float_q = StringField('Momentum Transfer',validators = [DataRequired()])
     energy = StringField('Energy', validators = [DataRequired()])
     #theta = StringField(u'Theta &#952', validators = [DataRequired()])
@@ -44,15 +44,3 @@ class Xraylib_Request_Plot(FlaskForm):
         validators = [DataRequired()]
         )
     variable = FormField(VariableForm)
-
-class Units():
-    pass
-
-class Labels():
-    pass
-    
-class XLabels(Labels):
-    pass
-    
-class YLabels(Labels):
-    pass

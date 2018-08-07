@@ -29,7 +29,6 @@ def invalid_input_test(client, rv):
 
 def output_test(client, rv, function, *value):
     output = soup_output(rv)
-    output = float(output.replace(" ",""))
     print(output)
     val = calc_val(function, *value)   
     assert 200 == rv.status_code
@@ -58,6 +57,7 @@ test_input = {
 def soup_output(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
     output = soup.find('div', id='output').string
+    output = float(output.replace(" ",""))
     return output 
 
 def calc_val(function, *value):
@@ -114,6 +114,8 @@ def test_atomicweight(client):
     #function_test(client, 'AtomicWeight', test_input)
     function_input = dict(test_input, function = 'AtomicWeight', int_z = '5')
     rv = client.post('/', data = function_input)
+    output = soup_output(rv)
+    print(output)
     output_test(client, rv, 'AtomicWeight', 5)
     assert b'g mol<sup>-1</sup>' in rv.data
      
