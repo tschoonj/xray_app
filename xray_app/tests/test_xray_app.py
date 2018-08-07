@@ -29,7 +29,6 @@ def invalid_input_test(client, rv):
 
 def output_test(client, rv, function, *value):
     output = soup_output(rv)
-    output = float(output.replace(" ",""))
     print(output)
     val = calc_val(function, *value)   
     assert 200 == rv.status_code
@@ -57,7 +56,8 @@ test_input = {
 
 def soup_output(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
-    output = soup.find('div', id='output').string
+    output = soup.find('div', id="output").string
+    output = float(output.replace(" ",""))
     return output 
 
 def calc_val(function, *value):
@@ -139,7 +139,7 @@ def test_elementdensity(client):
     rv = client.post('/', data = function_input)
     invalid_input_test(client, rv)
 #----------------------------------------------------------------------------                        
-def test_ff_rayl(client):
+"""def test_ff_rayl(client):
     function_input = dict(test_input, function = 'FF_Rayl', int_z = '5', float_q = '0.5')
     rv = client.post('/', data = function_input)
     output_test(client, rv, 'FF_Rayl', 5, 0.5)
@@ -154,7 +154,7 @@ def test_ff_rayl(client):
 
     function_input = dict(test_input, function = 'FF_Rayl', int_z = '5', float_q = 'a')
     rv = client.post('/', data = function_input)
-    invalid_input_test(client, rv)
+    invalid_input_test(client, rv)"""
 #----------------------------------------------------------------------------
 def test_(client):
     pass

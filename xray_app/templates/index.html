@@ -26,6 +26,11 @@
                     {{field.label}}:
                     {{field}}
                 </div>
+            {% elif field.id == 'examples' %}
+                <div class = "form-group hidden" id = "{{field.id}}" onchange="">
+                    {{field.label}}:
+                    {{field}}
+                </div>
             {% elif field.type == 'SelectField' %}
                 <div class = "form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
@@ -64,11 +69,10 @@
     <div id = "output">
         {{ output }}
     </div>
-{% endif %}
-
-{% if units %}
-    <div id = "units">    
-        {{units|safe}}
+    <div id = "units">
+    {% if units %}
+        {{units|safe}}  
+    {% endif %}
     </div>
 {% endif %}
 
@@ -76,7 +80,9 @@
            {{error}}
 {% endif %} 
 
-{% if codeexample %}
+<h3> Code Example: </h3>
+{% if examples %}
+{{examples}}
 {% endif %}
 
 <script

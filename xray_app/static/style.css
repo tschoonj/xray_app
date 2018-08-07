@@ -1,4 +1,4 @@
-.xlib {
+.xlib, .example {
     display: none;
 }
 
@@ -6,7 +6,7 @@
     display:block
 }
 
-div#output, div#units {
+div#output, div#units, div.variable {
     display :inline-block
 }
 /*hide all inputs as you addd them*/
