@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, url_for
-#from xray_app import app - remove me?
 from xray_app.methods.forms import Xraylib_Request, Request_Error,  Request_Units
 import xraylib
 
@@ -7,37 +6,41 @@ methods = Blueprint('methods', __name__)
 
 #eventually move to own package e.g. xray_app.methods.validators, then import
 #ditto for the dicts
-def validate_int(s):
-        try: 
-                int(s)
+def validate_int(*s):
+        for i in s:
+            try: 
+                int(i)
                 return True
-        except ValueError:
+            except ValueError:
                 return False
         
-def validate_float(s):
-        try: 
-                float(s)
+def validate_float(*s):
+        for i in s:
+            try: 
+                float(i)
                 return True
-        except ValueError:
+            except ValueError:
                 return False
                 
-def validate_str(s):
-        try:
-            str(s)
-            return True
-        except ValueError:
-            return False
+def validate_str(*s):
+        for i in s:
+            try: 
+                str(i)
+                return True
+            except ValueError:
+                return False
             
-def validate_int_or_str(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
+def validate_int_or_str(*s):
+    for i in s:
         try:
-            str(s)
+            int(i)
             return True
         except ValueError:
-            return False
+            try:
+                str(i)
+                return True
+            except ValueError:
+                return False
             
 #def validate_NIST(s) etc
 #------------------------------------------------------------------------------------------------------------
@@ -62,7 +65,7 @@ ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
 aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')}
 cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS_') and not k.endswith('CP')} 
-dcs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('DCS_') or k.startswith('DCSP_')}
+dcs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('DCS_')and not k.endswith('CP') or k.startswith('DCSP_') and not k.endswith('CP')}
       
 def make_tup(_dict):
     tup = [(k, k) for k, v in _dict.items()]
@@ -451,7 +454,7 @@ def index():
             elif select_input == 'CS_Total':
                 print(f'int_z_or_comp: {int_z_or_comp}' + f'energy: {energy}')
                 #need to add in CSb
-                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy):
+                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy) == True:
                     #NOTE comp input is case sensitive
                     try:
                         output = xraylib.CS_Total(int(int_z_or_comp), float(energy))
@@ -482,7 +485,7 @@ def index():
                         
             elif select_input == 'CS_Photo':
                 print(f'int_z_or_comp: {int_z_or_comp}' + f'energy: {energy}')
-                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy):
+                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy) == True:
                     #NOTE comp input is case sensitive
                     try:
                         output = xraylib.CS_Photo(int(int_z_or_comp), float(energy))
@@ -513,7 +516,7 @@ def index():
                               
             elif select_input == 'CS_Rayl':
                 print(f'int_z_or_comp: {int_z_or_comp}' + f'energy: {energy}')
-                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy):
+                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy) == True:
                     #NOTE comp input is case sensitive
                     try:
                         output = xraylib.CS_Rayl(int(int_z_or_comp), float(energy))
@@ -544,7 +547,7 @@ def index():
             
             elif select_input == 'CS_Compt':
                 print(f'int_z_or_comp: {int_z_or_comp}' + f'energy: {energy}')
-                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy):
+                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy) == True:
                     #NOTE comp input is case sensitive
                     try:
                         output = xraylib.CS_Compt(int(int_z_or_comp), float(energy))
@@ -572,7 +575,33 @@ def index():
                         form = form,  
                         error = Request_Error.energy_error
                         )
-                                     
+            
+            elif select_input == 'CS_FluorLine':
+                if validate_int(int_z) == True and validate_float(energy) == True:
+                    if linetype_trans_notation == 'IUPAC':
+                        print(f'int_z: {int_z}' + ' ' + f'linetype_trans_notation: {linetype_trans_notation}' + ' ' + f'linetype_trans_iupac: {linetype_trans_iupac}')
+                        trans = getattr(xraylib, linetype_trans_iupac)
+                        output = xraylib.CS_FluorLine(int(int_z), trans, float(energy))
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            ) 
+                    elif linetype_trans_notation == 'Siegbahn':
+                        trans = getattr(xraylib, linetype_trans_siegbahn)
+                        output  = xraylib.CS_FluorLine(int(int_z), trans, float(energy))
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            )
+                    else:
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            error=error
+                            )                         
+            
             elif select_input == 'CS_FluorLine_Kissel_Cascade':
                 if validate_int(int_z) == True and validate_float(energy) == True:
                     if linetype_trans_notation == 'IUPAC':
@@ -623,8 +652,60 @@ def index():
                             'index.html', 
                             form = form,
                             error=error
+                            )
+                             
+            elif select_input == 'CS_FluorLine_Kissel_Nonradiative_Cascade':
+                if validate_int(int_z) == True and validate_float(energy) == True:
+                    if linetype_trans_notation == 'IUPAC':
+                        print(f'int_z: {int_z}' + ' ' + f'linetype_trans_notation: {linetype_trans_notation}' + ' ' + f'linetype_trans_iupac: {linetype_trans_iupac}')
+                        trans = getattr(xraylib, linetype_trans_iupac)
+                        output = xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(int(int_z), trans, float(energy))
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
                             ) 
-                                               
+                    elif linetype_trans_notation == 'Siegbahn':
+                        trans = getattr(xraylib, linetype_trans_siegbahn)
+                        output  = xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(int(int_z), trans, float(energy))
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            )
+                    else:
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            error=error
+                            )   
+                            
+            elif select_input == 'CS_FluorLine_Kissel_no_Cascade':
+                if validate_int(int_z) == True and validate_float(energy) == True:
+                    if linetype_trans_notation == 'IUPAC':
+                        print(f'int_z: {int_z}' + ' ' + f'linetype_trans_notation: {linetype_trans_notation}' + ' ' + f'linetype_trans_iupac: {linetype_trans_iupac}')
+                        trans = getattr(xraylib, linetype_trans_iupac)
+                        output = xraylib.CS_FluorLine_Kissel_no_Cascade(int(int_z), trans, float(energy))
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            ) 
+                    elif linetype_trans_notation == 'Siegbahn':
+                        trans = getattr(xraylib, linetype_trans_siegbahn)
+                        output  = xraylib.CS_FluorLine_Kissel_no_Cascade(int(int_z), trans, float(energy))
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            )
+                    else:
+                        return render_template(
+                            'index.html', 
+                            form = form,
+                            error=error
+                            ) 
+                                                                           
             elif select_input == 'CS_Photo_Partial':                     
                 if validate_int(int_z) == True and validate_float(energy) == True:
                     shell = getattr(xraylib, shell)
@@ -664,6 +745,197 @@ def index():
                             error=error
                             )   
             
+            elif select_input == 'DCS_Thoms':
+                if validate_float(theta) == True:
+                    output = xraylib.DCS_Thoms(float(theta))
+                    return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            )
+                else:
+                   return render_template(
+                            'index.html', 
+                            form = form,
+                            error=error
+                            )
+                            
+            elif select_input == 'DCS_KN':
+                if validate_float(energy, theta) == True:
+                    output = xraylib.DCS_KN(float(energy), float(theta))
+                    return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            )
+                else:
+                   return render_template(
+                            'index.html', 
+                            form = form,
+                            error=error
+                            )
+                            
+            elif select_input == 'ComptonEnergy':
+                if validate_float(energy, theta) == True:
+                    output = xraylib.ComptonEnergy(float(energy), float(theta))
+                    return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            )
+                else:
+                   return render_template(
+                            'index.html', 
+                            form = form,
+                            error=error
+                            ) 
+            
+            elif select_input == 'DCS_Rayl':
+                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy, theta) == True:
+                    try:
+                        output = xraylib.DCS_Rayl(int(int_z_or_comp), float(energy), float(theta))
+                        return render_template(
+                            'index.html',
+                            form = form, 
+                            output = output
+                            )
+                    except ValueError:
+                        output = xraylib.DCS_Rayl_CP(str(int_z_or_comp), float(energy), float(theta))
+                        return render_template(
+                            'index.html',
+                            form = form, 
+                            output = output
+                            )
+                elif validate_int_or_str(int_z_or_comp) == False:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_or_comp_error
+                        )
+                else:
+                     return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.energy_error
+                        )
+                            
+            elif select_input == 'DCS_Compt':
+                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy, theta) == True:
+                    try:
+                        output = xraylib.DCS_Compt(int(int_z_or_comp), float(energy), float(theta))
+                        return render_template(
+                            'index.html',
+                            form = form, 
+                            output = output
+                            )
+                    except ValueError:
+                        output = xraylib.DCS_Compt_CP(str(int_z_or_comp), float(energy), float(theta))
+                        return render_template(
+                            'index.html',
+                            form = form, 
+                            output = output
+                            )
+                elif validate_int_or_str(int_z_or_comp) == False:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_or_comp_error
+                        )
+                else:
+                     return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.energy_error
+                        )
+            
+            elif select_input == 'DCSP_Thoms':
+                if validate_float(theta, phi) == True:
+                    output = xraylib.DCSP_Thoms(float(theta), float(phi))
+                    return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            )
+                else:
+                   return render_template(
+                            'index.html', 
+                            form = form,
+                            error=error
+                            )
+                            
+            elif select_input == 'DCSP_KN':
+                if validate_float(energy, theta, phi) == True:
+                    output = xraylib.DCSP_KN(float(energy), float(theta), float(phi))
+                    return render_template(
+                            'index.html', 
+                            form = form,
+                            output = output
+                            )
+                else:
+                   return render_template(
+                            'index.html', 
+                            form = form,
+                            error=error
+                            ) 
+                                           
+            elif select_input == 'DCSP_Rayl':
+                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy, theta, phi) == True:
+                    try:
+                        output = xraylib.DCSP_Rayl(int(int_z_or_comp), float(energy), float(theta), float(phi))
+                        return render_template(
+                            'index.html',
+                            form = form, 
+                            output = output
+                            )
+                    except ValueError:
+                        output = xraylib.DCSP_Rayl_CP(str(int_z_or_comp), float(energy), float(theta), float(phi))
+                        return render_template(
+                            'index.html',
+                            form = form, 
+                            output = output
+                            )
+                elif validate_int_or_str(int_z_or_comp) == False:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_or_comp_error
+                        )
+                else:
+                     return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.energy_error
+                        )
+            
+            elif select_input == 'DCSP_Compt':
+                if validate_int_or_str(int_z_or_comp) == True and validate_float(energy, theta, phi) == True:
+                    try:
+                        output = xraylib.DCSP_Compt(int(int_z_or_comp), float(energy), float(theta), float(phi))
+                        return render_template(
+                            'index.html',
+                            form = form, 
+                            output = output
+                            )
+                    except ValueError:
+                        output = xraylib.DCSP_Compt_CP(str(int_z_or_comp), float(energy), float(theta), float(phi))
+                        return render_template(
+                            'index.html',
+                            form = form, 
+                            output = output
+                            )
+                elif validate_int_or_str(int_z_or_comp) == False:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.int_z_or_comp_error
+                        )
+                else:
+                     return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.energy_error
+                        )
+                        
             elif select_input == '':
                 if validate_int(int_z) == True:
                     pass
@@ -673,7 +945,7 @@ def index():
                             form = form,
                             error=error
                             )
-                              
+                                              
             elif select_input == 'GetRadioNuclideDataByName':
                 print (f'rad_nuc_name: {rad_nuc_name}')
                 output = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))

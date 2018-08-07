@@ -21,7 +21,7 @@ class TransitionForm(FlaskForm):
 class Xraylib_Request(FlaskForm):
     function = SelectField(
         u'Xraylib Function', 
-        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('SF_Compt', 'Incoherent Scattering Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Factor'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
+        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('SF_Compt', 'Incoherent Scattering Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Factor'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('ComptonEnergy', 'Energy after Compton scattering'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
         validators = [DataRequired()]) 
     comp = StringField('Compound',validators = [DataRequired()])
     int_z = StringField('Element',validators = [DataRequired()])
@@ -96,12 +96,10 @@ class Request_Error():
 class Request_Units():
     AtomicWeight_u = ' g mol<sup>-1</sup>'
     ElementDensity_u = ' g cm<sup>-3</sup>'
-    LineEnergy_u = ' keV'
-    EdgeEnergy_u = ' keV'
-    RadRate_u = ' '
-    FluorYield_u = ' '
+    Energy_u = ' keV'
     ElectronConfig_u = ' electrons'
     CS_u = ' cm<sup>2</sup> g<sup>-1</sup>'
     CSb_u = ' barnes atom<sup>-1</sup>'
+    DCS_u = ' cm<sup>2</sup> g<sup>-1</sup> sr<sup>-1</sup>'
         
  #<sup></sup>       
