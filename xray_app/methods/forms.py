@@ -21,7 +21,7 @@ class TransitionForm(FlaskForm):
 class Xraylib_Request(FlaskForm):
     function = SelectField(
         u'Xraylib Function', 
-        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
+        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('SF_Compt', 'Incoherent Scattering Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Ratio'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
         validators = [DataRequired()]) 
     comp = StringField('Compound',validators = [DataRequired()])
     int_z = StringField('Element',validators = [DataRequired()])
@@ -60,7 +60,7 @@ class Xraylib_Request(FlaskForm):
         choices = [],
         validators = [DataRequired()])
     #choices(value,label)
-    code_example = SelectField(
+    examples = SelectField(
         u'Code Example', 
         choices = [('c++','C/C++/Objective-C'), ('fortran','Fortran 2003/2008'), ('perl','Perl'), ('idl','IDL'), ('py','Python'), ('java','Java'), ('c#','C#/.NET'), ('lua','LUA'), ('ruby','Ruby'), ('php','PHP')],
         validators = [DataRequired()])
