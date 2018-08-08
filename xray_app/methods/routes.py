@@ -44,11 +44,10 @@ def validate_int_or_str(*s):
             
 #def validate_NIST(s) etc
 #------------------------------------------------------------------------------------------------------------
-def code_example(tple, function, *variable):
+def code_example(tple, function, *variables):
     languages = [x[0] for x in tple]
     labels = [x[1] for x in tple]
-    print(languages)
-    print(labels)
+    examples = []
     for label in labels:
         if label == 'C/C++/Objective-C':
             support = '#include <xraylib.h>'
@@ -71,10 +70,43 @@ def code_example(tple, function, *variable):
         elif label == 'PHP':
             support = 'include("xraylib.php");'
         string = 'Enable support for xraylib in ' + str(label) + ' using: ' + str(support)
-        print(string)              
+        examples.append(string)
     for language in languages:
-        pass
-        
+        #need to add "str" and Symbol2Num cases
+        if language == 'c++':
+            _input = ', '.join(variables)
+            example = str(function) + '(' + _input + ')'
+        elif language == 'fortran':
+            _input = ', '.join(variables)
+            example = str(function).lower() + '(' + _input + ')'
+        elif language == 'perl':
+            _input = ', '.join(variables)
+            example = 'xraylib::' + str(function) + '(' + _input + ')'
+        elif language == 'idl':
+            _input = ', '.join(variables)
+            example = str(function).capitalize() + '(' + _input + ')'
+        elif language == 'py':
+            _input = ', '.join(variables)
+            example = 'xraylib.' + str(function) + '(' + _input + ')'
+        elif language == 'java':
+            _input = ', '.join(variables)
+            example = 'Xraylib.' + str(function) + '(' + _input + ')'
+        elif language == 'c#':
+            _input = ', '.join(variables)
+            example = 'Xraylib.' + str(function) + '(' + _input + ')'
+        elif language == 'lua':
+            _input = ', '.join(variables)
+            example = 'xraylib.' + str(function) + '(' + _input + ')'
+        elif language == 'ruby':
+            _input = ', '.join(variables)
+            example = 'Xraylib.' + str(function) + '(' + _input + ')'
+        elif language == 'php': 
+            _input = ', '.join(variables)
+            example = str(function) + '(' + _input + ')'
+        examples.append(example)
+    examples = '<br>'.join(examples)  
+    return examples
+       
 def calc_output(function, *value):
     function = getattr(xraylib, function)
     output = float(function(*value))
@@ -156,15 +188,18 @@ def index():
             if select_input == 'AtomicWeight':
                 if validate_int(int_z) == True and 0<int(int_z)<=118:
                     print(f'int_z: {int_z}')
-                    code_example(form.examples.choices, 'AtomicWeight')
+                    examples = code_example(form.examples.choices, 'AtomicWeight', int_z)
+                    print(examples)
                     output = calc_output('AtomicWeight', int(int_z))
                     return render_template(
                         'index.html', 
                         form = form,
                         output = output,
-                        units = Request_Units.AtomicWeight_u
+                        units = Request_Units.AtomicWeight_u,
+                        examples = examples
                         )                
                 elif xraylib.SymbolToAtomicNumber(int_z) != 0:
+                    #code_example(form.examples.choices, 'AtomicWeight', int_z)
                     output = calc_output('AtomicWeight', int(xraylib.SymbolToAtomicNumber(int_z)))
                     return render_template(
                             'index.html', 
@@ -207,6 +242,7 @@ def index():
             elif select_input == 'FF_Rayl':
                 if validate_int(int_z) == True and validate_float(float_q) == True and 0<int(int_z)<=118:
                     print(f'int_z: {int_z}' + f'float_q: {float_q}')
+                    code_example(form.examples.choices, 'FF_Rayl', int_z, float_q)
                     output = xraylib.FF_Rayl(int(int_z), float(float_q))
                     return render_template(
                         'index.html', 
