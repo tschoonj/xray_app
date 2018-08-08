@@ -86,8 +86,8 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, variable):
     ax.set(title = function + ': ' + variable, xlabel = 'log[ ' + xlabel + ' ]', ylabel = 'log[ ' + ylabel + ' ]')            
     
     #toggle with boolean?
-    plt.yscale('log')
-    plt.xscale('log')
+    #plt.yscale('log')
+    #plt.xscale('log')
             
     img = BytesIO()
     plt.savefig(img, format='png')

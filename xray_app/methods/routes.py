@@ -44,12 +44,34 @@ def validate_int_or_str(*s):
             
 #def validate_NIST(s) etc
 #------------------------------------------------------------------------------------------------------------
-def code_example(tple, function):
+def code_example(tple, function, *variable):
     languages = [x[0] for x in tple]
-    language_labels = [x[1] for x in tple]
+    labels = [x[1] for x in tple]
     print(languages)
-    for label in language_labels:
-        support = 'Enable support for xraylib in' + str(label) + 'using: '
+    print(labels)
+    for label in labels:
+        if label == 'C/C++/Objective-C':
+            support = '#include <xraylib.h>'
+        elif label == 'Fortran 2003/2008':
+            support = 'use :: xraylib'
+        elif label == 'Perl':
+            support = 'use xraylib.pm;'
+        elif label == 'IDL':
+            support = '@xraylib'
+        elif label == 'Python':
+            support = 'import xraylib'
+        elif label == 'Java':
+            support = 'import com.github.tschoonj.xraylib.*;'
+        elif label == 'C#/.NET':
+            support = 'using Science;'
+        elif label == 'Lua':
+            support = 'require("xraylib")'
+        elif label == 'Ruby':
+            support = 'require \'xraylib\''
+        elif label == 'PHP':
+            support = 'include("xraylib.php");'
+        string = 'Enable support for xraylib in ' + str(label) + ' using: ' + str(support)
+        print(string)              
     for language in languages:
         pass
         
@@ -108,7 +130,7 @@ def index():
             #print(f'key= {key}')
                 
             select_input = request.form.get('function')
-            examples = request.form.get('code_example')
+            examples = request.form.get('examples')
                 
             linetype_trans_notation = request.form.get('linetype-trans_notation')
             linetype_trans_iupac = request.form.get('linetype-trans_iupac')
@@ -130,40 +152,11 @@ def index():
             phi = request.form['phi']
             density = request.form['density']
             pz = request.form['pz']
-            
-            """def z_input(function, int_z):
-                print(int_z)
-                if validate_int(int_z) == True and 0<int(int_z)<=118:                
-                    print(f'int_z: {int_z}')
-                    function = getattr(xraylib, function)
-                    output = function(int(int_z))
-                    print(output) 
-                    return render_template(
-                        'index.html', 
-                        form = form,
-                        output = output,
-                        units = Request_Units.AtomicWeight_u
-                        )
-                elif xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    function = getattr(xraylib, function)
-                    output = function(int(xraylib.SymbolToAtomicNumber(int_z))) 
-                    return render_template(
-                            'index.html', 
-                            form = form,
-                            output = output,
-                            units = Request_Units.AtomicWeight_u
-                            )
-                else:
-                    return render_template(
-                        'index.html',
-                        form = form,
-                        error = Request_Error.int_z_error
-                        )"""
 
-            
             if select_input == 'AtomicWeight':
                 if validate_int(int_z) == True and 0<int(int_z)<=118:
                     print(f'int_z: {int_z}')
+                    code_example(form.examples.choices, 'AtomicWeight')
                     output = calc_output('AtomicWeight', int(int_z))
                     return render_template(
                         'index.html', 
@@ -935,7 +928,31 @@ def index():
                         form = form,  
                         error = Request_Error.energy_error
                         )
-                        
+            #missing cs_energy and total kissel            
+            
+            elif select_input == 'Refractive_Index':
+                if validate_str(str(comp)) == True and validate_float(energy, density) == True:
+                    output = xraylib.Refractive_Index(comp, float(energy), float(density))
+                    return render_template(
+                        'index.html',
+                        form = form, 
+                        output = output
+                        )
+                elif validate_str(comp) == False:
+                    output = xraylib.Refractive_Index(xraylib.AtomicNumberToSymbol(comp), float(energy), float(density))
+                    
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.comp_error
+                        )
+                else:
+                     return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.energy_error
+                        )
+            
             elif select_input == '':
                 if validate_int(int_z) == True:
                     pass
