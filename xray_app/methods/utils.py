@@ -76,7 +76,7 @@ def code_example(tple, function, *variables):
         examples.append(string)
     
     for language in languages:
-        #need to add "str" and Symbol2Num cases
+        #ADD DIVS/ID SO CSS CAN WORK
         lst = []
         if language == 'c++':
             for variable in variables:
