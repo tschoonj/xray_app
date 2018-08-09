@@ -24,7 +24,7 @@ def vanilla_test(client, rv):
     
 def invalid_input_test(client, rv):
     assert 200 == rv.status_code
-    assert b'Invalid input' in rv.data
+    assert b'Invalid input' or b'Error' in rv.data
     print('Invalid Input Tested')
 
 def output_test(client, rv, function, *value):
