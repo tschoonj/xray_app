@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, FormField
+from wtforms import StringField, SelectField, FormField, BooleanField
 from wtforms.validators import DataRequired
 from xray_app.methods.forms import TransitionForm
 
@@ -43,4 +43,7 @@ class Xraylib_Request_Plot(FlaskForm):
         u'End',
         validators = [DataRequired()]
         )
+    log_boo = BooleanField(
+        u'Log Scale'
+        )    
     variable = FormField(VariableForm)

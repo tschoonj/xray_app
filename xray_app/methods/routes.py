@@ -23,7 +23,9 @@ def calc_output(function, *values):
             value = getattr(xraylib, value)
             lst.append(value) 
         elif xraylib.SymbolToAtomicNumber(value) != 0:
-            lst.append(xraylib.SymbolToAtomicNumber(value))     
+            lst.append(xraylib.SymbolToAtomicNumber(value))
+        else:
+            lst.append(value)     
     print(lst)        
     output = float(function(*lst))
     return output
