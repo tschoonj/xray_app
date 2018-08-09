@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, url_for
 from xray_app.methods.forms import Xraylib_Request, Request_Error,  Request_Units
-from xray_app.methods.utils import validate_int, validate_float, validate_str, validate_int_or_str, code_example, make_tup, check_xraylib_key
+from xray_app.methods.utils import validate_int, validate_float, validate_str, validate_int_or_str, code_example, make_tup, check_xraylib_key, calc_output
 import xraylib
 
 methods = Blueprint('methods', __name__)
@@ -10,34 +10,7 @@ methods = Blueprint('methods', __name__)
 
             
 #def validate_NIST(s) etc
-#------------------------------------------------------------------------------------------------------------       
-def calc_output(function, *values):
-    xrl_function = getattr(xraylib, function)
-    lst = []
-    for value in values:
-        if validate_int(value) == True and float(value) == int(value):
-            lst.append(int(value))
-        elif validate_float(value) == True:
-            lst.append(float(value))  
-        elif check_xraylib_key(str(value)) == True:
-            value = getattr(xraylib, value)
-            lst.append(value) 
-        elif xraylib.SymbolToAtomicNumber(value) != 0:
-            lst.append(xraylib.SymbolToAtomicNumber(value))
-        else:
-            lst.append(value)     
-    print(lst)        
-    try:
-        output = float(xrl_function(*lst))
-        return output
-    except:
-        try:
-            xrl_function = getattr(xraylib, function + '_CP')
-            output = float(xrl_function(*lst))
-            return output
-        except:
-            output = 'Error'
-            return output
+
 #------------------------------------------------------------------------------------------------------------
 nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
