@@ -47,6 +47,34 @@ def check_xraylib_key(key):
     else:
         return False
 
+def calc_output(function, *values):
+    xrl_function = getattr(xraylib, function)
+    lst = []
+    for value in values:
+        if validate_int(value) == True and float(value) == int(value):
+            lst.append(int(value))
+        elif validate_float(value) == True:
+            lst.append(float(value))  
+        elif check_xraylib_key(str(value)) == True:
+            value = getattr(xraylib, value)
+            lst.append(value) 
+        elif xraylib.SymbolToAtomicNumber(value) != 0:
+            lst.append(xraylib.SymbolToAtomicNumber(value))
+        else:
+            lst.append(value)     
+    print(lst)        
+    try:
+        output = float(xrl_function(*lst))
+        return output
+    except:
+        try:
+            xrl_function = getattr(xraylib, function + '_CP')
+            output = float(xrl_function(*lst))
+            return output
+        except:
+            output = 'Error'
+            return output
+
 def code_example(tple, function, *variables):
     languages = [x[0] for x in tple]
     labels = [x[1] for x in tple]

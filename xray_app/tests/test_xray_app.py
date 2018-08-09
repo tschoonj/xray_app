@@ -11,13 +11,12 @@ sys.path.insert(0, '..')
 app = flask.Flask(__name__)
 
 import xray_app
+from xray_app.methods.utils import calc_output
 
 @pytest.fixture
 def client():
 	client = xray_app.app.test_client()
-	yield client
-
-    
+	yield client    
 #----------------------------------------------------------------------------
 def vanilla_test(client, rv):
     assert 200 == rv.status_code
@@ -30,7 +29,7 @@ def invalid_input_test(client, rv):
 def output_test(client, rv, function, *value):
     output = soup_output(rv)
     print(output)
-    val = calc_val(function, *value)   
+    val = calc_output(function, *value)   
     assert 200 == rv.status_code
     assert output == pytest.approx(val)
     #return output
@@ -56,15 +55,11 @@ test_input = {
 
 def soup_output(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
+    print(soup)
     output = soup.find('div', id="output").string
+    print(output)
     output = float(output.replace(" ",""))
-    return output 
-
-def calc_val(function, *value):
-    function = getattr(xraylib, function)
-    val = float(function(*value))
-    return val
-  
+    return output   
 #----------------------------------------------------------------------------                
 def test_nonexistent(client):
 	rv = client.get('/nonexistent')
@@ -102,47 +97,117 @@ def test_about_vanilla(client):
 	rv = client.get('/about')
 	vanilla_test(client, rv)
 
+#----------------------------------------------------------------------------
+def function_test(client, xrl_function, *variables):
+    for variable in variables:
+        test_values = []
+        if variable == 'int_z':
+            test_values.append(5)
+            test_values.append('Fe')
+            test_values.append('a')
+            print(test_values)
+        if variable == 'float_q':
+            test_values.append(0.5)
+            test_values.append(0.5)
+            test_values.append('a')
+    for value in test_values:
+        function_input = dict(test_input, function = xrl_function, int_z = value)
+        rv = client.post('/', data = function_input)
+        if isinstance(value, int):
+            assert b'g cm<sup>-3</sup>' in rv.data
+            output_test(client, rv, 'ElementDensity', value)
+        elif xraylib.SymbolToAtomicNumber(value) != 0:
+            output_test(client, rv, 'ElementDensity', value)
+        else:
+            invalid_input_test(client, rv)     
+    
+#function_test(client, 'Rayl_FF', 'int_z', 'float_q')
 #----------------------------------------------------------------------------                
-"""def function_test(client, function, **values):
-    #for function in xraylib:
-    function_input = dict(test_input, function = str(function), **values)
-    rv = client.post('/', data = function_input)
-    print(**values)
-    output_test(client, rv, function)"""
-
 def test_atomicweight(client):
     #function_test(client, 'AtomicWeight', test_input)
-    function_input = dict(test_input, function = 'AtomicWeight', int_z = '5')
-    rv = client.post('/', data = function_input)
-    output_test(client, rv, 'AtomicWeight', 5)
-    assert b'g mol<sup>-1</sup>' in rv.data
-     
-    function_input = dict(test_input, function = 'AtomicWeight', int_z = 'a')
-    rv = client.post('/', data = function_input)
-    invalid_input_test(client, rv)
+    int_z = [5, 'Fe', 'a']
+    for value in int_z:
+        function_input = dict(test_input, function = 'AtomicWeight', int_z = value)
+        rv = client.post('/', data = function_input)
+        if isinstance(value, int):
+            assert b'g mol<sup>-1</sup>' in rv.data
+            output_test(client, rv, 'AtomicWeight', value)
+        elif xraylib.SymbolToAtomicNumber(value) != 0:
+            assert b'g mol<sup>-1</sup>' in rv.data
+            output_test(client, rv, 'AtomicWeight', value)
+        else:
+            invalid_input_test(client, rv)
 #----------------------------------------------------------------------------
 def test_elementdensity(client):
-    function_input = dict(test_input, function = 'ElementDensity', int_z = '5')
-    rv = client.post('/', data = function_input)
-    output_test(client, rv, 'ElementDensity', 5)
-    assert b'g cm<sup>-3</sup>' in rv.data
-
-    function_input = dict(test_input, function = 'ElementDensity', int_z = 'a')
-    rv = client.post('/', data = function_input)
-    invalid_input_test(client, rv)
+    int_z = [5, 'Fe', 'a']
+    for value in int_z:
+        function_input = dict(test_input, function = 'ElementDensity', int_z = value)
+        rv = client.post('/', data = function_input)
+        if isinstance(value, int):
+            assert b'g cm<sup>-3</sup>' in rv.data
+            output_test(client, rv, 'ElementDensity', value)
+        elif xraylib.SymbolToAtomicNumber(value) != 0:
+            assert b'g cm<sup>-3</sup>' in rv.data
+            output_test(client, rv, 'ElementDensity', value)
+        else:
+            invalid_input_test(client, rv)        
 #----------------------------------------------------------------------------                        
 def test_ff_rayl(client):
-    function_input = dict(test_input, function = 'FF_Rayl', int_z = '5', float_q = '0.5')
-    rv = client.post('/', data = function_input)
-    output_test(client, rv, 'FF_Rayl', 5, 0.5)
-
-    function_input = dict(test_input, function = 'FF_Rayl', int_z = 'a', float_q = '0.5')
-    rv = client.post('/', data = function_input)
-    invalid_input_test(client, rv)
-
-    function_input = dict(test_input, function = 'FF_Rayl', int_z = '5', float_q = 'a')
-    rv = client.post('/', data = function_input)
-    invalid_input_test(client, rv)
+    test_z = [5, 'Fe', 'a']
+    for value in test_z:
+        function_input = dict(test_input, function = 'FF_Rayl', int_z = value, float_q = 0.5)
+        rv = client.post('/', data = function_input)
+        if isinstance(value, int):
+            output_test(client, rv, 'FF_Rayl', value, 0.5)
+        elif xraylib.SymbolToAtomicNumber(value) != 0:
+            output_test(client, rv, 'FF_Rayl', value, 0.5)
+        else:
+            invalid_input_test(client, rv)
+    
+    test_q = [0.5, 'a']
+    for value in test_q:
+        function_input = dict(test_input, function = 'FF_Rayl', int_z = 5, float_q = value)
+        rv = client.post('/', data = function_input)
+        if isinstance(value, int):
+            output_test(client, rv, 'FF_Rayl', 5, value)
+        else:
+            invalid_input_test(client, rv) 
+#----------------------------------------------------------------------------
+def test_sf_compt(client):
+    test_z = [5, 'Fe', 'a']
+    for value in test_z:
+        function_input = dict(test_input, function = 'SF_Compt', int_z = value, float_q = 0.5)
+        rv = client.post('/', data = function_input)
+        if isinstance(value, int):
+            output_test(client, rv, 'SF_Compt', value, 0.5)
+        elif xraylib.SymbolToAtomicNumber(value) != 0:
+            output_test(client, rv, 'SF_Compt', value, 0.5)
+        else:
+            invalid_input_test(client, rv)
+    
+    test_q = [0.5, 'a']
+    for value in test_q:
+        function_input = dict(test_input, function = 'SF_Compt', int_z = 5, float_q = value)
+        rv = client.post('/', data = function_input)
+        if isinstance(value, int):
+            output_test(client, rv, 'SF_Compt', 5, value)
+        else:
+            invalid_input_test(client, rv) 
+#----------------------------------------------------------------------------
+"""def test_lineenergy(client):
+    test_z = [5, 'Fe', 'a']
+    for value in test_z:
+        function_input = dict(test_input, function = 'LineEnergy', int_z = value, linetype-trans_notation = 'IUPAC', linetype-trans_iupac = 'KL1_LINE')
+        rv = client.post('/', data = function_input)
+        if isinstance(value, int):
+            output_test(client, rv, 'LineEnergy', value, xraylib.KL1_LINE)
+        elif xraylib.SymbolToAtomicNumber(value) != 0:
+            output_test(client, rv, 'LineEnergy', value, xraylib.KL1_LINE)
+        else:
+            invalid_input_test(client, rv)"""
+#----------------------------------------------------------------------------
+def test_(client):
+    pass
 #----------------------------------------------------------------------------
 def test_(client):
     pass
