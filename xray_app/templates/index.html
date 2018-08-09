@@ -27,7 +27,7 @@
                     {{field}}
                 </div>
             {% elif field.id == 'examples' %}
-                <div class = "form-group hidden" id = "{{field.id}}" onchange="">
+                <div class = "form-group" id = "{{field.id}}" onchange="">
                     {{field.label}}:
                     {{field}}
                 </div>
@@ -81,8 +81,8 @@
 {% endif %} 
 
 <h3> Code Example: </h3>
-{% if examples %}
-{{examples}}
+{% if code_examples %}
+{{code_examples|safe}}
 {% endif %}
 
 <script

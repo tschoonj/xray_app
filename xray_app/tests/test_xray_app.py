@@ -117,10 +117,6 @@ def test_atomicweight(client):
     output_test(client, rv, 'AtomicWeight', 5)
     assert b'g mol<sup>-1</sup>' in rv.data
      
-    function_input = dict(test_input, function = 'AtomicWeight', int_z = '0')
-    rv = client.post('/', data = function_input)
-    invalid_input_test(client, rv)
-    
     function_input = dict(test_input, function = 'AtomicWeight', int_z = 'a')
     rv = client.post('/', data = function_input)
     invalid_input_test(client, rv)
@@ -131,15 +127,11 @@ def test_elementdensity(client):
     output_test(client, rv, 'ElementDensity', 5)
     assert b'g cm<sup>-3</sup>' in rv.data
 
-    function_input = dict(test_input, function = 'ElementDensity', int_z = '0')
-    rv = client.post('/', data = function_input)
-    invalid_input_test(client, rv)
-
     function_input = dict(test_input, function = 'ElementDensity', int_z = 'a')
     rv = client.post('/', data = function_input)
     invalid_input_test(client, rv)
 #----------------------------------------------------------------------------                        
-"""def test_ff_rayl(client):
+def test_ff_rayl(client):
     function_input = dict(test_input, function = 'FF_Rayl', int_z = '5', float_q = '0.5')
     rv = client.post('/', data = function_input)
     output_test(client, rv, 'FF_Rayl', 5, 0.5)
@@ -154,7 +146,7 @@ def test_elementdensity(client):
 
     function_input = dict(test_input, function = 'FF_Rayl', int_z = '5', float_q = 'a')
     rv = client.post('/', data = function_input)
-    invalid_input_test(client, rv)"""
+    invalid_input_test(client, rv)
 #----------------------------------------------------------------------------
 def test_(client):
     pass

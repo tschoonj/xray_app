@@ -1,61 +1,31 @@
 from flask import Blueprint, render_template, request, url_for
 from xray_app.methods.forms import Xraylib_Request, Request_Error,  Request_Units
+from xray_app.methods.utils import validate_int, validate_float, validate_str, validate_int_or_str, code_example, make_tup, check_xraylib_key
 import xraylib
 
 methods = Blueprint('methods', __name__)
 
 #eventually move to own package e.g. xray_app.methods.validators, then import
 #ditto for the dicts
-def validate_int(*s):
-        for i in s:
-            try: 
-                int(i)
-                return True
-            except ValueError:
-                return False
-        
-def validate_float(*s):
-        for i in s:
-            try: 
-                float(i)
-                return True
-            except ValueError:
-                return False
-                
-def validate_str(*s):
-        for i in s:
-            try: 
-                str(i)
-                return True
-            except ValueError:
-                return False
-            
-def validate_int_or_str(*s):
-    for i in s:
-        try:
-            int(i)
-            return True
-        except ValueError:
-            try:
-                str(i)
-                return True
-            except ValueError:
-                return False
+
             
 #def validate_NIST(s) etc
-#------------------------------------------------------------------------------------------------------------
-def code_example(tple, function):
-    languages = [x[0] for x in tple]
-    language_labels = [x[1] for x in tple]
-    print(languages)
-    for label in language_labels:
-        support = 'Enable support for xraylib in' + str(label) + 'using: '
-    for language in languages:
-        pass
-        
-def calc_output(function, *value):
+#------------------------------------------------------------------------------------------------------------       
+def calc_output(function, *values):
     function = getattr(xraylib, function)
-    output = float(function(*value))
+    lst = []
+    for value in values:
+        if validate_int(value) == True and float(value) == int(value):
+            lst.append(int(value))
+        elif validate_float(value) == True:
+            lst.append(float(value))  
+        elif check_xraylib_key(str(value)) == True:
+            value = getattr(xraylib, value)
+            lst.append(value) 
+        elif xraylib.SymbolToAtomicNumber(value) != 0:
+            lst.append(xraylib.SymbolToAtomicNumber(value))     
+    print(lst)        
+    output = float(function(*lst))
     return output
 #------------------------------------------------------------------------------------------------------------
 nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
@@ -65,11 +35,7 @@ ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
 aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')}
 cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS_') and not k.endswith('CP')} 
-dcs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('DCS_')and not k.endswith('CP') or k.startswith('DCSP_') and not k.endswith('CP')}
-      
-def make_tup(_dict):
-    tup = [(k, k) for k, v in _dict.items()]
-    return tup
+dcs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('DCS_')and not k.endswith('CP') or k.startswith('DCSP_') and not k.endswith('CP')}      
 
 cs_tup = make_tup(cs_dict)
 dcs_tup = make_tup(dcs_dict)
@@ -91,7 +57,6 @@ def index():
         
         #for i in form.examples.choices:
             #print(i)
-        
         form.linetype.trans_iupac.choices = trans_I_tup
         form.linetype.trans_siegbahn.choices = trans_S_tup
         form.shell.choices =  shell_tup
@@ -108,7 +73,7 @@ def index():
             #print(f'key= {key}')
                 
             select_input = request.form.get('function')
-            examples = request.form.get('code_example')
+            examples = request.form.get('examples')
                 
             linetype_trans_notation = request.form.get('linetype-trans_notation')
             linetype_trans_iupac = request.form.get('linetype-trans_iupac')
@@ -131,54 +96,17 @@ def index():
             density = request.form['density']
             pz = request.form['pz']
             
-            """def z_input(function, int_z):
-                print(int_z)
-                if validate_int(int_z) == True and 0<int(int_z)<=118:                
-                    print(f'int_z: {int_z}')
-                    function = getattr(xraylib, function)
-                    output = function(int(int_z))
-                    print(output) 
-                    return render_template(
-                        'index.html', 
-                        form = form,
-                        output = output,
-                        units = Request_Units.AtomicWeight_u
-                        )
-                elif xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    function = getattr(xraylib, function)
-                    output = function(int(xraylib.SymbolToAtomicNumber(int_z))) 
-                    return render_template(
-                            'index.html', 
-                            form = form,
-                            output = output,
-                            units = Request_Units.AtomicWeight_u
-                            )
-                else:
-                    return render_template(
-                        'index.html',
-                        form = form,
-                        error = Request_Error.int_z_error
-                        )"""
-
-            
             if select_input == 'AtomicWeight':
-                if validate_int(int_z) == True and 0<int(int_z)<=118:
-                    print(f'int_z: {int_z}')
-                    output = calc_output('AtomicWeight', int(int_z))
+                code_examples = code_example(form.examples.choices, select_input, int_z)
+                if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                    output = calc_output(select_input, int_z)                    
                     return render_template(
                         'index.html', 
                         form = form,
                         output = output,
-                        units = Request_Units.AtomicWeight_u
+                        units = Request_Units.AtomicWeight_u,
+                        code_examples = code_examples
                         )                
-                elif xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    output = calc_output('AtomicWeight', int(xraylib.SymbolToAtomicNumber(int_z)))
-                    return render_template(
-                            'index.html', 
-                            form = form,
-                            output = output,
-                            units = Request_Units.AtomicWeight_u
-                            )
                 else:
                         return render_template(
                         'index.html', 
@@ -187,23 +115,16 @@ def index():
                         )
                                 
             elif select_input == 'ElementDensity':
-                if validate_int(int_z) == True and 0<int(int_z)<=118:
-                    print(f'int_z: {int_z}')
-                    output = xraylib.ElementDensity(int(int_z))
+                code_examples = code_example(form.examples.choices, select_input, int_z)
+                if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                    output = calc_output(select_input, int_z)                        
                     return render_template(
                         'index.html', 
                         form = form,
                         output = output,
-                        units = Request_Units.ElementDensity_u
+                        units = Request_Units.ElementDensity_u,
+                        code_examples = code_examples
                         )                
-                elif xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    output = xraylib.ElementDensity(int(xraylib.SymbolToAtomicNumber(int_z)))
-                    return render_template(
-                            'index.html', 
-                            form = form,
-                            output = output,
-                            units = Request_Units.ElementDensity_u
-                            )
                 else:
                         return render_template(
                         'index.html', 
@@ -212,21 +133,15 @@ def index():
                         )
 
             elif select_input == 'FF_Rayl':
-                if validate_int(int_z) == True and validate_float(float_q) == True and 0<int(int_z)<=118:
-                    print(f'int_z: {int_z}' + f'float_q: {float_q}')
-                    output = xraylib.FF_Rayl(int(int_z), float(float_q))
+                code_examples = code_example(form.examples.choices, select_input, int_z, float_q)
+                if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0 and validate_float(float_q) == True:
+                    output = calc_output(select_input, int_z, float_q)
                     return render_template(
                         'index.html', 
                         form = form,
-                        output = output
-                        )
-                elif xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    rayl_ff=xraylib.FF_Rayl(int(xraylib.SymbolToAtomicNumber(int_z)), float(float_q))       
-                    return render_template(
-                        'index.html', 
-                        form = form,
-                        output = output
-                        )
+                        output = output,
+                        code_examples = code_examples
+                        )                
                 elif validate_float(float_q) == False:
                     return render_template(
                         'index.html', 
@@ -241,21 +156,15 @@ def index():
                         )    
             
             elif select_input == 'SF_Compt':
-                if validate_int(int_z) == True and validate_float(float_q) == True and 0<int(int_z)<=118:
-                    print(f'int_z: {int_z}' + f'float_q: {float_q}')
-                    output = xraylib.SF_Compt(int(int_z), float(float_q))
+                code_examples = code_example(form.examples.choices, select_input, int_z, float_q)
+                if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0 and validate_float(float_q) == True:
+                    output = calc_output(select_input, int_z, float_q)
                     return render_template(
                         'index.html', 
                         form = form,
-                        output = output
-                        )
-                elif xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    output = xraylib.SF_Compt(int(xraylib.SymbolToAtomicNumber(int_z)), float(float_q))
-                    return render_template(
-                        'index.html', 
-                        form = form,
-                        output = output
-                        )
+                        output = output,
+                        code_examples = code_examples
+                        )                
                 else:
                     return render_template(
                         'index.html', 
@@ -264,41 +173,31 @@ def index():
                         )
             
             elif select_input == 'LineEnergy':
-                if validate_int(int_z) == True:
-                    print(f'int_z: {int_z}' + ' ' + f'linetype_trans_notation: {linetype_trans_notation}' + '' + f'linetype_trans_iupac: {linetype_trans_iupac}')
-                    if linetype_trans_notation == 'IUPAC':
-                        trans = getattr(xraylib, linetype_trans_iupac)
-                        output = xraylib.LineEnergy(int(int_z), trans)
+                if linetype_trans_notation == 'IUPAC':
+                    code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_iupac)
+                    trans = getattr(xraylib, linetype_trans_iupac)
+                    if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                        output = calc_output(select_input, int_z, trans)
+                        #output = xraylib.LineEnergy(int(int_z), trans)
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
-                            ) 
-                    elif linetype_trans_notation == 'Siegbahn':
-                        trans = getattr(xraylib, linetype_trans_siegbahn)
-                        output = xraylib.LineEnergy(int(int_z), trans)
+                            output = output,
+                            units = Request_Units.Energy_u,
+                            code_examples = code_examples
+                            )                    
+                elif linetype_trans_notation == 'Siegbahn':
+                    code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_siegbahn)
+                    trans = getattr(xraylib, linetype_trans_siegbahn)
+                    if validate_int(int_z) == True:
+                        output = calc_output(select_input, int_z, trans)
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
-                            )     
-                elif xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    if linetype_trans_notation == 'IUPAC':
-                        trans = getattr(xraylib, linetype_trans_iupac)
-                        output = xraylib.LineEnergy(int(xraylib.SymbolToAtomicNumber(int_z)), trans)
-                        return render_template(
-                            'index.html', 
-                            form = form,
-                            output = output
-                            ) 
-                    elif linetype_trans_notation == 'Siegbahn':
-                        trans = getattr(xraylib, linetype_trans_siegbahn)
-                        output = xraylib.LineEnergy(int(xraylib.SymbolToAtomicNumber(int_z)), trans)
-                        return render_template(
-                            'index.html', 
-                            form = form,
-                            output = output
-                            )
+                            output = output,
+                            units = Request_Units.Energy_u,
+                            code_examples = code_examples
+                            )                     
                 else:
                     return render_template(
                         'index.html', 
@@ -307,40 +206,28 @@ def index():
                         )
                         
             elif select_input == 'RadRate':
-                if validate_int(int_z) == True:
-                    if linetype_trans_notation == 'IUPAC':
-                        trans = getattr(xraylib, linetype_trans_iupac)
-                        output = xraylib.RadRate(int(int_z), trans)
+                if linetype_trans_notation == 'IUPAC':
+                    code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_iupac)
+                    trans = getattr(xraylib, linetype_trans_iupac)
+                    if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                        output = calc_output(select_input, int_z, trans)                       
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
-                            ) 
-                    elif linetype_trans_notation == 'Siegbahn':
-                        trans = getattr(xraylib, linetype_trans_siegbahn)
-                        output = xraylib.RadRate(int(int_z), trans)
+                            output = output,
+                            code_examples = code_examples
+                            )                    
+                elif linetype_trans_notation == 'Siegbahn':
+                    code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_siegbahn)
+                    trans = getattr(xraylib, linetype_trans_siegbahn)
+                    if validate_int(int_z) == True:
+                        output = calc_output(select_input, int_z, trans)
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
-                            )         
-                elif xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    if linetype_trans_notation == 'IUPAC':
-                        trans = getattr(xraylib, linetype_trans_iupac)
-                        output = xraylib.RadRate(int(xraylib.SymbolToAtomicNumber(int_z)), trans)
-                        return render_template(
-                            'index.html', 
-                            form = form,
-                            output = output
-                            ) 
-                    elif linetype_trans_notation == 'Siegbahn':
-                        trans = getattr(xraylib, linetype_trans_siegbahn)
-                        output = xraylib.RadRate(int(xraylib.SymbolToAtomicNumber(int_z)), trans)
-                        return render_template(
-                            'index.html', 
-                            form = form,
-                            output = output
-                            ) 
+                            output = output,
+                            code_examples = code_examples
+                            )                     
                 else:
                     return render_template(
                         'index.html', 
@@ -349,14 +236,16 @@ def index():
                         )
                         
             elif select_input == 'EdgeEnergy':
-                if validate_int(int_z) == True:
-                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                code_examples = code_example(form.examples.choices, select_input, int_z, shell)
+                if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:                    
                     shell = getattr(xraylib, shell)
-                    output = xraylib.EdgeEnergy(int(int_z), shell)
+                    output = calc_output(select_input, int_z, shell)
                     return render_template(
                         'index.html', 
                         form = form,
-                        output = output
+                        output = output,
+                        units = Request_Units.Energy_u,
+                        code_examples = code_examples
                         )
                 else:
                     return render_template(
@@ -366,14 +255,14 @@ def index():
                         )
                         
             elif select_input == 'FluorYield':
-                if validate_int(int_z) == True:
-                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
                     shell = getattr(xraylib, shell)
-                    output = xraylib.FluorYield(int(int_z), shell)
+                    output = calc_output(select_input, int_z, shell)
                     return render_template(
                         'index.html', 
                         form = form,
-                        output = output
+                        output = output,
+                        code_examples = code_examples
                         )
                 else:
                     return render_template(
@@ -383,14 +272,15 @@ def index():
                         )
                         
             elif select_input == 'AugerYield':
-                if validate_int(int_z) == True:
-                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
+                code_examples = code_example(form.examples.choices, select_input, int_z, shell)
+                if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
                     shell = getattr(xraylib, shell)
-                    output = xraylib.AugerYield(int(int_z), shell)
+                    output = calc_output(select_input, int_z, shell)
                     return render_template(
                         'index.html', 
                         form = form,
-                        output = output
+                        output = output,
+                        code_examples = code_examples
                         )
                 else:
                     return render_template(
@@ -400,14 +290,15 @@ def index():
                         )   
             
             elif select_input == 'JumpFactor':
+                code_examples = code_example(form.examples.choices, select_input, int_z, shell)
                 if validate_int(int_z) == True:
-                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
                     shell = getattr(xraylib, shell)
-                    output = xraylib.JumpFactor(int(int_z), shell)
+                    output = calc_output(select_input, int_z, shell)
                     return render_template(
                         'index.html', 
                         form = form,
-                        output = output
+                        output = output,
+                        code_examples = code_examples
                         )
                 else:
                     return render_template(
@@ -417,14 +308,15 @@ def index():
                         )
                         
             elif select_input == 'AtomicLevelWidth':
+                code_examples = code_example(form.examples.choices, select_input, int_z, shell)
                 if validate_int(int_z) == True:
-                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
                     shell = getattr(xraylib, shell)
-                    output = xraylib.AtomicLevelWidth(int(int_z), shell)
+                    output = calc_output(select_input, int_z, shell)
                     return render_template(
                         'index.html', 
                         form = form,
-                        output = output
+                        output = output,
+                        code_examples = code_examples
                         )
                 else:
                     return render_template(
@@ -434,15 +326,16 @@ def index():
                         ) 
                              
             elif select_input == 'ElectronConfig':
+                code_examples = code_example(form.examples.choices, select_input, int_z, shell)
                 if validate_int(int_z) == True:
-                    print(f'int_z: {int_z}' + ' ' + f'shell: {shell}')
                     shell = getattr(xraylib, shell)
-                    output = xraylib.ElectronConfig(int(int_z), shell)
+                    output = calc_output(select_input, int_z, shell)
                     return render_template(
                         'index.html', 
                         form = form,
                         output = output,
-                        units = Request_Units.ElectronConfig_u 
+                        units = Request_Units.ElectronConfig_u,
+                        code_examples = code_examples 
                         )
                 else:
                     return render_template(
@@ -452,6 +345,7 @@ def index():
                         )
                 
             elif select_input == 'CS_Total':
+                code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy)
                 print(f'int_z_or_comp: {int_z_or_comp}' + f'energy: {energy}')
                 #need to add in CSb
                 if validate_int_or_str(int_z_or_comp) == True and validate_float(energy) == True:
@@ -461,14 +355,14 @@ def index():
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                     except ValueError:
                         output = xraylib.CS_Total_CP(str(int_z_or_comp), float(energy))
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                 elif validate_int_or_str(int_z_or_comp) == False:
                     return render_template(
@@ -492,14 +386,14 @@ def index():
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                     except ValueError:
                         output = xraylib.CS_Photo_CP(str(int_z_or_comp), float(energy))
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                 elif validate_int_or_str(int_z_or_comp) == False:
                     return render_template(
@@ -523,14 +417,14 @@ def index():
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                     except ValueError:
                         output = xraylib.CS_Rayl_CP(str(int_z_or_comp), float(energy))
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                 elif validate_int_or_str(int_z_or_comp) == False:
                     return render_template(
@@ -554,14 +448,14 @@ def index():
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                     except ValueError:
                         output = xraylib.CS_Compt_CP(str(int_z_or_comp), float(energy))
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                 elif validate_int_or_str(int_z_or_comp) == False:
                     return render_template(
@@ -585,7 +479,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, code_examples = code_examples
                             ) 
                     elif linetype_trans_notation == 'Siegbahn':
                         trans = getattr(xraylib, linetype_trans_siegbahn)
@@ -593,7 +487,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                     else:
                         return render_template(
@@ -611,7 +505,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, code_examples = code_examples
                             ) 
                     elif linetype_trans_notation == 'Siegbahn':
                         trans = getattr(xraylib, linetype_trans_siegbahn)
@@ -619,7 +513,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, code_examples = code_examples
                             )
                     else:
                         return render_template(
@@ -637,7 +531,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, code_examples = code_examples
                             ) 
                     elif linetype_trans_notation == 'Siegbahn':
                         trans = getattr(xraylib, linetype_trans_siegbahn)
@@ -645,7 +539,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                     else:
                         return render_template(
@@ -663,7 +557,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             ) 
                     elif linetype_trans_notation == 'Siegbahn':
                         trans = getattr(xraylib, linetype_trans_siegbahn)
@@ -671,7 +565,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                     else:
                         return render_template(
@@ -689,7 +583,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             ) 
                     elif linetype_trans_notation == 'Siegbahn':
                         trans = getattr(xraylib, linetype_trans_siegbahn)
@@ -697,7 +591,7 @@ def index():
                         return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                     else:
                         return render_template(
@@ -713,7 +607,7 @@ def index():
                     return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                 elif xraylib.SymbolToAtomicNumber(int_z) != 0:
                     shell = getattr(xraylib, shell)
@@ -721,7 +615,7 @@ def index():
                     return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             ) 
                 else:  
                      return render_template(
@@ -736,7 +630,7 @@ def index():
                     return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                 else:
                    return render_template(
@@ -751,7 +645,7 @@ def index():
                     return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                 else:
                    return render_template(
@@ -766,7 +660,7 @@ def index():
                     return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                 else:
                    return render_template(
@@ -781,7 +675,7 @@ def index():
                     return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                 else:
                    return render_template(
@@ -797,14 +691,14 @@ def index():
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                     except ValueError:
                         output = xraylib.DCS_Rayl_CP(str(int_z_or_comp), float(energy), float(theta))
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                 elif validate_int_or_str(int_z_or_comp) == False:
                     return render_template(
@@ -826,14 +720,14 @@ def index():
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                     except ValueError:
                         output = xraylib.DCS_Compt_CP(str(int_z_or_comp), float(energy), float(theta))
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                 elif validate_int_or_str(int_z_or_comp) == False:
                     return render_template(
@@ -854,7 +748,7 @@ def index():
                     return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                 else:
                    return render_template(
@@ -869,7 +763,7 @@ def index():
                     return render_template(
                             'index.html', 
                             form = form,
-                            output = output
+                            output = output, examples = examples
                             )
                 else:
                    return render_template(
@@ -885,14 +779,14 @@ def index():
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                     except ValueError:
                         output = xraylib.DCSP_Rayl_CP(str(int_z_or_comp), float(energy), float(theta), float(phi))
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                 elif validate_int_or_str(int_z_or_comp) == False:
                     return render_template(
@@ -914,14 +808,14 @@ def index():
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                     except ValueError:
                         output = xraylib.DCSP_Compt_CP(str(int_z_or_comp), float(energy), float(theta), float(phi))
                         return render_template(
                             'index.html',
                             form = form, 
-                            output = output
+                            output = output, examples = examples
                             )
                 elif validate_int_or_str(int_z_or_comp) == False:
                     return render_template(
@@ -935,7 +829,31 @@ def index():
                         form = form,  
                         error = Request_Error.energy_error
                         )
-                        
+            #missing cs_energy and total kissel            
+            
+            elif select_input == 'Refractive_Index':
+                if validate_str(str(comp)) == True and validate_float(energy, density) == True:
+                    output = xraylib.Refractive_Index(comp, float(energy), float(density))
+                    return render_template(
+                        'index.html',
+                        form = form, 
+                        output = output, examples = examples
+                        )
+                elif validate_str(comp) == False:
+                    output = xraylib.Refractive_Index(xraylib.AtomicNumberToSymbol(comp), float(energy), float(density))
+                    
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.comp_error
+                        )
+                else:
+                     return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.energy_error
+                        )
+            
             elif select_input == '':
                 if validate_int(int_z) == True:
                     pass
@@ -952,7 +870,7 @@ def index():
                 return render_template(
                     'index.html',
                     form = form,
-                    output = output
+                    output = output, examples = examples
                     )
                 
             elif select_input == 'GetCompoundDataNISTByName':
@@ -961,7 +879,7 @@ def index():
                 return render_template(
                     'index.html',
                     form = form, 
-                    output = output
+                    output = output, examples = examples
                     )         
         return render_template('index.html', form=form) 
 
