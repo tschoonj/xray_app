@@ -38,6 +38,7 @@ def plot():
         select_input = request.form.get('function')
         range_start = request.form['range_start']
         range_end = request.form['range_end']
+        log_boo = request.form.get('log_boo')
         
         #int_z = request.form['variable-int_z']
         #float_q = request.form['variable-float_q']
@@ -51,7 +52,8 @@ def plot():
         
         if select_input.startswith('CS'):
             #need validation of requests
-            plot = make_plot(select_input, 'Energy ($keV$)', r'Cross Section ($cm^{2} g^{-1}$)', range_start, range_end, int_z_or_comp)
+            print(f'log_boo= {log_boo}')
+            plot = make_plot(select_input, 'Energy ($keV$)', r'Cross Section ($cm^{2} g^{-1}$)', range_start, range_end, log_boo, int_z_or_comp)
             return render_template('plot.html', form = form, title = 'Plot', plot=plot)
              
         return render_template('plot.html', form = form, title = 'Plot', plot=plot)
@@ -63,19 +65,22 @@ def print_data(*lsts):
     for value in lst:
             print(value)
     
-def make_plot(function, xlabel, ylabel, range_start, range_end, variable):
+def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo, variable):
     x = []
     y = [] 
     xrl_function = getattr(xraylib, function)
-    if validate_int(variable) == True:
-        for i in range(int(range_start), int(range_end), 1):
-            x.append(i)
-            y.append(float(xrl_function(int(variable), i)))
+    if validate_int(range_start, range_end, variable):
+        try:
+            for i in range(int(range_start), int(range_end), 1):
+                y.append(float(xrl_function(int(variable), i)))
+                x.append(i)
+        except:
+            for i in range(int(range_start), int(range_end), 1):
+                xrl_function = getattr(xraylib, function + '_CP')
+                y.append(float(xrl_function(str(variable), i)))
+                x.append(i)     
     else:
-        for i in range(int(range_start), int(range_end), 1):
-            xrl_function = getattr(xraylib, function + '_CP')
-            x.append(i)
-            y.append(float(xrl_function(str(variable), i)))     
+        pass
     #print_data(x, y)
     
     fig = Figure()
@@ -83,11 +88,12 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, variable):
             
     fig, ax = plt.subplots()
     ax.plot(x, y)
-    ax.set(title = function + ': ' + variable, xlabel = 'log[ ' + xlabel + ' ]', ylabel = 'log[ ' + ylabel + ' ]')            
+    ax.set(title = function + ': ' + variable, xlabel = xlabel, ylabel = ylabel)            
     
-    #toggle with boolean?
-    #plt.yscale('log')
-    #plt.xscale('log')
+    if log_boo != None:
+        plt.yscale('log')
+        plt.xscale('log')
+        ax.set(title = function + ': ' + variable, xlabel = 'log[ ' + xlabel + ' ]', ylabel = 'log[ ' + ylabel + ' ]')            
             
     img = BytesIO()
     plt.savefig(img, format='png')
