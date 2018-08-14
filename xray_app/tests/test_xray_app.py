@@ -83,9 +83,9 @@ def test_js_present(client):
 def test_index_vanilla(client):
 	rv = client.get('/')
 	vanilla_test(client, rv)
-	assert b'<div class = "form-group xlib" id = "comp">' in rv.data
+	assert b'<div class="form-group" id="function">' in rv.data
 	assert b'<option value="AtomicWeight">Atomic Weight</option>' in rv.data
-	assert b'type = "submit"' in rv.data
+	assert b'type="submit"' in rv.data
 
 def test_plot_vanilla(client):
 	rv = client.get('/plot')

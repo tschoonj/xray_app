@@ -42,7 +42,8 @@ def index():
     form.cktrans.choices = ck_tup
     form.nistcomp.choices = nist_tup
     form.augtrans.choices = aug_tup
-    form.rad_nuc_name.choices = rad_name_tup
+    form.rad_nuc.choices = rad_name_tup
+
 
         #after separating trans_tup - need if statement on radio click so only relevant trans show JQuery 
         #poss could def populate_choices in separate dict package then call here 
@@ -61,7 +62,7 @@ def index():
         cktrans = request.form.get('cktrans')
         nistcomp = request.form.get('nistcomp')
         augtrans = request.form.get('augtrans')
-        rad_nuc_name = request.form.get('rad_nuc_name')
+        rad_nuc = request.form.get('rad_nuc')
         shell = request.form.get('shell')
                 
         int_z = request.form['int_z']
@@ -110,7 +111,7 @@ def index():
         elif select_input == 'LineEnergy' or select_input == 'RadRate':
             if linetype_trans_notation == 'IUPAC':
                 #trans = getattr(xraylib, linetype_trans_iupac)
-                if validate_int_or_float(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
                     code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_iupac)
                     output = calc_output(select_input, int_z, linetype_trans_iupac)
                         #output = xraylib.LineEnergy(int(int_z), trans)
@@ -533,9 +534,9 @@ def index():
                     code_examples = code_examples
                     )
         
-        elif select_input == 'GetRadioNuclideDataByName':
-            output = calc_output(select_input, rad_nuc_name)
-            code_examples = code_example(form.examples.choices, select_input, rad_nuc_name)
+        elif select_input == 'GetRadioNuclideDataByIndex':
+            output = calc_output(select_input, rad_nuc)
+            code_examples = code_example(form.examples.choices, 'GetRadioNuclideDataByName', rad_nuc)
             #output = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))
             return render_template(
                     'index.html',  
@@ -556,9 +557,9 @@ def index():
                     code_examples = code_examples
                     )
                     
-        elif select_input == 'GetCompoundDataNISTByName':
+        elif select_input == 'GetCompoundDataNISTByIndex':
             output = calc_output(select_input, nistcomp)
-            code_examples = code_example(form.examples.choices, select_input, nistcomp)
+            code_examples = code_example(form.examples.choices, 'GetCompoundDataNISTByName', nistcomp)
             return render_template(
                     'index.html',
                     form = form, 

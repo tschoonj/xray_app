@@ -21,7 +21,7 @@ class TransitionForm(FlaskForm):
 class Xraylib_Request(FlaskForm):
     function = SelectField(
         u'Xraylib Function', 
-        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('SF_Compt', 'Incoherent Scattering Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Factor'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('ComptonEnergy', 'Energy after Compton scattering'), ('Fi', u'Anomalous Scattering Factor \u03C6\''), ('Fii', u'Anomalous Scattering Factor \u03C6\'\''), ('CosKronTransProb', 'Coster-Kronig Transition Probability'), ('ComptonProfile', 'Compton Broadening Profile'), ('ComptonProfile_Partial', 'Partial Compton Broadening Profile'),  ('MomentTransf', ('Momentum Transfer')), ('Refractive_Index','Refractive Index'), ('CompoundParser', 'Compound Parser'),  ('GetRadioNuclideDataList', 'Get Radio Nuclide List'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTList','Get List of NIST Compounds'),  ('GetCompoundDataNISTByName','Get NIST Data')],
+        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('SF_Compt', 'Incoherent Scattering Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Factor'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('ComptonEnergy', 'Energy after Compton scattering'), ('Fi', u'Anomalous Scattering Factor \u03C6\''), ('Fii', u'Anomalous Scattering Factor \u03C6\'\''), ('CosKronTransProb', 'Coster-Kronig Transition Probability'), ('ComptonProfile', 'Compton Broadening Profile'), ('ComptonProfile_Partial', 'Partial Compton Broadening Profile'),  ('MomentTransf', ('Momentum Transfer')), ('Refractive_Index','Refractive Index'), ('CompoundParser', 'Compound Parser'),  ('GetRadioNuclideDataList', 'Get Radio Nuclide List'), ('GetRadioNuclideDataByIndex', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTList','Get List of NIST Compounds'),  ('GetCompoundDataNISTByIndex','Get NIST Data')],
         validators = [DataRequired()]) 
     comp = StringField('Compound',validators = [DataRequired()])
     int_z = StringField('Element',validators = [DataRequired()])
@@ -39,8 +39,7 @@ class Xraylib_Request(FlaskForm):
     cktrans = SelectField(u'Coster Kronig Trans', choices = [], validators = [DataRequired()])
     nistcomp = SelectField(u'NIST Compound', choices = [], validators = [DataRequired()])
     augtrans = SelectField(u'Auger Transition', choices = [], validators = [DataRequired()])
-    rad_nuc_index = SelectField(u'Radio Nuclide I', choices = [], validators = [DataRequired()])
-    rad_nuc_name = SelectField( u'Radio Nuclide N', choices = [], validators = [DataRequired()])
+    rad_nuc = SelectField( u'Radio Nuclide', choices = [], validators = [DataRequired()])
     #choices(value,label)
     examples = SelectField(
     u'Code Example', 

@@ -2,8 +2,9 @@
 <head>
 </head>
 {% block body %}
-<h1> Xraylib App </h1>
-  
+<h1 class="text-center"> Xraylib App </h1>
+
+<div>  
   <form method="POST" action="">  
     <fieldset class="form-group inline">
        <!--
@@ -16,9 +17,9 @@
                 <div class="form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
                     {{field.trans_notation(class="radio-inline")}}
-                    <br> 
-                    {{field.trans_iupac}}
-                    {{field.trans_siegbahn}}
+                    
+                    {{field.trans_iupac(class="select-inline")}}
+                    {{field.trans_siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id == 'csrf_token'%}
             {% elif field.id == 'function'%}
@@ -52,10 +53,14 @@
         <br>
      </fieldset>
   </form>
-  
+</div>  
+
 {% if output is mapping %}
     <div class="table-responsive">  
         <table class="table">
+            {% for item in output.items() %}
+            {{item}}
+            {% endfor %}
             {% for key, value in output.items() %}
                 <tr>
                     <th> {{ key }} </th>

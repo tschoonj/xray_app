@@ -41,13 +41,35 @@ def validate_int_or_str(*s):
 def make_tup(_dict):
     tup = [(k, k) for k, v in _dict.items()]
     return tup
-    
-#broken????? is not finding keys?
-def check_xraylib_key(key):
-    if key in xraylib.__dict__.keys():
-        return True
-    else:
-        return False  
+
+def check_xraylib_key(s):
+    s = s.upper()
+    s = s.replace(" ", "_")
+    s = s.replace("-", "_")
+       
+    for key in xraylib.__dict__:
+        #print (key)
+        if s in key:
+            #print (key)
+            print ("found")
+            return True
+        else:
+            if key.endswith('_' + s):
+                #print (key) 
+                #print("found at end")
+                return True
+    return False
+
+def get_key(s):
+    s = s.upper()
+    s = s.replace(" ", "_")
+    s = s.replace("-", "_")
+    for key in xraylib.__dict__:
+        if s in key:
+            return key
+        else:
+            if key.endswith('_' + s):
+                return key 
 
 def calc_output(function, *values):
     xrl_function = getattr(xraylib, function)
@@ -60,17 +82,19 @@ def calc_output(function, *values):
         try in for turning values into list then removing
         """
     for value in values:
+        print(value)
         if validate_int(value) == True:
             lst.append(int(value))
         elif validate_float(value) == True:
-            lst.append(float(value))  
-        elif check_xraylib_key(value) == True:
-            value = getattr(xraylib, value)
-            lst.append(value) 
+            lst.append(float(value))   
         elif xraylib.SymbolToAtomicNumber(value) != 0:
-            lst.append(xraylib.SymbolToAtomicNumber(value)) 
+            lst.append(xraylib.SymbolToAtomicNumber(value))
+        elif check_xraylib_key(value) == True:
+            value = get_key(value)
+            value = getattr(xraylib, value)
+            lst.append(value)
+            
     print(lst)
-
     try:
         output = xrl_function(*lst)
         print(output)

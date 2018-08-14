@@ -53,7 +53,7 @@ $(document).ready(function(){
                 });
         $("option[value='GetRadioNuclideDataByName']").click(function(){
                 $("div.xlib").hide();
-                $("#rad_nuc_name").show();
+                $("#rad_nuc").show();
                 });         
                 
 });

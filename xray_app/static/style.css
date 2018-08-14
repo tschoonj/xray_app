@@ -9,4 +9,7 @@
 div#output, div#units, div.variable {
     display :inline-block
 }
+
+.logo {
+}
 /*hide all inputs as you addd them*/
