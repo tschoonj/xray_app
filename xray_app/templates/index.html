@@ -5,7 +5,7 @@
 <h1> Xraylib App </h1>
   
   <form method="POST" action="">  
-    <fieldset class = "form-group">
+    <fieldset class="form-group inline">
        <!--
        possibly add headers or dividers to label diff functions i.e cross sections, misc, profiles, form factors
        would need an ordered list :?
@@ -13,7 +13,7 @@
        -->
        {% for field in form %}
             {% if field.id == 'linetype' %}
-                <div class = "form-group xlib" id = "{{field.id}}">
+                <div class="form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
                     {{field.trans_notation(class="radio-inline")}}
                     <br> 
@@ -22,23 +22,23 @@
                 </div>
             {% elif field.id == 'csrf_token'%}
             {% elif field.id == 'function'%}
-                <div class = "form-group" id = "{{field.id}}">
+                <div class="form-group" id="{{field.id}}">
                     {{field.label}}:
                     {{field}}
                 </div>
             {% elif field.id == 'examples' %}
-                <div class = "form-group" id = "{{field.id}}" onchange="">
+                <div class="form-group" id="{{field.id}}" onchange="">
                     {{field.label}}:
                     {{field}}
                 </div>
             {% elif field.type == 'SelectField' %}
-                <div class = "form-group xlib" id = "{{field.id}}">
+                <div class="form-group xlib" id="{{field.id}}">
                     {{field.label}}:
                     {{field}}
                 </div>
                 <!--make field searchable-->
             {% else %}
-                <div class = "form-group xlib" id = "{{field.id}}">
+                <div class="form-group xlib" id="{{field.id}}">
                     {{field.label}}: 
                     {{field}}
                 </div>  
@@ -46,8 +46,8 @@
        {% endfor %}
        <p></p>
        <input 
-            type = "submit" 
-            value = "Submit"
+            type="submit" 
+            value="Submit"
             formnovalidate>
         <br>
      </fieldset>
@@ -64,12 +64,12 @@
              {% endfor%}
         </table>
     </div>
-{% else %} 
+{% elif output %} 
 <h2> Result: </h2>
-    <div id = "output">
-        {{ output }}
+    <div id="output">
+        {{ output|safe }}
     </div>
-    <div id = "units">
+    <div id="units">
     {% if units %}
         {{units|safe}}  
     {% endif %}
@@ -79,9 +79,8 @@
 {% if error %}
            {{error}}
 {% endif %} 
-
-<h3> Code Example: </h3>
 {% if code_examples %}
+<h3> Code Example: </h3>
 {{code_examples|safe}}
 {% endif %}
 

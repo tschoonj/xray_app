@@ -9,7 +9,7 @@ import base64
 
 import xraylib
 
-from xray_app.methods.routes import cs_dict, make_tup, validate_int
+from xray_app.methods.routes import cs_dict, make_tup, validate_int, validate_float
 
 def delete_keys(key, _dict):
     if key in _dict:
@@ -69,7 +69,7 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo, variabl
     x = []
     y = [] 
     xrl_function = getattr(xraylib, function)
-    if validate_int(range_start, range_end, variable):
+    if validate_float(range_start, range_end, variable):
         try:
             for i in range(int(range_start), int(range_end), 1):
                 y.append(float(xrl_function(int(variable), i)))

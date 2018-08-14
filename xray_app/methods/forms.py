@@ -21,47 +21,29 @@ class TransitionForm(FlaskForm):
 class Xraylib_Request(FlaskForm):
     function = SelectField(
         u'Xraylib Function', 
-        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('SF_Compt', 'Incoherent Scattering Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Factor'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('ComptonEnergy', 'Energy after Compton scattering'), ('Refractive_Index','Refractive Index'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTByName','Get NIST Data')],
+        choices = [('AtomicWeight', 'Atomic Weight'), ('ElementDensity', 'Element Density'), ('FF_Rayl', 'Rayleigh Form Factor'), ('SF_Compt', 'Incoherent Scattering Factor'), ('LineEnergy','Fluorescence Line Energy'), ('EdgeEnergy','Absorption Edge Energy'), ('RadRate','Radiative Transition Probability'), ('JumpFactor','Jump Factor'), ('FluorYield','Fluorescence Yield'), ('AugerYield','Auger Yield'), ('AtomicLevelWidth','Atomic Level Width'), ('ElectronConfig','Electronic Configuration'), ('ComptonEnergy', 'Energy after Compton scattering'), ('Fi', u'Anomalous Scattering Factor \u03C6\''), ('Fii', u'Anomalous Scattering Factor \u03C6\'\''), ('CosKronTransProb', 'Coster-Kronig Transition Probability'), ('ComptonProfile', 'Compton Broadening Profile'), ('ComptonProfile_Partial', 'Partial Compton Broadening Profile'),  ('MomentTransf', ('Momentum Transfer')), ('Refractive_Index','Refractive Index'), ('CompoundParser', 'Compound Parser'),  ('GetRadioNuclideDataList', 'Get Radio Nuclide List'), ('GetRadioNuclideDataByName', 'Radio Nuclide Excitation Profile'), ('GetCompoundDataNISTList','Get List of NIST Compounds'),  ('GetCompoundDataNISTByName','Get NIST Data')],
         validators = [DataRequired()]) 
     comp = StringField('Compound',validators = [DataRequired()])
     int_z = StringField('Element',validators = [DataRequired()])
     int_z_or_comp = StringField('Element or Compound',validators = [DataRequired()]) #needs to accomodate both str and int - try/except loop!
     float_q = StringField('Momentum Transfer',validators = [DataRequired()])
-    energy = StringField('Energy', validators = [DataRequired()])
-    theta = StringField(u'Theta &#952', validators = [DataRequired()])
-    phi = StringField(u'Phi &#981', validators = [DataRequired()])
-    density = StringField('Density',validators = [DataRequired()])
-    pz = StringField('Electron Momentum p<sub>z</sub>',validators = [DataRequired()])
+    energy = StringField('Energy (keV)', validators = [DataRequired()])
+    theta = StringField('Scattering Angle &#952 (rad)', validators = [DataRequired()])
+    phi = StringField(u'Azimuthal Angle &#981 (rad)', validators = [DataRequired()])
+    density = StringField('Density (g cm<sup>-3</sup>)', validators = [DataRequired()])
+    pz = StringField('Electron Momentum p<sub>z</sub>', validators = [DataRequired()])
     linetype = FormField(TransitionForm) 
         #needs to have a choice of IUPAC, SIEGBAHN or ALL 
         #can do with dynamic select field will need extra select field though  
-    shell = SelectField(
-        u'Shell', 
-        choices = [],
-        validators = [DataRequired()])
-    cktrans = SelectField(
-        u'Coster Kronig Trans', 
-        choices = [],
-        validators = [DataRequired()])
-    nistcomp = SelectField(
-        u'NIST Compound', 
-        choices = [],
-        validators = [DataRequired()])
-    augtrans = SelectField(
-        u'Auger Transition', 
-        choices = [],
-        validators = [DataRequired()])
-    rad_nuc_index = SelectField(
-        u'Radio Nuclide I', 
-        choices = [],
-        validators = [DataRequired()])
-    rad_nuc_name = SelectField(
-        u'Radio Nuclide N', 
-        choices = [],
-        validators = [DataRequired()])
+    shell = SelectField(u'Shell', choices = [], validators = [DataRequired()])
+    cktrans = SelectField(u'Coster Kronig Trans', choices = [], validators = [DataRequired()])
+    nistcomp = SelectField(u'NIST Compound', choices = [], validators = [DataRequired()])
+    augtrans = SelectField(u'Auger Transition', choices = [], validators = [DataRequired()])
+    rad_nuc_index = SelectField(u'Radio Nuclide I', choices = [], validators = [DataRequired()])
+    rad_nuc_name = SelectField( u'Radio Nuclide N', choices = [], validators = [DataRequired()])
     #choices(value,label)
     examples = SelectField(
-        u'Code Example', 
+    u'Code Example', 
         choices = [('c++','C/C++/Objective-C'), ('fortran','Fortran 2003/2008'), ('perl','Perl'), ('idl','IDL'), ('py','Python'), ('java','Java'), ('c#','C#/.NET'), ('lua','Lua'), ('ruby','Ruby'), ('php','PHP')],
         validators = [DataRequired()])
       
@@ -83,15 +65,7 @@ class Request_Error():
     augtrans_error = 'Invalid input: augtrans'
     rad_nuc_error = 'Invalid input: rad_nuc_'    
     error = 'Please enter valid input.'
-#then when you need error you do error = request_error.error_name
-
-"""class Code_Examples():
-    def __init__(self, language, function):
-        self.language = language
-        self.function = function
-    def example:
-        example = 
-"""        
+#then when you need error you do error = request_error.error_name 
         
 class Request_Units():
     AtomicWeight_u = ' g mol<sup>-1</sup>'

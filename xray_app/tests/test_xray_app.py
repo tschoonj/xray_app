@@ -4,7 +4,6 @@ import sys
 import flask
 import random
 
-from abc import abstractmethod, ABC
 from bs4 import BeautifulSoup
 
 sys.path.insert(0, '..')
@@ -28,7 +27,6 @@ def invalid_input_test(client, rv):
 
 def output_test(client, rv, function, *value):
     output = soup_output(rv)
-    print(output)
     val = calc_output(function, *value)   
     assert 200 == rv.status_code
     assert output == pytest.approx(val)
@@ -55,7 +53,7 @@ test_input = {
 
 def soup_output(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
-    print(soup)
+    #print(soup)
     output = soup.find('div', id="output").string
     print(output)
     output = float(output.replace(" ",""))
@@ -175,8 +173,9 @@ def test_ff_rayl(client):
 #----------------------------------------------------------------------------
 def test_sf_compt(client):
     test_z = [5, 'Fe', 'a']
+    test_q = [0.5, 'a']
     for value in test_z:
-        function_input = dict(test_input, function = 'SF_Compt', int_z = value, float_q = 0.5)
+        function_input = dict(test_input, function = 'SF_Compt', int_z = value, float_q = test_q[0])
         rv = client.post('/', data = function_input)
         if isinstance(value, int):
             output_test(client, rv, 'SF_Compt', value, 0.5)
@@ -184,8 +183,6 @@ def test_sf_compt(client):
             output_test(client, rv, 'SF_Compt', value, 0.5)
         else:
             invalid_input_test(client, rv)
-    
-    test_q = [0.5, 'a']
     for value in test_q:
         function_input = dict(test_input, function = 'SF_Compt', int_z = 5, float_q = value)
         rv = client.post('/', data = function_input)
