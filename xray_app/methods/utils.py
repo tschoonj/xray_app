@@ -1,5 +1,9 @@
 import xraylib
 
+from pygments import highlight
+from pygments.lexers import PythonLexer, get_lexer_by_name
+from pygments.formatters import HtmlFormatter
+
 def validate_float(*s):
     for i in s:
         try: 
@@ -114,13 +118,7 @@ def code_example(tple, function, *variables):
     languages = [x[0] for x in tple]
     labels = [x[1] for x in tple]
     examples = []
-    
-    """if function == 'Refractive_Index':
-        value1 = variables[0]
-        if validate_int(value1) == True:
-            lst.append(xraylib.AtomicNumberToSymbol(int(value1)))
-        #else validate_str(value)"""
-    
+       
     for label in labels:
         if label == 'C/C++/Objective-C':
             support = '#include <xraylib.h>'
@@ -142,13 +140,15 @@ def code_example(tple, function, *variables):
             support = 'require \'xraylib\''
         elif label == 'PHP':
             support = 'include("xraylib.php");'
-        string = 'Enable support for xraylib in ' + str(label) + ' using: ' + str(support)
+        string = 'Enable support for xraylib in ' + str(label) + ' using: <br>' + str(support) + '<br>'
         examples.append(string)
-    
+        
     for language in languages:
         #ADD DIVS/ID SO CSS CAN WORK
         lst = []
-        if language == 'c++':
+        lexer = get_lexer_by_name(language)
+        print(lexer)
+        if language == 'cpp-objdump':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -207,7 +207,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = str(function).upper() + '(' + _input + ')'
         
-        elif language == 'py':
+        elif language == 'python':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -237,7 +237,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = 'Xraylib.' + str(function) + '(' + _input + ')'
         
-        elif language == 'c#':
+        elif language == 'antlr-csharp':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -280,8 +280,7 @@ def code_example(tple, function, *variables):
                 elif function ==  'GetCompoundDataNISTByName':
                     lst.append('"Acetone"')
             _input = ', '.join(lst)
-            example = 'Xraylib.' + str(function) + '(' + _input + ')'
-        
+            example = 'Xraylib.' + str(function) + '(' + _input + ')'        
         elif language == 'php': 
             for variable in variables:
                 if validate_float(variable) == True or check_xraylib_key(str(variable)) == True:
@@ -294,6 +293,7 @@ def code_example(tple, function, *variables):
                     lst.append('"Acetone"')
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'
-        examples.append(example)
-    examples = '<br>'.join(examples)  
-    return examples        
+        example = highlight(example, lexer, HtmlFormatter())    
+        examples.append(example)      
+    examples_html = ''.join(examples)  
+    return examples_html        

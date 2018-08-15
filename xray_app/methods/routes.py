@@ -1,7 +1,14 @@
 from flask import Blueprint, render_template, request, url_for
+
+from pygments import highlight
+from pygments.lexers import PythonLexer
+from pygments.formatters import HtmlFormatter
+
+import xraylib
+
 from xray_app.methods.forms import Xraylib_Request, Request_Error,  Request_Units
 from xray_app.methods.utils import validate_int, validate_float, validate_str , validate_int_or_str, code_example, make_tup, check_xraylib_key, calc_output
-import xraylib
+
 
 methods = Blueprint('methods', __name__)
 
@@ -77,14 +84,14 @@ def index():
           
         if select_input == 'AtomicWeight' or select_input == 'ElementDensity':
             if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
-                code_examples = code_example(form.examples.choices, select_input, int_z)
+                examples = code_example(form.examples.choices, select_input, int_z)               
                 output = calc_output(select_input, int_z)                    
                 return render_template(
                     'index.html', 
                     form = form,
                     output = output,
                     units = getattr(Request_Units, select_input + '_u'),
-                    code_examples = code_examples
+                    code_examples = examples
                     )                
             else:
                 return render_template(

@@ -1,40 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8" />
-    {% if title %}
-        <title>Flask App - {{ title }}</title>
-    {% else %}
-        <title>Flask App</title>
-    {% endif %}
-    <link 
-        rel="stylesheet" 
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
-        crossorigin="anonymous">
-   <!-- <link
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/> 
+        <meta charset="utf-8" />
+        {% if title %}
+            <title>xraylib - {{ title }}</title>
+        {% else %}
+            <title>xraylib</title>
+        {% endif %}
+        <link 
+            rel="stylesheet" 
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+            crossorigin="anonymous">
+    <link
         rel="stylesheet"
         type="text/css"
-        href="{{url_for('static', filename='style.css')}}"/> for form testing purposes -->
-  </head>
+        href="{{url_for('static', filename='style.css')}}"/>
+    </head>
   
-  <body>
-    {% include 'includes/_navbar.html' %}
-     <div class="container">
-       <div class="jumbotron"> 
-       <h1></h1>
-       {% block header %}
-       {% if title %}
-           <h1> {{ title }} </h1>
-       {% endif %}    
-       {% endblock %}
+    <body>
+        {% include 'includes/_navbar.html' %}
+        <div class="container">
+            <div class="jumbotron"> 
+            {% block header %}
+                {% if title %}
+                    <h1> {{ title }} </h1>
+                {% endif %}    
+            {% endblock %}
        
-       {% block body %}
-       {% endblock body %}
-
-       </div>
-     </div>
-      
+        {% block body %}
+        {% endblock body %}        
+            </div>
+        <div class="align-bottom text-right">
+        <p> Maintained by <a href="mailto:Tom.Schoonjans@gmail.com">Tom Schoonjans</a><br>
+        Thanks to Prof. Laszlo Vincze of Ghent University for providing the webspace. <br>
+        Built using xraylib 3.3.0. Development occurs at the <a href="http://github.com/tschoonj/xraylib-web"><i>xraylib-web Github repository</i></a></p>
+        </div> 
+        </div>
+           
   <script 
         src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
