@@ -8,43 +8,80 @@ def validate_float(*s):
     for i in s:
         try: 
             float(i)
-            return True
         except ValueError:
             return False
+    return True
 
-def validate_int(s):
-    try:
-        if float(s) == int(s):
-            return True
-        else:
+def validate_int(*s):
+    for i in s:
+        try:
+            if float(i) == int(i):
+                return True
+            else:
+                return False
+        except:
             return False
-    except:
-        return False
                 
 def validate_str(*s):
     for i in s:
         try: 
             str(i)
-            return True
         except ValueError:
             return False
+    return True
             
 def validate_int_or_str(*s):
     for i in s:
         try:
             int(i)
-            return True
         except ValueError:
             try:
                 str(i)
-                return True
             except ValueError:
                 return False
-                
+    return True
 #------------------------------------------------------------------------------------------------
-def make_tup(_dict):
-    tup = [(k, k) for k, v in _dict.items()]
-    return tup
+def all_trans(tple, *inputs):
+    transs = [x[0] for x in tple]
+    output = {}    
+    for trans in transs:
+        out = calc_output(*inputs, trans)
+        if out != 0:
+            output[trans] = out
+    return output                   
+#------------------------------------------------------------------------------------------------
+def make_tup(_dict, variable):
+    tup = []
+    if variable == 'ck':
+        tup = [(k, k.split('_')[0]) for k, v in _dict.items()]
+        return tup
+    elif variable == 'nist' or variable == 'rad':
+        tup = [(k, k) for k, v in _dict.items()]
+        return tup
+    elif variable == 'cs' or variable == 'dcs':
+        for k, v in _dict.items():
+            split_k = k.split('_')
+            k_label = []
+            for word in split_k:
+                if word in label_dict:
+                    k_label.append(label_dict[word])
+                else:
+                    k_label.append(word)
+            k_label = ' '.join(k_label)
+            tpl = (k, k_label)
+            tup.append(tpl)
+        return tup
+    else:
+        for k, v in _dict.items():    
+            split_k = k.split('_')
+            k_label = split_k[0]
+            tpl = (k, k_label)
+            tup.append(tpl)
+        return tup
+        #need to mathc each substr to dict key then 'translate' it        
+        
+
+label_dict = {'CS':'Cross Section:', 'DCS':'Differential Unpolarized Cross Section:', 'DCSP':'Differential Polarized Cross Section:', 'KN':'Klein-Nishina', 'Photo':'Photoionization', 'Rayl':'Rayleigh', 'Compt':'Compton', 'FluorLine':' XRF', 'Partial':'(Partial)', 'Thoms':'Thomson', 'TRANS':''}
 
 def check_xraylib_key(s):
     s = s.upper()
@@ -77,16 +114,9 @@ def get_key(s):
 
 def calc_output(function, *values):
     xrl_function = getattr(xraylib, function)
+    print(values)
     lst = []
-    """if function == 'Refractive_Index':
-        value1 = values[0]
-        if validate_int(value1) == True:
-            lst.append(xraylib.AtomicNumberToSymbol(int(value1)))
-        #else validate_str(value)
-        try in for turning values into list then removing
-        """
-    for value in values:
-        print(value)
+    for value in values:        
         if validate_int(value) == True:
             lst.append(int(value))
         elif validate_float(value) == True:
@@ -97,22 +127,27 @@ def calc_output(function, *values):
             value = get_key(value)
             value = getattr(xraylib, value)
             lst.append(value)
-            
+        else:
+            lst.append(value)   #needed for _CP entry         
     print(lst)
     try:
-        output = xrl_function(*lst)
-        print(output)
-        return output
-    except:
-        try:
-            xrl_function = getattr(xraylib, function + '_CP')
+        if validate_int(lst[0]) == True:
+            print('trying')
             output = xrl_function(*lst)
             print(output)
             return output
-        except:
-            output = 'Error'
+        else: 
+            print(function + '_CP')
+            print(lst)
+            xrl_function = getattr(xraylib, function + '_CP')
+            print(xrl_function)
+            output = xrl_function(*lst)
             print(output)
             return output
+    except:
+        output = 'Error'
+        print(output)
+        return output
 
 def code_example(tple, function, *variables):
     languages = [x[0] for x in tple]
@@ -121,7 +156,7 @@ def code_example(tple, function, *variables):
        
     for label in labels:
         if label == 'C/C++/Objective-C':
-            support = '#include <xraylib.h>'
+            support = '#include &ltxraylib.h&gt'
         elif label == 'Fortran 2003/2008':
             support = 'use :: xraylib'
         elif label == 'Perl':
@@ -140,14 +175,13 @@ def code_example(tple, function, *variables):
             support = 'require \'xraylib\''
         elif label == 'PHP':
             support = 'include("xraylib.php");'
-        string = 'Enable support for xraylib in ' + str(label) + ' using: <br>' + str(support) + '<br>'
+        string = '<p id="'+ str(label) + '"> Enable support for xraylib in ' + str(label) + ' using: <b>' + str(support) + '</b></p>'
         examples.append(string)
         
     for language in languages:
         #ADD DIVS/ID SO CSS CAN WORK
         lst = []
         lexer = get_lexer_by_name(language)
-        print(lexer)
         if language == 'cpp-objdump':
             for variable in variables:
                 if validate_float(variable) == True:
@@ -293,7 +327,8 @@ def code_example(tple, function, *variables):
                     lst.append('"Acetone"')
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'
-        example = highlight(example, lexer, HtmlFormatter())    
+        example = highlight(example, lexer, HtmlFormatter(cssclass=language))
+        print(HtmlFormatter().get_style_defs('.' + str(language)))
         examples.append(example)      
     examples_html = ''.join(examples)  
     return examples_html        

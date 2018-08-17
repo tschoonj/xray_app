@@ -2,18 +2,21 @@
 
 {% block body %}
     <form method="POST" action="">  
-    <fieldset class = "form-group">
+    <fieldset class = "form-group inline">
         {% for field in form %}
-            {% if field.id == 'variables' %}
-                <div class = "form-group" id = "{{field.id}}">
+            {% if field.id == 'linetype' %}
+                <div class="form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
-                    {{field}}
+                    {{field.trans_notation(class="radio-inline")}}
+                    
+                    {{field.trans_iupac(class="select-inline")}}
+                    {{field.trans_siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id != 'csrf_token' %}
                 <div class = "form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
                     {{field}}
-                </div>          
+                </div>                                 
             {% endif %}
         {% endfor %}    
     <input 
@@ -23,7 +26,7 @@
     </fieldset>
     </form>
 {% if request.method == 'POST'%}
-    <img src="data:image/png;base64,{{plot}}" alt="Image doesn't work">
+    <img class="center-block" src="data:image/png;base64,{{plot}}" alt="Image doesn't work">
     {% if table %}
         {{table}}
     {% endif %}

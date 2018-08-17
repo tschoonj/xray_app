@@ -2,7 +2,7 @@
 <head>
 </head>
 {% block body %}
-<h1 class="text-center"> Xraylib App </h1>
+<h1> Xraylib App </h1>
 
 <div>  
   <form method="POST" action="">  
@@ -64,15 +64,20 @@
             {% for key, value in output.items() %}
                 <tr>
                     <th> {{ key }} </th>
-                    <td> {{ value }} </td>
+                    <td> {{ value }} 
+                    <div id="units">
+                    {% if units %}
+                        {{units|safe}}  
+                    {% endif %}
+                    </div></td>
                 </tr>
-             {% endfor%}
+            {% endfor%}
         </table>
     </div>
 {% elif output %} 
 <h2> Result: </h2>
     <div id="output">
-        {{ output|safe }}
+        <p>{{ output|safe }}</p>
     </div>
     <div id="units">
     {% if units %}
@@ -85,8 +90,8 @@
            {{error}}
 {% endif %} 
 {% if code_examples %}
-<h3> Code Example: </h3>
-{{code_examples|safe}}
+    <h3> Code Example: </h3>
+    {{code_examples|safe}}
 {% endif %}
 
 <script
@@ -95,8 +100,6 @@
         crossorigin="anonymous">
 </script>
 
-<script
-    src="{{url_for('static', filename='main.js')}}">
-</script>
-
+<script src="{{url_for('static', filename='main.js')}}"></script>
+<noscript>Sorry, your browser does not support JavaScript!</noscript>
 {% endblock body %}

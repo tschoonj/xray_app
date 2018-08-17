@@ -44,7 +44,6 @@ class Xraylib_Request(FlaskForm):
     examples = SelectField(
     u'Code Example', 
         choices = [('cpp-objdump','C/C++/Objective-C'), ('fortran','Fortran 2003/2008'), ('perl','Perl'), ('idl','IDL'), ('python','Python'), ('java','Java'), ('antlr-csharp','C#/.NET'), ('lua','Lua'), ('ruby','Ruby'), ('php','PHP')],
-        #java doesn't seem to have a pygments lexer
         validators = [DataRequired()])
       
 #------------------------------------------------------------------------------------------------------------

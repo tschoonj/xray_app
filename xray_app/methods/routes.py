@@ -7,7 +7,7 @@ from pygments.formatters import HtmlFormatter
 import xraylib
 
 from xray_app.methods.forms import Xraylib_Request, Request_Error,  Request_Units
-from xray_app.methods.utils import validate_int, validate_float, validate_str , validate_int_or_str, code_example, make_tup, check_xraylib_key, calc_output
+from xray_app.methods.utils import validate_int, validate_float, validate_str , validate_int_or_str, code_example, make_tup, check_xraylib_key, calc_output, label_dict, all_trans
 
 
 methods = Blueprint('methods', __name__)
@@ -17,6 +17,7 @@ methods = Blueprint('methods', __name__)
 #------------------------------------------------------------------------------------------------------------
 nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
+
 shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
 ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
 aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
@@ -24,17 +25,19 @@ trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')}
 cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS_') and not k.endswith('CP')} 
 dcs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('DCS_')and not k.endswith('CP') or k.startswith('DCSP_') and not k.endswith('CP')}      
 
-cs_tup = make_tup(cs_dict)
-dcs_tup = make_tup(dcs_dict)
-nist_tup = make_tup(nist_dict)
-rad_name_tup = make_tup(rad_dict)
-shell_tup = make_tup(shell_dict)
-ck_tup = make_tup(ck_dict) #need to map more useful names - is it poss to do similar thing as rad_nuc (.replace())
-aug_tup = make_tup(aug_dict)
-trans_tup = [(k, k) for k, v in trans_dict.items()]
+  
+cs_tup = make_tup(cs_dict, 'cs') #special case
+dcs_tup = make_tup(dcs_dict, 'dcs') #special case
+nist_tup = make_tup(nist_dict, 'nist')
+rad_name_tup = make_tup(rad_dict, 'rad')
+shell_tup = make_tup(shell_dict, 'shell')
+ck_tup = make_tup(ck_dict, 'ck')  #special case
+aug_tup = make_tup(aug_dict, 'aug')
+
+trans_tup = [(k, k.split('_')[0]) for k, v in trans_dict.items()]
 trans_I_tup =  trans_tup[0:383]
 trans_S_tup = trans_tup[:382:-1]
-trans_S_tup = trans_S_tup[::-1]
+trans_S_tup = trans_S_tup[::-1]                     
 #------------------------------------------------------------------------------------------------------------
 @methods.route("/", methods=['GET', 'POST'])
 def index():
@@ -84,6 +87,7 @@ def index():
           
         if select_input == 'AtomicWeight' or select_input == 'ElementDensity':
             if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                print('working')
                 examples = code_example(form.examples.choices, select_input, int_z)               
                 output = calc_output(select_input, int_z)                    
                 return render_template(
@@ -98,7 +102,8 @@ def index():
                     'index.html', 
                     form = form,  
                     error = Request_Error.error
-                    )   
+                    )
+                       
         elif select_input == 'FF_Rayl' or select_input == 'SF_Compt':
             if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
                 code_examples = code_example(form.examples.choices, select_input, int_z, float_q)
@@ -156,17 +161,32 @@ def index():
                             output = output,
                             code_examples = code_examples
                             )                      
+            elif linetype_trans_notation == 'All':
+                output = all_trans(form.linetype.trans_iupac.choices, select_input, int_z)
+                if select_input == 'LineEnergy':
+                    return render_template(
+                                'index.html', 
+                                form = form,
+                                output = output,
+                                units = Request_Units.Energy_u
+                                )
+                else:
+                    return render_template(
+                                'index.html', 
+                                form = form,
+                                output = output
+                                )
             else:
                 return render_template(
                         'index.html', 
                         form = form,  
                         error = Request_Error.error
                         )
-        elif select_input == 'EdgeEnergy' or select_input == 'RadRate'  or select_input == 'JumpFactor' or select_input == 'FluorYield' or select_input == 'AugerYield' or select_input == 'AtomicLevelWidth' or select_input == 'ElectronConfig':
+        elif select_input == 'EdgeEnergy' or select_input == 'JumpFactor' or select_input == 'FluorYield' or select_input == 'AugerYield' or select_input == 'AtomicLevelWidth' or select_input == 'ElectronConfig':
             if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:                    
                 code_examples = code_example(form.examples.choices, select_input, int_z, shell)
                 output = calc_output(select_input, int_z, shell)
-                if select_input == 'EdgeEnergy':
+                if select_input == 'EdgeEnergy' or select_input == 'AtomicLevelWidth':
                     return render_template(
                         'index.html', 
                         form = form,
@@ -482,7 +502,6 @@ def index():
                             )
                             
         
-        #still not working!!!!
         elif select_input == 'Refractive_Index':
             if validate_int_or_str(int_z_or_comp) == True and validate_float(energy, density) == True:
                 #calc_output & examples doesn't work bc of the num to symbol thing
@@ -530,8 +549,8 @@ def index():
                             )                    
                                                                                         
         elif select_input == 'GetRadioNuclideDataList':
-            output = calc_output(select_input)
-            output.append('<b> Radionuclides </b>')
+            output = xraylib.GetRadioNuclideDataList()
+            output.insert(0, '<b> Radionuclides: </b>')
             output = '<br>'.join(output) 
             code_examples = code_example(form.examples.choices, select_input)
             return render_template(
@@ -553,8 +572,8 @@ def index():
                     )
         
         elif select_input == 'GetCompoundDataNISTList':
-            output = calc_output(select_input)
-            output.append('<b> NIST Compounds </b>')
+            output = xraylib.GetCompoundDataNISTList()
+            output.insert(0, '<b> NIST Compounds: </b>')
             output = '<br>'.join(output) 
             code_examples = code_example(form.examples.choices, select_input)
             return render_template(
@@ -574,9 +593,6 @@ def index():
                     code_examples = code_examples
                     )               
         
-        """
-                        """
-            
         """elif select_input == '':
             if validate_int_or_float(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
                 output = calc_output(select_input)

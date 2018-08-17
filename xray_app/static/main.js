@@ -1,60 +1,110 @@
-//move code from index here after fixing reroute, below tests if routes etc work
-$( "select" )
-  .change(function() {
-    var opt = "";
-    $( "select option:selected" ).each(function() {
-      opt = $( this ).val();
+$(document).ready(function () {
+    /*$(document).on('change keyup', 'select#function', function(e) {
+        var currentSelectVal = $(this).val();
+        alert(currentSelectVal);
+    })*/ /* automatically assigns event handlers to elements that are specified by the selector (i.e select)*/
+    function show_hide_input($Select) {
+        if ($Select == "AtomicWeight" || $Select == "ElementDensity") {
+            $("div.xlib").hide();
+            $("#int_z").show();
+        } else if ($Select == "FF_Rayl" || $Select == "SF_Compt") {
+            $("div.xlib").hide();
+            $("#int_z, #float_q").show();
+        } else if ($Select == "LineEnergy" || $Select == "RadRate"){
+            $("div.xlib, select#linetype-trans_iupac, select#linetype-trans_siegbahn").hide();
+            $("#int_z, #linetype").show();
+        } else if ($Select == "EdgeEnergy" || $Select == "JumpFactor" || $Select == "FluorYield" || $Select == "AugerYield" || $Select == "AtomicLevelWidth" || $Select == "ElectronConfig") {
+            $("div.xlib").hide();
+            $("#int_z, #shell").show();
+        } else if ($Select == "CS_Photo_Partial"){
+            $("div.xlib").hide();
+            $("#int_z, #shell, #energy").show();
+        } else if ($Select == "CS_KN"){
+            $("div.xlib").hide();
+            $("#energy").show();
+        } else if ($Select == "CS_Total" || $Select == "CS_Photo"|| $Select == "CS_Rayl" || $Select == "CS_Compt"|| $Select == "CS_Energy"){
+            $("div.xlib").hide();
+            $("#int_z_or_comp, #energy").show();
+        } else if ($Select.includes("CS_FluorLine")){
+            $("div.xlib").hide();
+            $("#int_z, #linetype, #energy").show();
+        } else if ($Select == "DCS_KN" || $Select == "ComptonEnergy"){
+            $("div.xlib").hide();
+            $("#energy, #theta").show();
+        } else if ($Select == "DCS_Thoms"){
+            $("div.xlib").hide();
+            $("#theta").show();
+        } else if ($Select == "DCS_Rayl" || $Select == "DCS_Compt"){
+            $("div.xlib").hide();
+            $("#int_z_or_comp, #energy, #theta").show();
+        } else if ($Select == "DCSP_KN"){
+            $("div.xlib").hide();
+            $("#energy, #theta, #phi").show();
+        } else if ($Select == "DCSP_Thoms"){
+            $("div.xlib").hide();
+            $("#theta, #phi").show();
+        } else if ($Select == "DCSP_Rayl" || $Select == "DCSP_Compt"){
+            $("div.xlib").hide();
+            $("#int_z_or_comp, #energy, #theta, #phi").show();
+        } else if ($Select.includes("Fi")) {
+            $("div.xlib").hide();
+            $("#int_z, #energy").show();
+        } else if ($Select == "CosKronTransProb"){
+            $("div.xlib").hide();
+            $("#int_z, #cktrans").show();
+        } else if ($Select == "ComptonProfile"){
+            $("div.xlib").hide();
+            $("#int_z, #pz").show();
+        } else if ($Select == "ComptonProfile_Partial"){
+            $("div.xlib").hide();
+            $("#int_z, #pz, #shell").show();
+        } else if ($Select == "MomentTransf"){
+            $("div.xlib").hide();
+            $("#energy, #theta").show();
+        } else if ($Select == "Refractive_Index"){
+            $("div.xlib").hide();
+            $("#int_z_or_comp, #energy, #density").show();
+        } else if ($Select == "CompoundParser"){
+            $("div.xlib").hide();
+            $("#comp").show();
+        } else if ($Select == "GetRadioNuclideDataList"){
+            $("div.xlib").hide();
+        } else if ($Select == "GetRadioNuclideDataByIndex"){
+            $("div.xlib").hide();
+            $("#rad_nuc").show();
+        } else if ($Select == "GetCompoundDataNISTList"){
+            $("div.xlib").hide();
+        } else if ($Select == "GetCompoundDataNISTByIndex"){
+            $("div.xlib").hide();
+            $("#nistcomp").show();
+        }       
+    };        
+    
+    function show_hide_code ($Select) {
+        if ($Select == 'cpp-objdump') {
+            $("div.highlight").hide
+        }
+    };
+    
+    var $SelectOnLoad = $("select#function").val();
+    show_hide_input($SelectOnLoad);
+    
+    $("select#function").change(function(e) {
+        var $SelectVal = $(this).val();        
+        show_hide_input($SelectVal)
     });
-    $( "p" ).text( opt );
-  })
-  .trigger( "change" );
-
-$("#int_z").show();
-/* 
-
-need an if selected div.xlib.hide() then relevant variables show 
-poss a for loop? but each also iterates through elements
-cannot be in .change on .click, it's then ignored after request
-*/
-
-$(document).ready(function(){
-        $("option[value='FF_Rayl']").click(function(){
-                $("div.xlib").hide();
-                $("#int_z").show();
-                $("#float_q").show();
-                });
-                                
-        $("option[value='AtomicWeight'], option[value='ElementDensity']").click(function(){
-                $("div.xlib").hide();
-                
-                $("#int_z").show();
-                                });
-       
-        $("option[value='LineEnergy'], option[value='RadRate']").click(function(){
-                $("div.xlib").hide();
-                $("#int_z").show();
-                $("#linetype").show();
-                });
-        $("option[value='EdgeEnergy'], option[value='JumpFactor'], option[value='FluorYield'], option[value='AugerYield'], option[value='AtomicLevelWidth'], option[value='ElectronConfig']").click(function(){
-                $("div.xlib").hide();
-                $("#int_z").show();
-                $("#shell").show();
-                }); 
-        $("option[value='CS_Photo_Partial']").click(function(){
-                $("div.xlib").hide();
-                $("#int_z").show();
-                $("#shell").show();
-                $("#energy").show();
-                });
-        $("option[value='CS_Total'], option[value='CS_Photo'], option[value='CS_Rayl'], option[value='CS_Compt'], option[value='CSb_Total'], option[value='CSb_Photo'], option[value='CS_Rayl'], option[value='CS_Compt']").click(function(){
-                $("div.xlib").hide();
-                $("#energy").show();
-                $("#int_z_or_comp").show();
-                });
-        $("option[value='GetRadioNuclideDataByName']").click(function(){
-                $("div.xlib").hide();
-                $("#rad_nuc").show();
-                });         
-                
+    
+    
+    
+    /*shows appropriate select form for linetype*/
+    $("input[type='radio']").change(function(e) {
+        var $RadioVal = $(this).val();
+        if ($RadioVal == "IUPAC") {
+            $("#linetype-trans_iupac").show();
+            $("#linetype-trans_siegbahn").hide();
+        } else if ($RadioVal == "Siegbahn") {
+            $("#linetype-trans_siegbahn").show();
+            $("#linetype-trans_iupac").hide();
+        }
+    });    
 });
-
