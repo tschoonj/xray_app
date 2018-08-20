@@ -6,11 +6,16 @@
         {% for field in form %}
             {% if field.id == 'linetype' %}
                 <div class="form-group xlib" id = "{{field.id}}">
-                    {{field.label}}:
+                    {{field.label}}
                     {{field.trans_notation(class="radio-inline")}}
                     
                     {{field.trans_iupac(class="select-inline")}}
                     {{field.trans_siegbahn(class="select-inline")}}
+                </div>
+            {% elif field.id == 'function' or field.id.startswith('range') or field.id.startswith('log_boo') %}
+                <div class="form-group" id="{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
                 </div>
             {% elif field.id != 'csrf_token' %}
                 <div class = "form-group xlib" id = "{{field.id}}">
@@ -31,4 +36,11 @@
         {{table}}
     {% endif %}
 {% endif %}
+<script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"> </script>
+    
+<script src="{{url_for('static', filename='plot.js')}}"></script>
+
 {% endblock body%}

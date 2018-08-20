@@ -10,11 +10,11 @@ class Xraylib_Request_Plot(FlaskForm):
         validators = [DataRequired()]
         )
     range_start = StringField(
-        u'Start',
+        u'Start (keV)',
         validators = [DataRequired()]
         ) 
     range_end = StringField(
-        u'End',
+        u'End (keV)',
         validators = [DataRequired()]
         )
     log_boo_x = BooleanField(
@@ -25,12 +25,11 @@ class Xraylib_Request_Plot(FlaskForm):
         )   
     linetype = FormField(TransitionForm)
     int_z = StringField('Element',validators = [DataRequired()])
-    int_z_or_comp = StringField('Element or Compound: ',validators = [DataRequired()])
-    shell = SelectField(
-        u'Shell', 
-        choices = [],
-        validators = [DataRequired()])
-        
+    int_z_or_comp = StringField('Element or Compound',validators = [DataRequired()])
+    #shell = SelectField(
+        #u'Shell', 
+        #choices = [],
+        #validators = [DataRequired()])       
     #comp = StringField('Compound',validators = [DataRequired()])    
     #float_q = StringField('Momentum Transfer',validators = [DataRequired()])
     #energy = StringField('Energy', validators = [DataRequired()])

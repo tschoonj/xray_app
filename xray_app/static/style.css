@@ -7,8 +7,8 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
     body {padding-top: 2%}
 }
 
-/* fix bootstrap conflicts with Pygments*/.cpp-objdump .hll { background-color: #ffffcc }
-.cpp-objdump  { background: #f8f8f8; }
+/* fix bootstrap conflicts with Pygments*/
+.cpp-objdump .hll { background-color: #ffffcc }
 .cpp-objdump .c { color: #408080; font-style: italic } /* Comment */
 .cpp-objdump .err { border: 1px solid #FF0000 } /* Error */
 .cpp-objdump .k { color: #008000; font-weight: bold } /* Keyword */
@@ -54,7 +54,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .cpp-objdump .mb { color: #666666 } /* Literal.Number.Bin */
 .cpp-objdump .mf { color: #666666 } /* Literal.Number.Float */
 .cpp-objdump .mh { color: #666666 } /* Literal.Number.Hex */
-.cpp-objdump .mi { color: #666666 } /* Literal.Number.Integer */
+.cpp-objdump .mi { color: #008000 } /* Literal.Number.Integer */
 .cpp-objdump .mo { color: #666666 } /* Literal.Number.Oct */
 .cpp-objdump .sa { color: #BA2121 } /* Literal.String.Affix */
 .cpp-objdump .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -77,7 +77,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .cpp-objdump .vm { color: #19177C } /* Name.Variable.Magic */
 .cpp-objdump .il { color: #666666 } /* Literal.Number.Integer.Long */
 .fortran .hll { background-color: #ffffcc }
-.fortran  { background: #f8f8f8; }
 .fortran .c { color: #408080; font-style: italic } /* Comment */
 .fortran .err { border: 1px solid #FF0000 } /* Error */
 .fortran .k { color: #008000; font-weight: bold } /* Keyword */
@@ -123,7 +122,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .fortran .mb { color: #666666 } /* Literal.Number.Bin */
 .fortran .mf { color: #666666 } /* Literal.Number.Float */
 .fortran .mh { color: #666666 } /* Literal.Number.Hex */
-.fortran .mi { color: #666666 } /* Literal.Number.Integer */
+.fortran .mi { color: #008000 } /* Literal.Number.Integer */
 .fortran .mo { color: #666666 } /* Literal.Number.Oct */
 .fortran .sa { color: #BA2121 } /* Literal.String.Affix */
 .fortran .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -146,7 +145,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .fortran .vm { color: #19177C } /* Name.Variable.Magic */
 .fortran .il { color: #666666 } /* Literal.Number.Integer.Long */
 .perl .hll { background-color: #ffffcc }
-.perl  { background: #f8f8f8; }
 .perl .c { color: #408080; font-style: italic } /* Comment */
 .perl .err { border: 1px solid #FF0000 } /* Error */
 .perl .k { color: #008000; font-weight: bold } /* Keyword */
@@ -192,7 +190,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .perl .mb { color: #666666 } /* Literal.Number.Bin */
 .perl .mf { color: #666666 } /* Literal.Number.Float */
 .perl .mh { color: #666666 } /* Literal.Number.Hex */
-.perl .mi { color: #666666 } /* Literal.Number.Integer */
+.perl .mi { color: #008000 } /* Literal.Number.Integer */
 .perl .mo { color: #666666 } /* Literal.Number.Oct */
 .perl .sa { color: #BA2121 } /* Literal.String.Affix */
 .perl .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -215,7 +213,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .perl .vm { color: #19177C } /* Name.Variable.Magic */
 .perl .il { color: #666666 } /* Literal.Number.Integer.Long */
 .idl .hll { background-color: #ffffcc }
-.idl  { background: #f8f8f8; }
 .idl .c { color: #408080; font-style: italic } /* Comment */
 .idl .err { border: 1px solid #FF0000 } /* Error */
 .idl .k { color: #008000; font-weight: bold } /* Keyword */
@@ -261,7 +258,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .idl .mb { color: #666666 } /* Literal.Number.Bin */
 .idl .mf { color: #666666 } /* Literal.Number.Float */
 .idl .mh { color: #666666 } /* Literal.Number.Hex */
-.idl .mi { color: #666666 } /* Literal.Number.Integer */
+.idl .mi { color: #008000 } /* Literal.Number.Integer */
 .idl .mo { color: #666666 } /* Literal.Number.Oct */
 .idl .sa { color: #BA2121 } /* Literal.String.Affix */
 .idl .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -284,7 +281,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .idl .vm { color: #19177C } /* Name.Variable.Magic */
 .idl .il { color: #666666 } /* Literal.Number.Integer.Long */
 .python .hll { background-color: #ffffcc }
-.python  { background: #f8f8f8; }
 .python .c { color: #408080; font-style: italic } /* Comment */
 .python .err { border: 1px solid #FF0000 } /* Error */
 .python .k { color: #008000; font-weight: bold } /* Keyword */
@@ -330,7 +326,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .python .mb { color: #666666 } /* Literal.Number.Bin */
 .python .mf { color: #666666 } /* Literal.Number.Float */
 .python .mh { color: #666666 } /* Literal.Number.Hex */
-.python .mi { color: #666666 } /* Literal.Number.Integer */
+.python .mi { color: #008000 } /* Literal.Number.Integer */
 .python .mo { color: #666666 } /* Literal.Number.Oct */
 .python .sa { color: #BA2121 } /* Literal.String.Affix */
 .python .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -353,7 +349,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .python .vm { color: #19177C } /* Name.Variable.Magic */
 .python .il { color: #666666 } /* Literal.Number.Integer.Long */
 .java .hll { background-color: #ffffcc }
-.java  { background: #f8f8f8; }
 .java .c { color: #408080; font-style: italic } /* Comment */
 .java .err { border: 1px solid #FF0000 } /* Error */
 .java .k { color: #008000; font-weight: bold } /* Keyword */
@@ -399,7 +394,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .java .mb { color: #666666 } /* Literal.Number.Bin */
 .java .mf { color: #666666 } /* Literal.Number.Float */
 .java .mh { color: #666666 } /* Literal.Number.Hex */
-.java .mi { color: #666666 } /* Literal.Number.Integer */
+.java .mi { color: #008000 } /* Literal.Number.Integer */
 .java .mo { color: #666666 } /* Literal.Number.Oct */
 .java .sa { color: #BA2121 } /* Literal.String.Affix */
 .java .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -422,7 +417,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .java .vm { color: #19177C } /* Name.Variable.Magic */
 .java .il { color: #666666 } /* Literal.Number.Integer.Long */
 .antlr-csharp .hll { background-color: #ffffcc }
-.antlr-csharp  { background: #f8f8f8; }
 .antlr-csharp .c { color: #408080; font-style: italic } /* Comment */
 .antlr-csharp .err { border: 1px solid #FF0000 } /* Error */
 .antlr-csharp .k { color: #008000; font-weight: bold } /* Keyword */
@@ -468,7 +462,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .antlr-csharp .mb { color: #666666 } /* Literal.Number.Bin */
 .antlr-csharp .mf { color: #666666 } /* Literal.Number.Float */
 .antlr-csharp .mh { color: #666666 } /* Literal.Number.Hex */
-.antlr-csharp .mi { color: #666666 } /* Literal.Number.Integer */
+.antlr-csharp .mi { color: #008000 } /* Literal.Number.Integer */
 .antlr-csharp .mo { color: #666666 } /* Literal.Number.Oct */
 .antlr-csharp .sa { color: #BA2121 } /* Literal.String.Affix */
 .antlr-csharp .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -491,7 +485,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .antlr-csharp .vm { color: #19177C } /* Name.Variable.Magic */
 .antlr-csharp .il { color: #666666 } /* Literal.Number.Integer.Long */
 .lua .hll { background-color: #ffffcc }
-.lua  { background: #f8f8f8; }
 .lua .c { color: #408080; font-style: italic } /* Comment */
 .lua .err { border: 1px solid #FF0000 } /* Error */
 .lua .k { color: #008000; font-weight: bold } /* Keyword */
@@ -537,7 +530,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .lua .mb { color: #666666 } /* Literal.Number.Bin */
 .lua .mf { color: #666666 } /* Literal.Number.Float */
 .lua .mh { color: #666666 } /* Literal.Number.Hex */
-.lua .mi { color: #666666 } /* Literal.Number.Integer */
+.lua .mi { color: #008000 } /* Literal.Number.Integer */
 .lua .mo { color: #666666 } /* Literal.Number.Oct */
 .lua .sa { color: #BA2121 } /* Literal.String.Affix */
 .lua .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -560,7 +553,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .lua .vm { color: #19177C } /* Name.Variable.Magic */
 .lua .il { color: #666666 } /* Literal.Number.Integer.Long */
 .ruby .hll { background-color: #ffffcc }
-.ruby  { background: #f8f8f8; }
 .ruby .c { color: #408080; font-style: italic } /* Comment */
 .ruby .err { border: 1px solid #FF0000 } /* Error */
 .ruby .k { color: #008000; font-weight: bold } /* Keyword */
@@ -606,7 +598,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .ruby .mb { color: #666666 } /* Literal.Number.Bin */
 .ruby .mf { color: #666666 } /* Literal.Number.Float */
 .ruby .mh { color: #666666 } /* Literal.Number.Hex */
-.ruby .mi { color: #666666 } /* Literal.Number.Integer */
+.ruby .mi { color: #008000 } /* Literal.Number.Integer */
 .ruby .mo { color: #666666 } /* Literal.Number.Oct */
 .ruby .sa { color: #BA2121 } /* Literal.String.Affix */
 .ruby .sb { color: #BA2121 } /* Literal.String.Backtick */
@@ -629,7 +621,6 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .ruby .vm { color: #19177C } /* Name.Variable.Magic */
 .ruby .il { color: #666666 } /* Literal.Number.Integer.Long */
 .php .hll { background-color: #ffffcc }
-.php  { background: #f8f8f8; }
 .php .c { color: #408080; font-style: italic } /* Comment */
 .php .err { border: 1px solid #FF0000 } /* Error */
 .php .k { color: #008000; font-weight: bold } /* Keyword */
@@ -675,7 +666,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 .php .mb { color: #666666 } /* Literal.Number.Bin */
 .php .mf { color: #666666 } /* Literal.Number.Float */
 .php .mh { color: #666666 } /* Literal.Number.Hex */
-.php .mi { color: #666666 } /* Literal.Number.Integer */
+.php .mi { color: #008000 } /* Literal.Number.Integer */
 .php .mo { color: #666666 } /* Literal.Number.Oct */
 .php .sa { color: #BA2121 } /* Literal.String.Affix */
 .php .sb { color: #BA2121 } /* Literal.String.Backtick */

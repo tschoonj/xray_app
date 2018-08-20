@@ -7,7 +7,8 @@ from pygments.formatters import HtmlFormatter
 import xraylib
 
 from xray_app.methods.forms import Xraylib_Request, Request_Error,  Request_Units
-from xray_app.methods.utils import validate_int, validate_float, validate_str , validate_int_or_str, code_example, make_tup, check_xraylib_key, calc_output, label_dict, all_trans
+from xray_app.methods.utils import validate_int, validate_float, validate_str , validate_int_or_str, code_example, make_tup, check_xraylib_key, calc_output, label_dict, all_trans, all_trans_xrf
+
 
 
 methods = Blueprint('methods', __name__)
@@ -275,7 +276,15 @@ def index():
                             output = output,
                             units = Request_Units.CS_u, 
                             code_examples = code_examples
-                            )                                  
+                            )
+                elif linetype_trans_notation == 'All':
+                    output = all_trans_xrf(form.linetype.trans_iupac.choices, select_input, int_z, energy)
+                    return render_template(
+                                'index.html', 
+                                form = form,
+                                output = output,
+                                units = Request_Units.CS_u
+                                )            
             else:
                 return render_template(
                         'index.html', 
@@ -551,7 +560,7 @@ def index():
         elif select_input == 'GetRadioNuclideDataList':
             output = xraylib.GetRadioNuclideDataList()
             output.insert(0, '<b> Radionuclides: </b>')
-            output = '<br>'.join(output) 
+            output = '<br/>'.join(output) 
             code_examples = code_example(form.examples.choices, select_input)
             return render_template(
                     'index.html',  
@@ -574,7 +583,7 @@ def index():
         elif select_input == 'GetCompoundDataNISTList':
             output = xraylib.GetCompoundDataNISTList()
             output.insert(0, '<b> NIST Compounds: </b>')
-            output = '<br>'.join(output) 
+            output = '<br/>'.join(output) 
             code_examples = code_example(form.examples.choices, select_input)
             return render_template(
                     'index.html',  

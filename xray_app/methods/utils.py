@@ -47,8 +47,17 @@ def all_trans(tple, *inputs):
     for trans in transs:
         out = calc_output(*inputs, trans)
         if out != 0:
-            output[trans] = out
+            output[trans] = out       
     return output                   
+#------------------------------------------------------------------------------------------------
+def all_trans_xrf(tple, function, int_z, energy):
+    transs = [x[0] for x in tple]
+    output = {}
+    for trans in transs:
+        out = calc_output(function, int_z, trans, energy)
+        if out != 0:
+            output[trans] = out
+    return output
 #------------------------------------------------------------------------------------------------
 def make_tup(_dict, variable):
     tup = []
@@ -92,12 +101,10 @@ def check_xraylib_key(s):
         #print (key)
         if s in key:
             #print (key)
-            print ("found")
             return True
         else:
             if key.endswith('_' + s):
                 #print (key) 
-                #print("found at end")
                 return True
     return False
 
@@ -114,7 +121,8 @@ def get_key(s):
 
 def calc_output(function, *values):
     xrl_function = getattr(xraylib, function)
-    print(values)
+    #print(values)
+
     lst = []
     for value in values:        
         if validate_int(value) == True:
@@ -129,12 +137,11 @@ def calc_output(function, *values):
             lst.append(value)
         else:
             lst.append(value)   #needed for _CP entry         
-    print(lst)
+    #print(lst)
     try:
         if validate_int(lst[0]) == True:
-            print('trying')
             output = xrl_function(*lst)
-            print(output)
+            #print(output)
             return output
         else: 
             print(function + '_CP')
@@ -142,12 +149,11 @@ def calc_output(function, *values):
             xrl_function = getattr(xraylib, function + '_CP')
             print(xrl_function)
             output = xrl_function(*lst)
-            print(output)
+            #print(output)
             return output
     except:
         output = 'Error'
-        print(output)
-        return output
+        #print(output)
 
 def code_example(tple, function, *variables):
     languages = [x[0] for x in tple]
@@ -157,25 +163,35 @@ def code_example(tple, function, *variables):
     for label in labels:
         if label == 'C/C++/Objective-C':
             support = '#include &ltxraylib.h&gt'
+            _class = 'cpp-objdump'
         elif label == 'Fortran 2003/2008':
             support = 'use :: xraylib'
+            _class = 'fortran'
         elif label == 'Perl':
             support = 'use xraylib.pm;'
+            _class = 'perl'
         elif label == 'IDL':
             support = '@xraylib'
+            _class = 'idl'
         elif label == 'Python':
             support = 'import xraylib'
+            _class = 'python'        
         elif label == 'Java':
             support = 'import com.github.tschoonj.xraylib.*;'
+            _class = 'java'
         elif label == 'C#/.NET':
             support = 'using Science;'
+            _class = 'antlr-csharp'
         elif label == 'Lua':
             support = 'require("xraylib")'
+            _class = 'lua'
         elif label == 'Ruby':
             support = 'require \'xraylib\''
+            _class = 'ruby'
         elif label == 'PHP':
             support = 'include("xraylib.php");'
-        string = '<p id="'+ str(label) + '"> Enable support for xraylib in ' + str(label) + ' using: <b>' + str(support) + '</b></p>'
+            _class = 'php'
+        string = '<div class="'+ str(_class) + ' code-examples"> Enable support for xraylib in ' + str(label) + ' using: <b>' + str(support) + '</b></div>\n'
         examples.append(string)
         
     for language in languages:
@@ -327,8 +343,8 @@ def code_example(tple, function, *variables):
                     lst.append('"Acetone"')
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'
-        example = highlight(example, lexer, HtmlFormatter(cssclass=language))
-        print(HtmlFormatter().get_style_defs('.' + str(language)))
+        example = highlight(example, lexer, HtmlFormatter(cssclass = str(language) + ' code-examples'))
+        #print(HtmlFormatter().get_style_defs('.' + str(language))) #prints css
         examples.append(example)      
     examples_html = ''.join(examples)  
     return examples_html        

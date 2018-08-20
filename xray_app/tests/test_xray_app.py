@@ -54,7 +54,8 @@ test_input = {
 def soup_output(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
     #print(soup)
-    output = soup.find('div', id="output").string
+    print()
+    output = soup.find('p', id="output").string
     print(output)
     output = float(output.replace(" ",""))
     return output   

@@ -22,13 +22,8 @@
                     {{field.trans_siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id == 'csrf_token'%}
-            {% elif field.id == 'function'%}
+            {% elif field.id == 'function' or field.id == 'examples' %}
                 <div class="form-group" id="{{field.id}}">
-                    {{field.label}}:
-                    {{field}}
-                </div>
-            {% elif field.id == 'examples' %}
-                <div class="form-group" id="{{field.id}}" onchange="">
                     {{field.label}}:
                     {{field}}
                 </div>
@@ -50,7 +45,7 @@
             type="submit" 
             value="Submit"
             formnovalidate>
-        <br>
+        <br/>
      </fieldset>
   </form>
 </div>  
@@ -59,7 +54,6 @@
     <div class="table-responsive">  
         <table class="table">
             {% for item in output.items() %}
-            {{item}}
             {% endfor %}
             {% for key, value in output.items() %}
                 <tr>
@@ -77,11 +71,11 @@
 {% elif output %} 
 <h2> Result: </h2>
     <div id="output">
-        <p>{{ output|safe }}</p>
+        <p id="output"> {{ output|safe }} </p>
     </div>
     <div id="units">
     {% if units %}
-        {{units|safe}}  
+        <p> {{units|safe}} </p>
     {% endif %}
     </div>
 {% endif %}
@@ -91,15 +85,14 @@
 {% endif %} 
 {% if code_examples %}
     <h3> Code Example: </h3>
-    {{code_examples|safe}}
+{{code_examples|safe}}
 {% endif %}
-
 <script
-        src="https://code.jquery.com/jquery-3.3.1.js"
-        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-        crossorigin="anonymous">
-</script>
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"> </script>
+<script src="{{url_for('static', filename='index.js')}}"></script>
 
-<script src="{{url_for('static', filename='main.js')}}"></script>
 <noscript>Sorry, your browser does not support JavaScript!</noscript>
+
 {% endblock body %}

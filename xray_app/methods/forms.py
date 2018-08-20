@@ -32,9 +32,7 @@ class Xraylib_Request(FlaskForm):
     phi = StringField(u'Azimuthal Angle &#981 (rad)', validators = [DataRequired()])
     density = StringField('Density (g cm<sup>-3</sup>)', validators = [DataRequired()])
     pz = StringField('Electron Momentum p<sub>z</sub>', validators = [DataRequired()])
-    linetype = FormField(TransitionForm) 
-        #needs to have a choice of IUPAC, SIEGBAHN or ALL 
-        #can do with dynamic select field will need extra select field though  
+    linetype = FormField(TransitionForm)  
     shell = SelectField(u'Shell', choices = [], validators = [DataRequired()])
     cktrans = SelectField(u'Coster Kronig Trans', choices = [], validators = [DataRequired()])
     nistcomp = SelectField(u'NIST Compound', choices = [], validators = [DataRequired()])
