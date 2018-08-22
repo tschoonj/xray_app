@@ -117,10 +117,10 @@ $(document).ready(function () {
         
     };
    
-    $("select#example").ready(function () {
+    /*$("select#example").ready(function () {
         var $SelectExOnLoad = $("select#example").val();
         show_hide_code($SelectExOnLoad);
-    }
+    }*/
     
     /* hides/shows examples as form changes */    
     $("select#examples").change(function(e) {
@@ -147,6 +147,8 @@ $(document).ready(function () {
         } else if ($RadioVal == "Siegbahn") {
             $("#linetype-trans_siegbahn").show();
             $("#linetype-trans_iupac").hide();
+        } else if ($RadioVal == "All") {
+            $("#linetype-trans_siegbahn, #linetype-trans_iupac").hide();
         };
     });    
 });

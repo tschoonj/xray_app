@@ -88,7 +88,6 @@ def index():
           
         if select_input == 'AtomicWeight' or select_input == 'ElementDensity':
             if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
-                print('working')
                 examples = code_example(form.examples.choices, select_input, int_z)               
                 output = calc_output(select_input, int_z)                    
                 return render_template(
@@ -218,7 +217,7 @@ def index():
                         )
 
         elif select_input == 'CS_Photo_Partial':
-            if validate_int(int_z) == True and validate_float(energy):
+            if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0 and validate_float(energy):
                 output = calc_output(select_input, int_z, shell, energy)
                 code_examples = code_example(form.examples.choices, select_input, int_z, shell, energy)  
                 return render_template(
@@ -250,7 +249,7 @@ def index():
                 return render_template(
                             'index.html', 
                             form = form,
-                            error=error
+                            error=Request_Error.error
                             )
                             
         elif select_input.startswith('CS_FluorLine'):
@@ -336,7 +335,7 @@ def index():
                             )
                                      
         elif select_input == 'DCS_KN' or select_input == 'ComptonEnergy':
-            if validate__float(theta) == True:
+            if validate_float(energy, theta):
                 output = calc_output(select_input, energy, theta)
                 code_examples = code_example(form.examples.choices, select_input, energy, theta)
                 return render_template(
@@ -354,7 +353,7 @@ def index():
                             )     
         
         elif select_input.startswith('DCS_'):
-            if validate_float(energy, theta) == True and validate_int_or_str(int_z_or_comp) == True:
+            if validate_float(energy, theta) and validate_int_or_str(int_z_or_comp):
                 output = calc_output(select_input, int_z_or_comp, energy, theta)
                 code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, theta)
                 return render_template(

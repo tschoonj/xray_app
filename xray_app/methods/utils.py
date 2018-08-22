@@ -93,6 +93,24 @@ def make_tup(_dict, variable):
 label_dict = {'CS':'Cross Section:', 'DCS':'Differential Unpolarized Cross Section:', 'DCSP':'Differential Polarized Cross Section:', 'KN':'Klein-Nishina', 'Photo':'Photoionization', 'Rayl':'Rayleigh', 'Compt':'Compton', 'FluorLine':' XRF', 'Partial':'(Partial)', 'Thoms':'Thomson', 'TRANS':''}
 
 def check_xraylib_key(s):
+        s = s.upper()
+        s = s.replace(" ", "_")
+        s = s.replace("-", "_")
+        #print(s)
+        for key in xraylib.__dict__.keys():
+            #print (key)
+            if s == key:
+                #print('KEY FOUND')
+                return True
+            elif key.endswith('_' + s) and key.startswith('NIST'):
+                #print('KEY FOUND') 
+                return True
+            elif key.endswith('_' + s) and key.startswith('RADIO'):
+                #print('KEY FOUND') 
+                return True
+        return False
+               
+"""def check_xraylib_key(s):
     s = s.upper()
     s = s.replace(" ", "_")
     s = s.replace("-", "_")
@@ -107,17 +125,19 @@ def check_xraylib_key(s):
                 #print (key) 
                 return True
     return False
-
+"""
 def get_key(s):
     s = s.upper()
     s = s.replace(" ", "_")
     s = s.replace("-", "_")
-    for key in xraylib.__dict__:
-        if s in key:
-            return key
-        else:
-            if key.endswith('_' + s):
-                return key 
+    for key in xraylib.__dict__.keys():
+            #print (key)
+            if s == key:
+                return key
+            elif key.endswith('_' + s) and key.startswith('NIST'):
+                return key
+            elif key.endswith('_' + s) and key.startswith('RADIO'):
+                return key
 
 def calc_output(function, *values):
     xrl_function = getattr(xraylib, function)
