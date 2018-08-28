@@ -36,29 +36,31 @@ def output_test(rv, function, *values):
     assert output == pytest.approx(val)
     
 #note order of variables needs to be the same as if it were going into the function
-def function_test(client, _function, **variables):    
+def function_test(client, select_input, **variables):    
     #print(variables)
     test_inputs = []
     test_values = [variables[k] for k in variables]
-    result = [[]]
-    
+    lst = [[]]
+        
     for test_value in test_values:
-        result = [i + [value] for i in result for value in test_value]    
-    
-    for values in result:
+        lst = [i + [value] for i in lst for value in test_value]    
+        
+    for values in lst:
         _input = (list(values))
         test_dict = (dict(zip(variables.keys(), _input)))        
         test_inputs.append(test_dict)        
         
     for i in test_inputs:
-        function_input = dict(test_input, function = _function)
+        function_input = dict(test_input, function = select_input)
         function_input.update(i)
         rv = client.post('/', data = function_input)
         #print(list(i.values()))
         if validate_input(i):
-            output_test(rv, _function, *list(i.values()))
+            output_test(rv, select_input, *list(i.values()))
         else:
-            invalid_input_test(rv)       
+            invalid_input_test(rv) 
+            
+#add test for correct examples?                 
 #----------------------------------------------------------------------------    
 test_input = {
 	'comp': '', 'int_z':'',	'int_z_or_comp': '', 'float_q': '',	'linetype-trans_notation': '', 'linetype-trans_iupac':'', 'linetype-trans_siegbahn':'', 'shell': '', 'energy': '', 'theta': '', 'phi': '', 'density': '','pz': '', 'cktrans': '', 'nistcomp': '', 'augtrans': '', 'rad_nuc': ''
@@ -67,10 +69,17 @@ test_input = {
 test_z = [26, 'Fe', ' ']
 test_q = [0.5, ' ']
 test_z_comp = [26, 'Fe', 'FeSO4', ' ']
-test_energy = [10.0, ' ']
-test_angle = [1.0, ' ']
-test_comp = []
+test_energy = [10.5, ' ']
+test_angle = [1.5, ' ']
+test_comp = ['FeSO4', ' ', 0.5]
 test_shell = ['K_SHELL']
+test_cktrans = ['FL12_TRANS']
+test_pz = [1.5, ' ']
+test_density = ['1.5', ' ']
+
+test_linetype_notation = ['IUPAC', 'Siegbahn', 'All']
+test_linetype_siegbahn = ['KA1_LINE']
+test_linetype_iupac = ['KL3_LINE']
 
 def validate_input(dct):
     boo_list = [isinstance(value, (float, int)) or xraylib.SymbolToAtomicNumber(value) != 0 or check_xraylib_key(value) for value in list(dct.values())]
@@ -110,45 +119,38 @@ def test_about_vanilla(client):
 #----------------------------------------------------------------------------                
 def test_atomweight_elementdens(client): 
     test_functions = ['AtomicWeight', 'ElementDensity']
-    for _function in test_functions:
-        function_test(client, _function, int_z = test_z)    
+    for x in test_functions:
+        function_test(client, x, int_z = test_z)    
 
 def test_ffrayl_sfcompt(client):
     test_functions = ['FF_Rayl', 'SF_Compt']
-    for _function in test_functions:
-        function_test(client, _function, int_z = test_z, float_q = test_q)
+    for x in test_functions:
+        function_test(client, x, int_z = test_z, float_q = test_q)
 #----------------------------------------------------------------------------
-"""def test_lineenergy(client):
-    test_z = [5, 'Fe', 'a']
-    for value in test_z:
-        function_input = dict(test_input, function = 'LineEnergy', int_z = value, linetype_trans_notation = 'IUPAC', linetype_trans_iupac = 'KL1_LINE')
-        rv = client.post('/', data = function_input)
-        if isinstance(value, int):
-            output_test(client, rv, 'LineEnergy', value, xraylib.KL1_LINE)
-        elif xraylib.SymbolToAtomicNumber(value) != 0:
-            output_test(client, rv, 'LineEnergy', value, xraylib.KL1_LINE)
-        else:
-            invalid_input_test(client, rv)
-#methods req. linetype: LineEnergy, RadRate, CSFluorLines2"""
+"""def test_lineenergy_radrate(client):
+    test_functions = ['EdgeEnergy', 'RadRate']
+    for _function in test_functions:
+        function_test(client, _function, int_z = test_z, linetype-trans_iupac = test_linetype_siegbahn)
+        
+def test_cs_fluorline(client):"""
 #----------------------------------------------------------------------------
 # add in test for units
 def test_edgeenergy_etc(client):
     test_functions = ['EdgeEnergy', 'JumpFactor', 'FluorYield', 'AugerYield', 'AtomicLevelWidth', 'ElectronConfig']
-    for _function in test_functions:
-        function_test(client, _function, int_z = test_z, shell = test_shell)
-
-#All CS excl. PP and KN
+    for x in test_functions:
+        function_test(client, x, int_z = test_z, shell = test_shell)
+#----------------------------------------------------------------------------
 def test_cs(client):
     test_functions = ['CS_Total', 'CS_Photo', 'CS_Rayl', 'CS_Compt', 'CS_Energy']
-    for _function in test_functions:
-        function_test(client, _function, int_z_or_comp = test_z_comp, energy = test_energy)
+    for x in test_functions:
+        function_test(client, x, int_z_or_comp = test_z_comp, energy = test_energy)
         
 def test_cs_kn(client):
     function_test(client, 'CS_KN', energy = test_energy)
 
 def test_cs_photo_partial(client):
-    function_test(client, 'CS_Photo_Partial', int_z = test_z, shell = test_shell, energy = test_energy)    
-
+    function_test(client, 'CS_Photo_Partial', int_z = test_z, shell = test_shell, energy = test_energy)        
+#----------------------------------------------------------------------------
 def test_dcs(client):
     test_functions = ['DCS_Rayl', 'DCS_Compt']
     for _function in test_functions:
@@ -156,5 +158,48 @@ def test_dcs(client):
 
 def test_dcs_kn_compt(client):
     test_functions = ['DCS_KN', 'ComptonEnergy']
-    for _function in test_functions:
-        function_test(client, _function, energy = test_energy, theta = test_angle)              
+    for x in test_functions:
+        function_test(client, x, energy = test_energy, theta = test_angle)
+
+def test_dcs_thoms(client):
+    function_test(client, 'DCS_Thoms', theta = test_angle)
+#----------------------------------------------------------------------------        
+def test_dcsp(client):
+    test_functions = ['DCSP_Rayl', 'DCSP_Compt']
+    for x in test_functions:
+        function_test(client, x, int_z_or_comp = test_z_comp, energy = test_energy, theta = test_angle, phi = test_angle)
+
+def test_dcsp_thoms(client):
+    function_test(client, 'DCSP_Thoms', theta = test_angle, phi = test_angle)
+
+def test_dcsp_kn(client):
+    function_test(client, 'DCSP_KN', energy = test_energy, theta = test_angle, phi = test_angle)
+#----------------------------------------------------------------------------        
+def test_fi_fii(client):
+    test_functions = ['Fi', 'Fii']
+    for x in test_functions:
+        function_test(client, x, int_z = test_z, energy = test_energy)
+
+def test_cktransprob(client):
+    function_test(client, 'CosKronTransProb', int_z = test_z, cktrans = test_cktrans)
+
+def test_comptprof(client):
+    function_test(client, 'ComptonProfile', int_z = test_z, pz = test_pz)
+    
+def test_comptprof_part(client):
+    function_test(client, 'ComptonProfile_Partial', int_z = test_z, shell = test_shell, pz = test_pz)
+
+def test_mom_trans(client):
+    function_test(client, 'MomentTransf', energy = test_energy, theta = test_angle)
+
+def test_ref_ind(client):
+    function_test(client, 'Refractive_Index', int_z_or_comp = test_z_comp, energy = test_energy, density = test_density)
+    
+"""def test_c_parser(client):
+    function_test(client, 'CompoundParser', comp = test_comp)
+
+def test_get_by_ind(client):
+    pass
+        
+def test_get_list(client):
+    pass"""

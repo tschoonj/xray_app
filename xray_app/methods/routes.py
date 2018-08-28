@@ -16,6 +16,7 @@ methods = Blueprint('methods', __name__)
 #eventually move to own package e.g. xray_app.methods.validators, then import
 #ditto for the dicts
 #------------------------------------------------------------------------------------------------------------
+#generates dicts and tuples needed to populate wtforms choices
 nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('NIST')}
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
 
@@ -25,7 +26,6 @@ aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')}
 cs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('CS_') and not k.endswith('CP')} 
 dcs_dict = {k: v for k, v in xraylib.__dict__.items() if k.startswith('DCS_')and not k.endswith('CP') or k.startswith('DCSP_') and not k.endswith('CP')}      
-
   
 cs_tup = make_tup(cs_dict, 'cs') #special case
 dcs_tup = make_tup(dcs_dict, 'dcs') #special case
@@ -35,6 +35,7 @@ shell_tup = make_tup(shell_dict, 'shell')
 ck_tup = make_tup(ck_dict, 'ck')  #special case
 aug_tup = make_tup(aug_dict, 'aug')
 
+#slicing linetype tuples to split into IUPAC and Siegbahn
 trans_tup = [(k, k.split('_')[0]) for k, v in trans_dict.items()]
 trans_I_tup =  trans_tup[0:383]
 trans_S_tup = trans_tup[:382:-1]
@@ -43,10 +44,9 @@ trans_S_tup = trans_S_tup[::-1]
 @methods.route("/", methods=['GET', 'POST'])
 def index():
     form = Xraylib_Request()
-    form.function.choices = form.function.choices + cs_tup + dcs_tup
-        
-        #for i in form.examples.choices:
-            #print(i)
+    
+    #populating select fields
+    form.function.choices = form.function.choices + cs_tup + dcs_tup    
     form.linetype.trans_iupac.choices = trans_I_tup
     form.linetype.trans_siegbahn.choices = trans_S_tup
     form.shell.choices =  shell_tup
@@ -54,22 +54,19 @@ def index():
     form.nistcomp.choices = nist_tup
     form.augtrans.choices = aug_tup
     form.rad_nuc.choices = rad_name_tup
-
-
-        #after separating trans_tup - need if statement on radio click so only relevant trans show JQuery 
-        #poss could def populate_choices in separate dict package then call here 
            
-    if request.method == 'POST':        
-            #for key in request.form.keys():
-                #print(f'key= {key}')
+    if request.method == 'POST':
+        #for key in request.form.keys():
+            #print(f'key= {key}')
                 
+        #gets user input for fields
         select_input = request.form.get('function')
-        print(select_input)
         examples = request.form.get('examples')
                 
         linetype_trans_notation = request.form.get('linetype-trans_notation')
         linetype_trans_iupac = request.form.get('linetype-trans_iupac')
         linetype_trans_siegbahn = request.form.get('linetype-trans_siegbahn')
+        
         cktrans = request.form.get('cktrans')
         nistcomp = request.form.get('nistcomp')
         augtrans = request.form.get('augtrans')
@@ -143,7 +140,7 @@ def index():
                                 code_examples = code_examples
                                 )                    
             elif linetype_trans_notation == 'Siegbahn':
-                if validate_int_or_float(int_z) == True:
+                if validate_int_or_float(int_z):
                     code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_siegbahn)
                     output = calc_output(select_input, int_z, linetype_trans_siegbahn)
                     if select_input == 'LineEnergy':
@@ -162,8 +159,10 @@ def index():
                             code_examples = code_examples
                             )                      
             elif linetype_trans_notation == 'All':
-                output = all_trans(form.linetype.trans_iupac.choices, select_input, int_z)
+                out = all_trans(form.linetype.trans_iupac.choices, select_input, int_z)
                 if select_input == 'LineEnergy':
+                    #output = {k: v for k, v in out.items()}
+                    output = dict(out, Line = 'Energies')
                     return render_template(
                                 'index.html', 
                                 form = form,
@@ -213,7 +212,7 @@ def index():
                 return render_template(
                         'index.html', 
                         form = form,  
-                        error = Request_Error.int_z_error
+                        error = Request_Error.error
                         )
 
         elif select_input == 'CS_Photo_Partial':
@@ -235,7 +234,7 @@ def index():
                         )
          
         elif select_input == 'CS_KN':
-            if validate_float(energy) == True:
+            if validate_float(energy):
                 output = calc_output(select_input, energy)
                 code_examples = code_example(form.examples.choices, select_input, energy)
                 return render_template(
@@ -253,7 +252,7 @@ def index():
                             )
                             
         elif select_input.startswith('CS_FluorLine'):
-            if validate_float(energy) == True:
+            if validate_float(energy):
                 if linetype_trans_notation == 'IUPAC':
                     if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
                         code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_iupac, energy)
@@ -291,9 +290,8 @@ def index():
                         error = Request_Error.error
                         )                             
         elif select_input.startswith('CS_'):
-                #need to add in CSb
-            if validate_int_or_str(int_z_or_comp) == True and validate_float(energy) == True:
-                    #NOTE comp input is case sensitive
+            if validate_int_or_str(int_z_or_comp) and validate_float(energy):
+                #comp input is case sensitive
                 code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy)
                 output = calc_output(select_input, int_z_or_comp, energy)
                 return render_template(
@@ -307,17 +305,17 @@ def index():
                 return render_template(
                         'index.html', 
                         form = form,  
-                        error = Request_Error.int_z_or_comp_error
+                        error = Request_Error.error
                         )
             else:
                 return render_template(
                         'index.html', 
                         form = form,  
-                        error = Request_Error.energy_error
+                        error = Request_Error.error
                         )
                           
         elif select_input == 'DCS_Thoms':
-            if validate_float(theta) == True:
+            if validate_float(theta):
                 output = calc_output(select_input, theta)
                 code_examples = code_example(form.examples.choices, select_input, theta)
                 return render_template(
@@ -422,8 +420,8 @@ def index():
                             'index.html', 
                             form = form,
                             error = Request_Error.error
-                            )                    
-        #missing cs_energy and total kissel
+                            )
+                                                
         elif select_input.startswith('Fi'):
             if validate_int(int_z) == True or validate_float(energy) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
                 output = calc_output(select_input, int_z, energy)
@@ -511,37 +509,60 @@ def index():
                             
         
         elif select_input == 'Refractive_Index':
+            #special case: Refractive_Index input needs to be const char compound
             if validate_int_or_str(int_z_or_comp) == True and validate_float(energy, density) == True:
-                #calc_output & examples doesn't work bc of the num to symbol thing
                 try:
                     output = xraylib.Refractive_Index(xraylib.AtomicNumberToSymbol(int(int_z_or_comp)), float(energy), float(density))
                     code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, density)
-                except:
-                    output = xraylib.Refractive_Index(int_z_or_comp, float(energy), float(density))
-                    code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, density)
-                return render_template(
+                    return render_template(
                         'index.html',
                         form = form, 
                         output = output, 
                         code_examples = code_examples
                         )
+                except:
+                    output = xraylib.Refractive_Index(int_z_or_comp, float(energy), float(density))
+                    code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, density)
+                    return render_template(
+                        'index.html',
+                        form = form, 
+                        output = output, 
+                        code_examples = code_examples
+                        )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.error
+                        )                
             else:
                      return render_template(
                         'index.html', 
                         form = form,  
-                        error = Request_Error.energy_error
+                        error = Request_Error.error
                         )
         
         elif select_input == 'CompoundParser':
+            #special case: CompoundParser input needs to be const char compound
             if validate_str(comp) == True:
                 try:
-                    output = xraylib.CompoundParser(str(comp))
+                    out = xraylib.CompoundParser(str(comp))
+                    
+                    #formatting output
+                    w_fracts = out['massFractions']
+                    w_pers = [str(round(i*100, 2)) + ' %' for i in w_fracts]
+                    z = out['Elements']
+                    sym = [ '<sub>' + str(i) + '</sub>' + str(xraylib.AtomicNumberToSymbol(i)) for i in z]
+                    mmass = str(out['molarMass']) + ' g mol<sup>-1</sup>'
+                    
+                    output = {'Elements': sym, 'Weight Fraction': w_pers,'Number of Atoms': out['nAtoms'], ' Molar Mass': mmass}
                     code_examples = code_example(form.examples.choices, select_input, comp)
                     return render_template(
                             'index.html', 
                             form = form,
                             output = output,  
-                            code_examples = code_examples
+                            code_examples = code_examples, 
+                            units = Request_Units.per_u
                             )
                 except:
                     return render_template(
@@ -569,9 +590,15 @@ def index():
                     )
         
         elif select_input == 'GetRadioNuclideDataByIndex':
-            output = calc_output(select_input, rad_nuc)
+            out = calc_output(select_input, rad_nuc)
+           
+            #formatting output
+            line_nos = out['XrayLines']           
+            x_energy = [xraylib.LineEnergy(out['Z_xray'], i) for i in line_nos]
+            
+            output = {'X-ray Energies': x_energy, 'Disintegrations s<sup>-1</sup>': out['XrayIntensities'], 'Gamma-ray Energy': out['GammaEnergies'], 'Disintegrations s<sup>-1</sup> ': out['GammaIntensities']}
             code_examples = code_example(form.examples.choices, 'GetRadioNuclideDataByName', rad_nuc)
-            #output = xraylib.GetRadioNuclideDataByName(str(rad_nuc_name))
+            
             return render_template(
                     'index.html',  
                     form = form,
@@ -592,7 +619,17 @@ def index():
                     )
                     
         elif select_input == 'GetCompoundDataNISTByIndex':
-            output = calc_output(select_input, nistcomp)
+            out = calc_output(select_input, nistcomp)
+            
+            #formatting output
+            w_fracts = out['massFractions']
+            w_pers = [str(round(i*100, 2)) + ' %' for i in w_fracts]
+            z = out['Elements']
+            sym = [ '<sub>' + str(i) + '</sub>' + str(xraylib.AtomicNumberToSymbol(i)) for i in z]
+            density = str(out['density']) + ' g cm<sup>-3</sup>'
+                    
+            output = {'Elements': sym, 'Weight Fraction': w_pers, ' Density': density}
+            
             code_examples = code_example(form.examples.choices, 'GetCompoundDataNISTByName', nistcomp)
             return render_template(
                     'index.html',
@@ -602,7 +639,7 @@ def index():
                     )               
         
         """elif select_input == '':
-            if validate_int_or_float(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
+            if xraylib.SymbolToAtomicNumber(int_z) != 0:
                 output = calc_output(select_input)
                 code_examples = code_example(form.examples.choices, select_input)
                 pass

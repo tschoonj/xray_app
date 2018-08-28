@@ -2,8 +2,10 @@ $(document).ready(function () {
     /*$(document).on('change keyup', 'select#function', function(e) {
         var currentSelectVal = $(this).val();
         alert(currentSelectVal);
-    })*/ /* automatically assigns event handlers to elements that are specified by the selector (i.e select)*/
+    })*/ 
+    /* automatically assigns event handlers to elements that are specified by the selector (i.e select)*/
     
+    //shows and hides fields depending on $Select
     function show_hide_input($Select) {
         if ($Select == "AtomicWeight" || $Select == "ElementDensity") {
             $("div.xlib").hide();
@@ -81,6 +83,7 @@ $(document).ready(function () {
         };       
     };        
     
+    //shows and hides cod examples depending on $Select
     function show_hide_code ($Select) {
         if ($Select == 'cpp-objdump') {
             $(".code-examples").hide();
@@ -122,23 +125,23 @@ $(document).ready(function () {
         show_hide_code($SelectExOnLoad);
     }*/
     
-    /* hides/shows examples as form changes */    
+    // hides/shows examples as form changes 
     $("select#examples").change(function(e) {
         var $SelectEx = $(this).val();                
         show_hide_code($SelectEx);
     });
     
-    /* on page refresh or load (post form) */
+    // on page refresh or load (POST)
     var $SelectOnLoad = $("select#function").val();
     show_hide_input($SelectOnLoad);
     
-    /* hides/shows as form changes */
+    // hides/shows as form changes
     $("select#function").change(function(e) {
         var $SelectVal = $(this).val();        
         show_hide_input($SelectVal);
     });
     
-    /*shows appropriate select form for linetype*/
+    // shows appropriate select form for linetype
     $("input[type='radio']").change(function(e) {
         var $RadioVal = $(this).val();
         if ($RadioVal == "IUPAC") {

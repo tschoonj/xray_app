@@ -40,8 +40,8 @@ class Xraylib_Request(FlaskForm):
     rad_nuc = SelectField( u'Radio Nuclide', choices = [], validators = [DataRequired()])
     #choices(value,label)
     examples = SelectField(
-    u'Code Example', 
-        choices = [('cpp-objdump','C/C++/Objective-C'), ('fortran','Fortran 2003/2008'), ('perl','Perl'), ('idl','IDL'), ('python','Python'), ('java','Java'), ('antlr-csharp','C#/.NET'), ('lua','Lua'), ('ruby','Ruby'), ('php','PHP')],
+        u'Code Example', 
+        choices = [('cpp-objdump','C/C++/Objective-C'), ('fortran','Fortran 2003/2008'), ('perl','Perl'), ('idl','IDL'), ('python','Python'), ('java','Java'), ('csharp','C#/.NET'), ('lua','Lua'), ('ruby','Ruby'), ('php','PHP')],
         validators = [DataRequired()])
       
 #------------------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ class Request_Error():
     augtrans_error = 'Invalid input: augtrans'
     rad_nuc_error = 'Invalid input: rad_nuc_'    
     error = 'Please enter valid input.'
-#then when you need error you do error = request_error.error_name 
+#then when you need errors you render error as request_error.error_name 
         
 class Request_Units():
     AtomicWeight_u = ' g mol<sup>-1</sup>'
@@ -72,5 +72,6 @@ class Request_Units():
     CS_u = ' cm<sup>2</sup> g<sup>-1</sup>'
     CSb_u = ' barnes atom<sup>-1</sup>'
     DCS_u = ' cm<sup>2</sup> g<sup>-1</sup> sr<sup>-1</sup>'
+    per_u = ' %'
         
  #<sup></sup>       

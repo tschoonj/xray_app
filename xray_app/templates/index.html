@@ -52,20 +52,25 @@
 
 {% if output is mapping %}
     <div class="table-responsive">  
-        <table class="table">
-            {% for item in output.items() %}
-            {% endfor %}
+        {# {% for item in output.items() %}
+            {{item|join('  ')|safe}}
+        {% endfor %} #}
+        <table class="table table-striped">         
+            <tr> 
+            {% for key, value in output.items() %}                                
+                <th> {{key|safe}} </th>                
+            {% endfor %}    
+            </tr>    
             {% for key, value in output.items() %}
-                <tr>
-                    <th> {{ key }} </th>
-                    <td> {{ value }} 
-                    <div id="units">
-                    {% if units %}
-                        {{units|safe}}  
-                    {% endif %}
-                    </div></td>
-                </tr>
-            {% endfor%}
+                <td>                 
+                {% if value is iterable and value is not string %}
+                {{value|join('</br>')|safe}}
+                {% else %}
+                {{value|safe}}
+                {% endif %}                 
+                </td>
+            {% endfor %}      
+            
         </table>
     </div>
 {% elif output %} 
@@ -81,11 +86,11 @@
 {% endif %}
 
 {% if error %}
-           {{error}}
+    {{error}}
 {% endif %} 
 {% if code_examples %}
     <h3> Code Example: </h3>
-{{code_examples|safe}}
+    {{code_examples|safe}}
 {% endif %}
 <script
     src="https://code.jquery.com/jquery-3.3.1.js"

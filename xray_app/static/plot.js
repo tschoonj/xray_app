@@ -1,4 +1,5 @@
 $(document).ready(function () {    
+    
     function show_hide($Select) {
         if ($Select == "CS_Photo_Partial"){
             $("div.xlib").hide();
@@ -20,7 +21,7 @@ $(document).ready(function () {
     /* hides/shows as form changes  */ 
     $("select#function").change(function(e) {
         var $SelectVal = $(this).val();
-        show_hide($SelectVal)
+        show_hide($SelectVal);
     });
     
     
@@ -36,6 +37,6 @@ $(document).ready(function () {
         } else if ($RadioVal == "Siegbahn") {
             $("#linetype-trans_siegbahn").show();
             $("#linetype-trans_iupac").hide();
-        }
+        };
     });    
 });
