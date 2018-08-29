@@ -23,7 +23,7 @@ class Xraylib_Request_Plot(FlaskForm):
     log_boo_y = BooleanField(
         u'Log Scale (y)'
         )   
-    linetype = FormField(TransitionForm)
+    transition = FormField(TransitionForm)
     int_z = StringField('Element',validators = [DataRequired()])
     int_z_or_comp = StringField('Element or Compound',validators = [DataRequired()])
     #shell = SelectField(

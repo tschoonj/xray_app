@@ -9,8 +9,8 @@ $(document).ready(function () {
             $("#int_z_or_comp").show();
         } else if ($Select.includes("CS_FluorLine")) {
             $("div.xlib").hide();
-            $("#int_z, #linetype").show();
-            $("#linetype-trans_iupac, #linetype-trans_siegbahn").hide();
+            $("#int_z, #transition").show();
+            $("#transition-iupac, #transition-siegbahn").hide();
         };    
     };
     
@@ -25,18 +25,18 @@ $(document).ready(function () {
     });
     
     
-    /* hides All option for linetype until implemented */
-    $("div#linetype li:last-child").hide();
+    /* hides All option for transition until implemented */
+    $("div#transition li:last-child").hide();
     
-    /*shows appropriate select form for linetype*/
+    /*shows appropriate select form for transition*/
     $("input[type='radio']").change(function(e) {
         var $RadioVal = $(this).val();
         if ($RadioVal == "IUPAC") {
-            $("#linetype-trans_iupac").show();
-            $("#linetype-trans_siegbahn").hide();
+            $("#transition-iupac").show();
+            $("#transition-siegbahn").hide();
         } else if ($RadioVal == "Siegbahn") {
-            $("#linetype-trans_siegbahn").show();
-            $("#linetype-trans_iupac").hide();
+            $("#transition-siegbahn").show();
+            $("#transition-iupac").hide();
         };
     });    
 });

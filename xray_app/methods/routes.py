@@ -35,7 +35,7 @@ shell_tup = make_tup(shell_dict, 'shell')
 ck_tup = make_tup(ck_dict, 'ck')  #special case
 aug_tup = make_tup(aug_dict, 'aug')
 
-#slicing linetype tuples to split into IUPAC and Siegbahn
+#slicing transition tuples to split into IUPAC and Siegbahn
 trans_tup = [(k, k.split('_')[0]) for k, v in trans_dict.items()]
 trans_I_tup =  trans_tup[0:383]
 trans_S_tup = trans_tup[:382:-1]
@@ -47,8 +47,8 @@ def index():
     
     #populating select fields
     form.function.choices = form.function.choices + cs_tup + dcs_tup    
-    form.linetype.trans_iupac.choices = trans_I_tup
-    form.linetype.trans_siegbahn.choices = trans_S_tup
+    form.transition.iupac.choices = trans_I_tup
+    form.transition.siegbahn.choices = trans_S_tup
     form.shell.choices =  shell_tup
     form.cktrans.choices = ck_tup
     form.nistcomp.choices = nist_tup
@@ -63,9 +63,9 @@ def index():
         select_input = request.form.get('function')
         examples = request.form.get('examples')
                 
-        linetype_trans_notation = request.form.get('linetype-trans_notation')
-        linetype_trans_iupac = request.form.get('linetype-trans_iupac')
-        linetype_trans_siegbahn = request.form.get('linetype-trans_siegbahn')
+        transition_notation = request.form.get('transition-notation')
+        transition_iupac = request.form.get('transition-iupac')
+        transition_siegbahn = request.form.get('transition-siegbahn')
         
         cktrans = request.form.get('cktrans')
         nistcomp = request.form.get('nistcomp')
@@ -118,12 +118,10 @@ def index():
                         )    
 
         elif select_input == 'LineEnergy' or select_input == 'RadRate':
-            if linetype_trans_notation == 'IUPAC':
-                #trans = getattr(xraylib, linetype_trans_iupac)
+            if transition_notation == 'IUPAC':
                 if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_iupac)
-                    output = calc_output(select_input, int_z, linetype_trans_iupac)
-                        #output = xraylib.LineEnergy(int(int_z), trans)
+                    code_examples = code_example(form.examples.choices, select_input, int_z, transition_iupac)
+                    output = calc_output(select_input, int_z, transition_iupac)
                     if select_input == 'LineEnergy':
                         return render_template(
                                 'index.html', 
@@ -138,11 +136,17 @@ def index():
                                 form = form,
                                 output = output,
                                 code_examples = code_examples
-                                )                    
-            elif linetype_trans_notation == 'Siegbahn':
-                if validate_int_or_float(int_z):
-                    code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_siegbahn)
-                    output = calc_output(select_input, int_z, linetype_trans_siegbahn)
+                                )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.error
+                        )                                        
+            elif transition_notation == 'Siegbahn':
+                if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                    code_examples = code_example(form.examples.choices, select_input, int_z, transition_siegbahn)
+                    output = calc_output(select_input, int_z, transition_siegbahn)
                     if select_input == 'LineEnergy':
                         return render_template(
                             'index.html', 
@@ -157,30 +161,43 @@ def index():
                             form = form,
                             output = output,
                             code_examples = code_examples
-                            )                      
-            elif linetype_trans_notation == 'All':
-                out = all_trans(form.linetype.trans_iupac.choices, select_input, int_z)
-                if select_input == 'LineEnergy':
-                    #output = {k: v for k, v in out.items()}
-                    output = dict(out, Line = 'Energies')
-                    return render_template(
+                            )
+                
+                return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.error
+                        )                     
+            elif transition_notation == 'All':
+                if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                    out = all_trans(form.transition.iupac.choices, select_input, int_z)
+                    if select_input == 'LineEnergy':
+                        output = dict(out, Line = 'Energies')
+                        return render_template(
                                 'index.html', 
                                 form = form,
                                 output = output,
                                 units = Request_Units.Energy_u
                                 )
-                else:
-                    return render_template(
+                    else:
+                        return render_template(
                                 'index.html', 
                                 form = form,
                                 output = output
                                 )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.error
+                        )
             else:
                 return render_template(
                         'index.html', 
                         form = form,  
                         error = Request_Error.error
                         )
+                        
         elif select_input == 'EdgeEnergy' or select_input == 'JumpFactor' or select_input == 'FluorYield' or select_input == 'AugerYield' or select_input == 'AtomicLevelWidth' or select_input == 'ElectronConfig':
             if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:                    
                 code_examples = code_example(form.examples.choices, select_input, int_z, shell)
@@ -253,10 +270,10 @@ def index():
                             
         elif select_input.startswith('CS_FluorLine'):
             if validate_float(energy):
-                if linetype_trans_notation == 'IUPAC':
+                if transition_notation == 'IUPAC':
                     if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
-                        code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_iupac, energy)
-                        output = calc_output(select_input, int_z, linetype_trans_iupac, energy)
+                        code_examples = code_example(form.examples.choices, select_input, int_z, transition_iupac, energy)
+                        output = calc_output(select_input, int_z, transition_iupac, energy)
                         return render_template(
                                 'index.html', 
                                 form = form,
@@ -264,10 +281,10 @@ def index():
                                 units = Request_Units.CS_u, 
                                 code_examples = code_examples
                                 )
-                elif linetype_trans_notation == 'Siegbahn':
+                elif transition_notation == 'Siegbahn':
                     if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
-                        code_examples = code_example(form.examples.choices, select_input, int_z, linetype_trans_siegbahn, energy)
-                        output = calc_output(select_input, int_z, linetype_trans_siegbahn, energy)
+                        code_examples = code_example(form.examples.choices, select_input, int_z, transition_siegbahn, energy)
+                        output = calc_output(select_input, int_z, transition_siegbahn, energy)
                         return render_template(
                             'index.html', 
                             form = form,
@@ -275,8 +292,8 @@ def index():
                             units = Request_Units.CS_u, 
                             code_examples = code_examples
                             )
-                elif linetype_trans_notation == 'All':
-                    output = all_trans_xrf(form.linetype.trans_iupac.choices, select_input, int_z, energy)
+                elif transition_notation == 'All':
+                    output = all_trans_xrf(form.transition.iupac.choices, select_input, int_z, energy)
                     return render_template(
                                 'index.html', 
                                 form = form,

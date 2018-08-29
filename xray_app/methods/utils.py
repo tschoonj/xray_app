@@ -14,14 +14,19 @@ def validate_float(*s):
     return True
 
 def validate_int(*s):
+    boo = []
     for i in s:
         try:
             if float(i) == int(i):
-                return True
+                boo.append(True)
             else:
-                return False
+                boo.append(False)              
         except:
             return False
+    if all(boo):
+        return True
+    else:
+        return False    
                 
 def validate_str(*s):
     for i in s:
@@ -95,7 +100,7 @@ def make_tup(_dict, variable):
 #need to match each substr to dict key then 'translate' it        
 label_dict = {'CS':'Cross Section:', 'DCS':'Differential Unpolarized Cross Section:', 'DCSP':'Differential Polarized Cross Section:', 'KN':'Klein-Nishina', 'Photo':'Photoionization', 'Rayl':'Rayleigh', 'Compt':'Compton', 'FluorLine':' XRF', 'Partial':'(Partial)', 'Thoms':'Thomson', 'TRANS':''}
 
-#double checks valid input and appends to calc list
+#checks input for xrl keys also including transtion notation types
 def check_xraylib_key(s):
         s = s.upper()
         s = s.replace(" ", "_")
@@ -105,6 +110,8 @@ def check_xraylib_key(s):
             #print (key)
             if s == key:
                 #print('KEY FOUND')
+                return True
+            elif s == 'IUPAC' or s == 'SIEGBAHN':
                 return True
             elif key.endswith('_' + s) and key.startswith('NIST'):
                 #print('KEY FOUND') 
@@ -164,50 +171,44 @@ def calc_output(function, *values):
 
 #generates code example strings and passes them through Pygments
 def code_example(tple, function, *variables):
+    
     languages = [x[0] for x in tple]
     labels = [x[1] for x in tple]
-    examples = []
-       
-    for label in labels:
-        if label == 'C/C++/Objective-C':
-            support = '#include &ltxraylib.h&gt'
-            _class = 'cpp-objdump'
-        elif label == 'Fortran 2003/2008':
-            support = 'use :: xraylib'
-            _class = 'fortran'
-        elif label == 'Perl':
-            support = 'use xraylib.pm;'
-            _class = 'perl'
-        elif label == 'IDL':
-            support = '@xraylib'
-            _class = 'idl'
-        elif label == 'Python':
-            support = 'import xraylib'
-            _class = 'python'        
-        elif label == 'Java':
-            support = 'import com.github.tschoonj.xraylib.*;'
-            _class = 'java'
-        elif label == 'C#/.NET':
-            support = 'using Science;'
-            _class = 'csharp'
-        elif label == 'Lua':
-            support = 'require("xraylib")'
-            _class = 'lua'
-        elif label == 'Ruby':
-            support = 'require \'xraylib\''
-            _class = 'ruby'
-        elif label == 'PHP':
-            support = 'include("xraylib.php");'
-            _class = 'php'
-        #div class included for CSS
-        string = '<div class="'+ str(_class) + ' code-examples"> Enable support for xraylib in ' + str(label) + ' using: <b>' + str(support) + '</b></div>\n'
-        examples.append(string)
+    examples = []       
         
-    for language in languages:
+    for i in tple:
+        lang = [i[0], i[1]] #could be done with list comprehension?
         lst = []
-        lexer = get_lexer_by_name(language)
-        if language == 'cpp-objdump':
+        lexer = get_lexer_by_name(lang[0])
+        
+        if lang[1] == 'C/C++/Objective-C':
+            string = '#include <xraylib.h>'
+            # &lt = < &gt = >
+        elif lang[1] == 'Fortran 2003/2008':
+            string = 'use :: xraylib'
+        elif lang[1] == 'Perl':
+            string = 'use xraylib.pm;'
+        elif lang[1] == 'IDL':
+            string = '@xraylib'
+        elif lang[1] == 'Python':
+            string = 'import xraylib'     
+        elif lang[1] == 'Java':
+            string = 'import com.github.tschoonj.xraylib.*;'
+        elif lang[1] == 'C#/.NET':
+            string = 'using Science;'
+        elif lang[1] == 'Lua':
+            string = 'require("xraylib")'
+        elif lang[1] == 'Ruby':
+            string = 'require \'xraylib\''
+        elif lang[1] == 'PHP':
+            string = 'include("xraylib.php");'
+        #div class included for CSS
+        pre_support = '<div class="support-examples ' + str(lang[0]) + '">Enable support for xraylib in ' + str(lang[1]) + ' using: </div>'
+        support_html = highlight(string, lexer, HtmlFormatter(cssclass = str(lang[0]) + ' support-examples'))        
+        
+        if lang[0] == 'cpp-objdump':
             for variable in variables:
+                print(variable)
                 if validate_float(variable) == True:
                     lst.append(variable)
                 elif function == 'GetRadioNuclideDataByName':
@@ -221,7 +222,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'
         
-        elif language == 'fortran':
+        elif lang[0] == 'fortran':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -232,11 +233,11 @@ def code_example(tple, function, *variables):
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('symboltoatomicnumber(\'' + variable + '\')')
                 elif check_xraylib_key(str(variable)) == True:
-                    lst.append(variable.lower())                
+                    lst.append((variable).lower())                
             _input = ', '.join(lst)
             example = str(function).lower() + '(' + _input + ')'
         
-        elif language == 'perl':
+        elif lang[0] == 'perl':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -251,7 +252,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = 'xraylib::' + str(function) + '(' + _input + ')'
         
-        elif language == 'idl':
+        elif lang[0] == 'idl':
             lst = []
             for variable in variables:
                 if validate_float(variable) == True or check_xraylib_key(str(variable)) == True:
@@ -265,7 +266,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = str(function).upper() + '(' + _input + ')'
         
-        elif language == 'python':
+        elif lang[0] == 'python':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -280,7 +281,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = 'xraylib.' + str(function) + '(' + _input + ')'
         
-        elif language == 'java':
+        elif lang[0] == 'java':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -295,7 +296,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = 'Xraylib.' + str(function) + '(' + _input + ')'
         
-        elif language == 'csharp':
+        elif lang[0] == 'csharp':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -310,7 +311,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = 'XrayLib.' + str(function) + '(' + _input + ')'
         
-        elif language == 'lua':
+        elif lang[0] == 'lua':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -325,7 +326,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = 'xraylib.' + str(function) + '(' + _input + ')'
         
-        elif language == 'ruby':
+        elif lang[0] == 'ruby':
             for variable in variables:
                 if validate_float(variable) == True:
                     lst.append(variable)
@@ -340,7 +341,7 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = 'Xraylib.' + str(function) + '(' + _input + ')'        
         
-        elif language == 'php': 
+        elif lang[0] == 'php': 
             for variable in variables:
                 if function == 'GetRadioNuclideDataByName':
                     lst.append('"55Fe"')
@@ -354,8 +355,12 @@ def code_example(tple, function, *variables):
             example = str(function) + '(' + _input + ')'
         
         #div class included for CSS
-        example = highlight(example, lexer, HtmlFormatter(cssclass = str(language) + ' code-examples'))
-        #print(HtmlFormatter().get_style_defs('.' + str(language))) #prints css
+        example = highlight(example, lexer, HtmlFormatter(cssclass = str(lang[0]) + ' code-examples'))
+        
+        #print(HtmlFormatter().get_style_defs('.' + str(lang[0]))) #prints css
+        
+        examples.append(pre_support)
+        examples.append(support_html)
         examples.append(example)      
     examples_html = ''.join(examples)  
     return examples_html        

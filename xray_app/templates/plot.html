@@ -4,13 +4,13 @@
     <form method="POST" action="">  
     <fieldset class = "form-group inline">
         {% for field in form %}
-            {% if field.id == 'linetype' %}
+            {% if field.id == 'transition' %}
                 <div class="form-group xlib" id = "{{field.id}}">
                     {{field.label}}
-                    {{field.trans_notation(class="radio-inline")}}
+                    {{field.notation(class="radio-inline")}}
                     
-                    {{field.trans_iupac(class="select-inline")}}
-                    {{field.trans_siegbahn(class="select-inline")}}
+                    {{field.iupac(class="select-inline")}}
+                    {{field.siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id == 'function' or field.id.startswith('range') or field.id.startswith('log_boo') %}
                 <div class="form-group" id="{{field.id}}">

@@ -5,15 +5,15 @@ from wtforms.validators import DataRequired, NumberRange
 import xraylib #move with dicts later
 
 class TransitionForm(FlaskForm):
-    trans_notation = RadioField(
+    notation = RadioField(
             u'Notation',
             choices = [('IUPAC','IUPAC'),('Siegbahn','Siegbahn'),('All','All')],
             validators = [DataRequired()])
-    trans_iupac = SelectField(
+    iupac = SelectField(
             u'Transition', 
             choices = [],
             validators = [DataRequired()])
-    trans_siegbahn = SelectField(
+    siegbahn = SelectField(
             u'Transition', 
             choices = [],
             validators = [DataRequired()])
@@ -32,7 +32,7 @@ class Xraylib_Request(FlaskForm):
     phi = StringField(u'Azimuthal Angle &#981 (rad)', validators = [DataRequired()])
     density = StringField('Density (g cm<sup>-3</sup>)', validators = [DataRequired()])
     pz = StringField('Electron Momentum p<sub>z</sub>', validators = [DataRequired()])
-    linetype = FormField(TransitionForm)  
+    transition = FormField(TransitionForm)  
     shell = SelectField(u'Shell', choices = [], validators = [DataRequired()])
     cktrans = SelectField(u'Coster Kronig Trans', choices = [], validators = [DataRequired()])
     nistcomp = SelectField(u'NIST Compound', choices = [], validators = [DataRequired()])
@@ -50,7 +50,7 @@ class Request_Error():
     int_z_error = 'Invalid input: Element'
     int_z_or_comp_error = 'Invalid input: Element or Compound'
     float_q_error = 'Invalid input : Momentum Transfer.'
-    linetype_error = 'Invalid input: Linetype'
+    trans_error = 'Invalid input: Transition'
     shell_error = 'Invalid input: Shell'
     energy_error = 'Invalid input: Energy'
     theta_error = 'Invalid input: Theta'

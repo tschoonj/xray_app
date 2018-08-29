@@ -13,13 +13,13 @@
        could also use bootstrap buttons to do radio bit then nest dropdown 
        -->
        {% for field in form %}
-            {% if field.id == 'linetype' %}
+            {% if field.id == 'transition' %}
                 <div class="form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
-                    {{field.trans_notation(class="radio-inline")}}
+                    {{field.notation(class="radio-inline")}}
                     
-                    {{field.trans_iupac(class="select-inline")}}
-                    {{field.trans_siegbahn(class="select-inline")}}
+                    {{field.iupac(class="select-inline")}}
+                    {{field.siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id == 'csrf_token'%}
             {% elif field.id == 'function' or field.id == 'examples' %}
@@ -92,10 +92,13 @@
     <h3> Code Example: </h3>
     {{code_examples|safe}}
 {% endif %}
+
+{# Latest jQuery #}
 <script
     src="https://code.jquery.com/jquery-3.3.1.js"
     integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"> </script>
+    
 <script src="{{url_for('static', filename='index.js')}}"></script>
 
 <noscript>Sorry, your browser does not support JavaScript!</noscript>

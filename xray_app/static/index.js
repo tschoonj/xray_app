@@ -14,8 +14,8 @@ $(document).ready(function () {
             $("div.xlib").hide();
             $("#int_z, #float_q").show();
         } else if ($Select == "LineEnergy" || $Select == "RadRate"){
-            $("div.xlib, select#linetype-trans_iupac, select#linetype-trans_siegbahn").hide();
-            $("#int_z, #linetype").show();
+            $("div.xlib, select#transition-iupac, select#transition-siegbahn").hide();
+            $("#int_z, #transition").show();
         } else if ($Select == "EdgeEnergy" || $Select == "JumpFactor" || $Select == "FluorYield" || $Select == "AugerYield" || $Select == "AtomicLevelWidth" || $Select == "ElectronConfig") {
             $("div.xlib").hide();
             $("#int_z, #shell").show();
@@ -30,7 +30,7 @@ $(document).ready(function () {
             $("#int_z_or_comp, #energy").show();
         } else if ($Select.includes("CS_FluorLine")){
             $("div.xlib").hide();
-            $("#int_z, #linetype, #energy").show();
+            $("#int_z, #transition, #energy").show();
         } else if ($Select == "DCS_KN" || $Select == "ComptonEnergy"){
             $("div.xlib").hide();
             $("#energy, #theta").show();
@@ -86,35 +86,35 @@ $(document).ready(function () {
     //shows and hides cod examples depending on $Select
     function show_hide_code ($Select) {
         if ($Select == 'cpp-objdump') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".cpp-objdump").show();
             $("#C/C++/Objective-C").show();
         } else if ($Select == 'fortran') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".fortran").show();
         } else if ($Select == 'perl') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".perl").show();
         } else if ($Select == 'idl') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".idl").show();
         } else if ($Select == 'python') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".python").show();
         } else if ($Select == 'java') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".java").show();
         } else if ($Select == 'antlr-csharp') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".antlr-csharp").show();
         } else if ($Select == 'lua') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".lua").show();
         } else if ($Select == 'ruby') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".ruby").show();
         } else if ($Select == 'php') {
-            $(".code-examples").hide();
+            $(".code-examples, .support-examples").hide();
             $(".php").show();
         };
         
@@ -145,13 +145,13 @@ $(document).ready(function () {
     $("input[type='radio']").change(function(e) {
         var $RadioVal = $(this).val();
         if ($RadioVal == "IUPAC") {
-            $("#linetype-trans_iupac").show();
-            $("#linetype-trans_siegbahn").hide();
+            $("#transition-iupac").show();
+            $("#transition-siegbahn").hide();
         } else if ($RadioVal == "Siegbahn") {
-            $("#linetype-trans_siegbahn").show();
-            $("#linetype-trans_iupac").hide();
+            $("#transition-siegbahn").show();
+            $("#transition-iupac").hide();
         } else if ($RadioVal == "All") {
-            $("#linetype-trans_siegbahn, #linetype-trans_iupac").hide();
+            $("#transition-siegbahn, #transition-iupac").hide();
         };
     });    
 });
