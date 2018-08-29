@@ -22,16 +22,16 @@ test_input = {
 
 trans_functions = ['LineEnergy', 'RadRate', 'CS_FluorLine', 'CS_FluorLine_Kissel_Cascade', 'CS_FluorLine_Kissel_Nonradiative_Cascade', 'CS_FluorLine_Kissel_Radiative_Cascade']
 
-test_z = [26, 'Fe', ' ']
-test_q = [0.5, ' ']
-test_z_comp = [26, 'Fe', 'FeSO4', ' ']
-test_energy = [10.5, ' ']
-test_angle = [1.5, ' ']
-test_comp = ['FeSO4', ' ', 0.5]
+test_z = ['26', '0', '-1', 'Fe', ' ']
+test_q = ['0.5', '0', '-1', ' ']
+test_z_comp = ['26', '0', '-1', 'Fe', 'FeSO4', ' ']
+test_energy = ['10.5', '0', '-1', ' ']
+test_angle = ['1.5', '0', '-1', ' ']
+test_comp = ['FeSO4', '0', '-1', ' ', '0.5']
+test_pz = ['1.5', '0', '-1', ' ']
+test_density = ['1.5', '0', '-1', ' ']
 test_shell = ['K_SHELL']
 test_cktrans = ['FL12_TRANS']
-test_pz = [1.5, ' ']
-test_density = ['1.5', ' ']
 
 test_notation = ['IUPAC', 'Siegbahn']
 test_siegbahn = ['KA1_LINE']
@@ -139,7 +139,6 @@ def test_index_vanilla(client):
 	rv = client.get('/')
 	vanilla_test(client, rv)
 	assert b'<div class="form-group" id="function">' in rv.data
-	assert b'<option value="AtomicWeight">Atomic Weight</option>' in rv.data
 	assert b'type="submit"' in rv.data
 
 def test_plot_vanilla(client):
@@ -229,9 +228,10 @@ def test_comptprof_part(client):
 def test_mom_trans(client):
     function_test(client, 'MomentTransf', energy = test_energy, theta = test_angle)
 
-def test_ref_ind(client):
+"""def test_ref_ind(client):
     function_test(client, 'Refractive_Index', int_z_or_comp = test_z_comp, energy = test_energy, density = test_density)
-  
+  """
+
 """def test_c_parser(client):
     function_test(client, 'CompoundParser', comp = test_comp)
 

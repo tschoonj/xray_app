@@ -170,9 +170,10 @@ def index():
                         )                     
             elif transition_notation == 'All':
                 if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0:
-                    out = all_trans(form.transition.iupac.choices, select_input, int_z)
+                    output = all_trans(form.transition.iupac.choices, select_input, int_z)
                     if select_input == 'LineEnergy':
-                        output = dict(out, Line = 'Energies')
+                        #needs units
+                        #output = dict(out, Line = 'Energies')
                         return render_template(
                                 'index.html', 
                                 form = form,
@@ -508,7 +509,7 @@ def index():
                             )
                             
         elif select_input == 'MomentTransf':
-            if validate_float(energy, theta) == True:
+            if validate_float(energy, theta) == True and energy != '0':
                 output = calc_output(select_input, energy, theta)
                 code_examples = code_example(form.examples.choices, select_input, energy, theta)
                 return render_template(

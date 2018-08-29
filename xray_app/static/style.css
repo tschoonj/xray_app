@@ -1,20 +1,31 @@
 div#output, div#units, div.variable { display: inline-block }
 div.xlib { display: hidden }
 div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
+
+a { color: #40b5bb }
+a:hover { color: #002264 }
+
 /* div.support-examples { display: inline-block } */
 img.center-block {width:100%}
 
 @media only screen and (max-width: 600px) {
     select {width:100%}
-    body {padding-top: 2%}
+    div.container { padding-top: 0 }
 }
 
 div.container { padding-top: 100px ; color: #002264 }
+/*body { background-color: #7292cb }
+div.jumbotron { background-color: #40b5bb }*/
 /*
 div.jumbotron
+input[type='text']{}
 
 yellow #ffcf00
 blue #002264
+
+turq #40b5bb
+l blue #7292cb
+purp #5b54a2
 */
 /* fix bootstrap conflicts with Pygments*/
 .cpp-objdump .hll { background-color: #ffffcc }

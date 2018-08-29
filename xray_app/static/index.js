@@ -5,6 +5,11 @@ $(document).ready(function () {
     })*/ 
     /* automatically assigns event handlers to elements that are specified by the selector (i.e select)*/
     
+    // clear text fields onfocus
+    $("input[type='text']").on("focus", function(){
+        $( this ).val('');
+    });    
+    
     //shows and hides fields depending on $Select
     function show_hide_input($Select) {
         if ($Select == "AtomicWeight" || $Select == "ElementDensity") {
@@ -83,7 +88,7 @@ $(document).ready(function () {
         };       
     };        
     
-    //shows and hides cod examples depending on $Select
+    //shows and hides code examples depending on $Select
     function show_hide_code ($Select) {
         if ($Select == 'cpp-objdump') {
             $(".code-examples, .support-examples").hide();
@@ -119,17 +124,19 @@ $(document).ready(function () {
         };
         
     };
-   
-    /*$("select#example").ready(function () {
-        var $SelectExOnLoad = $("select#example").val();
-        show_hide_code($SelectExOnLoad);
-    }*/
     
-    // hides/shows examples as form changes 
-    $("select#examples").change(function(e) {
-        var $SelectEx = $(this).val();                
-        show_hide_code($SelectEx);
-    });
+    // shows and hides transition select forms depending on $Radio
+    function show_hide_trans ($Radio) {
+    if ($Radio == "IUPAC") {
+            $("#transition-iupac").show();
+            $("#transition-siegbahn").hide();
+        } else if ($Radio == "Siegbahn") {
+            $("#transition-siegbahn").show();
+            $("#transition-iupac").hide();
+        } else if ($Radio == "All") {
+            $("#transition-siegbahn, #transition-iupac").hide();
+        };
+    };
     
     // on page refresh or load (POST)
     var $SelectOnLoad = $("select#function").val();
@@ -141,17 +148,31 @@ $(document).ready(function () {
         show_hide_input($SelectVal);
     });
     
-    // shows appropriate select form for linetype
+    
+    
+    // shows select form for transition on change
     $("input[type='radio']").change(function(e) {
         var $RadioVal = $(this).val();
-        if ($RadioVal == "IUPAC") {
-            $("#transition-iupac").show();
-            $("#transition-siegbahn").hide();
-        } else if ($RadioVal == "Siegbahn") {
-            $("#transition-siegbahn").show();
-            $("#transition-iupac").hide();
-        } else if ($RadioVal == "All") {
-            $("#transition-siegbahn, #transition-iupac").hide();
-        };
+        show_hide_trans($RadioVal);        
+    });  
+    // shows select form for transition on load
+    var $RadioOnLoad = $("input[checked]").val();
+    show_hide_trans($RadioOnLoad)
+       
+    // hides/shows examples as form changes 
+    $("select#examples").change(function(e) {
+        var $SelectEx = $(this).val();                
+        show_hide_code($SelectEx);
     });    
+        
+    //on page refresh or load (POST) hides/shows examples
+    var $Output = $("p#output").text()
+    if ($Output) {
+        $("div#examples").show();
+        var $ExampleOnLoad = $("select#examples").val();
+        show_hide_code($ExampleOnLoad);
+    } else {
+        $("div#examples").hide();
+    };    
+      
 });

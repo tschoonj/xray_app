@@ -8,7 +8,8 @@ from pygments.formatters import HtmlFormatter
 def validate_float(*s):
     for i in s:
         try: 
-            float(i)
+            if float(i) >= 0:
+                pass
         except ValueError:
             return False
     return True
@@ -17,7 +18,7 @@ def validate_int(*s):
     boo = []
     for i in s:
         try:
-            if float(i) == int(i):
+            if float(i) == int(i) and int(i) > 0:
                 boo.append(True)
             else:
                 boo.append(False)              
