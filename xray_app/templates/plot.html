@@ -31,10 +31,7 @@
     </fieldset>
     </form>
 {% if request.method == 'POST'%}
-    <img class="center-block" src="data:image/png;base64,{{plot}}" alt="Image doesn't work">
-    {% if table %}
-        {{table}}
-    {% endif %}
+    <img class="center-block" src="data:image/png;base64,{{plot}}" alt="Invalid Form Request: Please enter valid input.">
 {% endif %}
 <script
     src="https://code.jquery.com/jquery-3.3.1.js"

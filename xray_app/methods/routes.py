@@ -235,15 +235,22 @@ def index():
 
         elif select_input == 'CS_Photo_Partial':
             if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0 and validate_float(energy):
-                output = calc_output(select_input, int_z, shell, energy)
-                code_examples = code_example(form.examples.choices, select_input, int_z, shell, energy)  
-                return render_template(
+                if validate_float(energy) and energy != '0':
+                    output = calc_output(select_input, int_z, shell, energy)
+                    code_examples = code_example(form.examples.choices, select_input, int_z, shell, energy)  
+                    return render_template(
                             'index.html', 
                             form = form,
                             output = output,
                             units = Request_Units.CS_u, 
                             code_examples = code_examples
                             )
+                else:
+                    return render_template(
+                        'index.html', 
+                        form = form,  
+                        error = Request_Error.error
+                        )    
             else:
                 return render_template(
                         'index.html', 
@@ -252,7 +259,7 @@ def index():
                         )
          
         elif select_input == 'CS_KN':
-            if validate_float(energy):
+            if validate_float(energy) and energy != '0':
                 output = calc_output(select_input, energy)
                 code_examples = code_example(form.examples.choices, select_input, energy)
                 return render_template(
@@ -475,7 +482,7 @@ def index():
                             )
         
         elif select_input == 'ComptonProfile':
-            if validate_int(int_z) == True or xraylib.SymbolToAtomicNumber(int_z) != 0:
+            if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0:
                 output = calc_output(select_input, int_z, pz)
                 code_examples = code_example(form.examples.choices, select_input, int_z, pz)
                 return render_template(
@@ -562,6 +569,7 @@ def index():
         
         elif select_input == 'CompoundParser':
             #special case: CompoundParser input needs to be const char compound
+            #system error doesn't allow for proper validation
             if validate_str(comp) == True:
                 try:
                     out = xraylib.CompoundParser(str(comp))

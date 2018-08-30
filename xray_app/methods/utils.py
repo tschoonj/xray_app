@@ -38,15 +38,27 @@ def validate_str(*s):
     return True
             
 def validate_int_or_str(*s):
+    boo = []
     for i in s:
         try:
-            int(i)
+            if int(i) > 0:
+                boo.append(True)
+            else:
+                boo.append(False)
         except ValueError:
-            try:
-                str(i)
-            except ValueError:
+            try:                
+                if xraylib.SymbolToAtomicNumber(i) != 0:
+                    boo.append(True)
+                elif xraylib.CompoundParser(i):                    
+                    boo.append(True)
+                else:
+                    boo.append(False)
+            except:
                 return False
-    return True
+    if all(boo):
+        return True
+    else:
+        return False
 #------------------------------------------------------------------------------------------------
 #generates dicts for all linetype output
 def all_trans(tple, *inputs):
@@ -180,7 +192,8 @@ def code_example(tple, function, *variables):
     for i in tple:
         lang = [i[0], i[1]] #could be done with list comprehension?
         lst = []
-        lexer = get_lexer_by_name(lang[0])
+        #startinline arg lets php lexer highlight without prepending str with <?php
+        lexer = get_lexer_by_name(lang[0], startinline=True)
         
         if lang[1] == 'C/C++/Objective-C':
             string = '#include <xraylib.h>'
@@ -356,12 +369,13 @@ def code_example(tple, function, *variables):
             example = str(function) + '(' + _input + ')'
         
         #div class included for CSS
-        example = highlight(example, lexer, HtmlFormatter(cssclass = str(lang[0]) + ' code-examples'))
-        
+        example_html = highlight(example, lexer, HtmlFormatter(cssclass = str(lang[0]) + ' code-examples'))
+        pre_example = '<div class="code-examples ' + str(lang[0]) + '">Call as: </div>'
         #print(HtmlFormatter().get_style_defs('.' + str(lang[0]))) #prints css
-        
+               
         examples.append(pre_support)
         examples.append(support_html)
-        examples.append(example)      
+        examples.append(pre_example)
+        examples.append(example_html)      
     examples_html = ''.join(examples)  
     return examples_html        

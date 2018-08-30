@@ -19,7 +19,7 @@ $(document).ready(function () {
             $("div.xlib").hide();
             $("#int_z, #float_q").show();
         } else if ($Select == "LineEnergy" || $Select == "RadRate"){
-            $("div.xlib, select#transition-iupac, select#transition-siegbahn").hide();
+            $("div.xlib").hide();
             $("#int_z, #transition").show();
         } else if ($Select == "EdgeEnergy" || $Select == "JumpFactor" || $Select == "FluorYield" || $Select == "AugerYield" || $Select == "AtomicLevelWidth" || $Select == "ElectronConfig") {
             $("div.xlib").hide();
@@ -93,7 +93,6 @@ $(document).ready(function () {
         if ($Select == 'cpp-objdump') {
             $(".code-examples, .support-examples").hide();
             $(".cpp-objdump").show();
-            $("#C/C++/Objective-C").show();
         } else if ($Select == 'fortran') {
             $(".code-examples, .support-examples").hide();
             $(".fortran").show();
@@ -109,9 +108,9 @@ $(document).ready(function () {
         } else if ($Select == 'java') {
             $(".code-examples, .support-examples").hide();
             $(".java").show();
-        } else if ($Select == 'antlr-csharp') {
+        } else if ($Select == 'csharp') {
             $(".code-examples, .support-examples").hide();
-            $(".antlr-csharp").show();
+            $(".csharp").show();
         } else if ($Select == 'lua') {
             $(".code-examples, .support-examples").hide();
             $(".lua").show();
@@ -147,14 +146,13 @@ $(document).ready(function () {
         var $SelectVal = $(this).val();        
         show_hide_input($SelectVal);
     });
-    
-    
-    
+   
     // shows select form for transition on change
     $("input[type='radio']").change(function(e) {
         var $RadioVal = $(this).val();
         show_hide_trans($RadioVal);        
     });  
+    
     // shows select form for transition on load
     var $RadioOnLoad = $("input[checked]").val();
     show_hide_trans($RadioOnLoad)

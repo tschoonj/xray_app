@@ -21,8 +21,8 @@
                     {{field.iupac(class="select-inline")}}
                     {{field.siegbahn(class="select-inline")}}
                 </div>
-            {% elif field.id == 'csrf_token'%}
-            {% elif field.id == 'function' or field.id == 'examples' %}
+            {% elif field.id == 'csrf_token' or field.id == 'examples' %}
+            {% elif field.id == 'function'  %}
                 <div class="form-group" id="{{field.id}}">
                     {{field.label}}:
                     {{field}}
@@ -51,7 +51,7 @@
 </div>  
 
 {% if output is mapping %}
-    <div class="table-responsive">  
+    <div id="output" class="table-responsive">  
         {# {% for item in output.items() %}
             {{item|join('  ')|safe}}
         {% endfor %} #}
@@ -87,9 +87,18 @@
 
 {% if error %}
     {{error}}
-{% endif %} 
+{% endif %}
+
+{% for field in form %}
+    {% if field.id == 'examples' %}
+        <div class="form-group xlib" id="{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
+        </div>
+    {% endif %}
+{% endfor %}
+ 
 {% if code_examples %}
-    <h3> Code Example: </h3>
     {{code_examples|safe}}
 {% endif %}
 

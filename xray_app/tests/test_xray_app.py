@@ -76,6 +76,7 @@ def output_test(rv, function, *values):
     else:
         val = calc_output(function, *values)
     
+    #print(val)
     assert 200 == rv.status_code
     assert output == pytest.approx(val)
     
@@ -106,16 +107,16 @@ def function_test(client, select_input, **variables):
         function_input = dict(test_input, function = select_input)
         function_input.update(i)
         rv = client.post('/', data = function_input)
-        if validate_input(i, select_input):
+        if validate_input(i):
             output_test(rv, select_input, *list(i.values()))
         else:
             invalid_input_test(rv) 
             
 #add test for correct examples?                 
 #----------------------------------------------------------------------------    
-def validate_input(dct, function):
+def validate_input(dct):
     values = list(dct.values())
-    boo_list = [isinstance(value, (float, int)) or xraylib.SymbolToAtomicNumber(value) != 0 or check_xraylib_key(value) for value in values]
+    boo_list = [isinstance(value, (float, int)) or xraylib.SymbolToAtomicNumber(value) != 0 or check_xraylib_key(value) for value in values] #or xraylib.CompoundParser(value)
     #print(boo_list)
     if all(boo_list):
         return True
@@ -124,10 +125,15 @@ def validate_input(dct, function):
 
 def soup_output(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
-    #print(soup)
+    print(soup)
     output = soup.find('p', id="output").string
     output = float(output.replace(" ",""))
-    return output   
+    return output
+
+def soup_output_table(rv):
+    soup = BeautifulSoup(rv.data, 'html.parser')
+    print(soup)
+    #return output
 #----------------------------------------------------------------------------                
 def test_nonexistent(client):
 	rv = client.get('/nonexistent')
@@ -147,7 +153,7 @@ def test_plot_vanilla(client):
 	
 def test_about_vanilla(client):
 	rv = client.get('/about')
-	vanilla_test(client, rv)              
+	vanilla_test(client, rv)            
 #----------------------------------------------------------------------------                
 def test_atomweight_elementdens(client): 
     test_functions = ['AtomicWeight', 'ElementDensity']
@@ -228,15 +234,15 @@ def test_comptprof_part(client):
 def test_mom_trans(client):
     function_test(client, 'MomentTransf', energy = test_energy, theta = test_angle)
 
-"""def test_ref_ind(client):
-    function_test(client, 'Refractive_Index', int_z_or_comp = test_z_comp, energy = test_energy, density = test_density)
-  """
-
-"""def test_c_parser(client):
-    function_test(client, 'CompoundParser', comp = test_comp)
-
+#system error
+#def test_c_parser(client):
+    #function_test(client, 'CompoundParser', comp = test_comp)
+"""
 def test_get_by_ind(client):
     pass
         
 def test_get_list(client):
-    pass"""
+    pass
+def test_ref_ind(client):
+    function_test(client, 'Refractive_Index', int_z_or_comp = test_z_comp, energy = test_energy, density = test_density)
+    """

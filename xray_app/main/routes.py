@@ -10,7 +10,7 @@ import base64
 
 import xraylib
 
-from xray_app.methods.routes import cs_dict, trans_S_tup, trans_I_tup, make_tup, validate_int, validate_int, validate_float
+from xray_app.methods.routes import cs_dict, trans_S_tup, trans_I_tup, make_tup, validate_int, validate_int_or_str, validate_float
 
 def delete_key(key, _dict):
     if key in _dict:
@@ -53,18 +53,45 @@ def plot():
         siegbahn = request.form.get('transition-siegbahn')
         
         if select_input == 'CS_Total' or select_input == 'CS_Photo' or select_input == 'CS_Rayl' or select_input == 'CS_Energy' or select_input == 'CS_Compt':
-            #need validation of requests
-            plot = make_plot(select_input, 'Energy ($keV$)', r'Cross Section ($cm^{2} g^{-1}$)', range_start, range_end, log_boo_x, log_boo_y, int_z_or_comp)
-            return render_template('plot.html', form = form, title = 'Plot', plot=plot)
+            if validate_int_or_str(int_z_or_comp):
+                plot = make_plot(select_input, 
+                    'Energy ($keV$)', 
+                    r'Cross Section ($cm^{2} g^{-1}$)', 
+                    range_start, 
+                    range_end, 
+                    log_boo_x, 
+                    log_boo_y, 
+                    int_z_or_comp)
+                return render_template('plot.html', form = form, title = 'Plot', plot=plot)
+            else:
+                return render_template('plot.html', form = form, title = 'Plot')
     
         elif select_input.startswith('CS_FluorLine'):
-            if transition_notation == 'IUPAC':
-                plot = make_plot(select_input, 'Energy ($keV$)', r'Cross Section ($cm^{2} g^{-1}$)', range_start, range_end, log_boo_x, log_boo_y, int_z, iupac)
-                return render_template('plot.html', form = form, title = 'Plot', plot=plot)
-            elif transition_notation == 'Siegbahn':
-                plot = make_plot(select_input, 'Energy ($keV$)', r'Cross Section ($cm^{2} g^{-1}$)', range_start, range_end, log_boo_x, log_boo_y, int_z, siegbahn)
-                return render_template('plot.html', form = form, title = 'Plot', plot=plot)          
-
+            if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0:
+                if transition_notation == 'IUPAC':
+                    plot = make_plot(select_input, 
+                        'Energy ($keV$)', 
+                        r'Cross Section ($cm^{2} g^{-1}$)', 
+                        range_start, 
+                        range_end, 
+                        log_boo_x, 
+                        log_boo_y, 
+                        int_z,
+                         iupac)
+                    return render_template('plot.html', form = form, title = 'Plot', plot=plot)
+                elif transition_notation == 'Siegbahn':
+                    plot = make_plot(select_input, 
+                        'Energy ($keV$)', 
+                        r'Cross Section ($cm^{2} g^{-1}$)', 
+                        range_start, 
+                        range_end, 
+                        log_boo_x, 
+                        log_boo_y, 
+                        int_z, 
+                        siegbahn)
+                    return render_template('plot.html', form = form, title = 'Plot', plot=plot)          
+            else:
+                return render_template('plot.html', form = form, title = 'Plot')
     return render_template('plot.html', title = 'Plot', form = form)
 #-------------------------------------------------------------------------------------
 def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_boo_y, *variables):
@@ -83,9 +110,12 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
             y.append(float(calc_output(function, *variables, i)))
             x.append(i)
     else:
-        print('invalid range')
-        return 'Error'
-
+        #print('invalid range')
+        return
+    
+    if sum(y) == 0:
+        return #Add more useful/specific error message e.g. Line unsupported
+    
     fig = Figure()
     canvas = FigureCanvas(fig)
             
@@ -99,20 +129,7 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
             t_variables.append(str(variable))
     
     t_variables = ', '.join(t_variables)
-    ax.set(title = function + ': ' + t_variables, xlabel = xlabel, ylabel = ylabel)            
-    
-    if validate_int(variable) == True:
-        ax.set(title = function + ': ' + xraylib.AtomicNumberToSymbol(int(variable)))
-    if log_boo_y != None and log_boo_x != None:
-        plt.xscale('log')
-        plt.yscale('log')        
-        ax.set(xlabel = 'log[ ' + xlabel + ' ]', ylabel = 'log[ ' + ylabel + ' ]')                    
-    elif log_boo_x != None:
-        plt.xscale('log')
-        ax.set(xlabel = 'log[ ' + xlabel + ' ]', ylabel = ylabel)
-    elif log_boo_y != None:
-        plt.yscale('log')        
-        ax.set(ylabel = 'log[ ' + ylabel + ' ]')
+    ax.set(title = function + ': ' + t_variables, xlabel = xlabel, ylabel = ylabel)                
                        
     img = BytesIO()
     plt.savefig(img, format='png', dpi=300)
