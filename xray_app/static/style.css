@@ -1,19 +1,49 @@
-div#output, div#units, div.variable { display: inline-block }
-div.xlib { display: hidden }
+/* puts p/divs on the same line */
+p#output, p#units { display: inline-block }
 div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 
-a { color: #40b5bb }
-a:hover { color: #002264 }
+/* hides extraneous fields */
+div.xlib { display: hidden }
 
 /* div.support-examples { display: inline-block } */
 img.center-block {width:100%}
 
 @media only screen and (max-width: 600px) {
-    select {width:100%}
-    div.container { padding-top: 0 }
+    select { width:100% }
+    .jumbotron { padding-top: 2% }
 }
 
-div.container { padding-top: 100px ; color: #002264 }
+.alert {
+    padding: 10px;
+    background-color: #40b5bb; /* Red */
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    }
+    
+.close-button {
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    }
+    
+/* mouseover button */
+.close-button:hover {
+    color: black;
+}
+/* general colour scheme */
+.container { 
+    padding-top: 100px; 
+    color: #002264 
+    }
+.jumbotron { box-shadow: 10px 10px 5px grey }
+a { color: #40b5bb }
+a:hover { color: #002264 }
+
 /*body { background-color: #7292cb }
 div.jumbotron { background-color: #40b5bb }*/
 /*
@@ -27,7 +57,8 @@ turq #40b5bb
 l blue #7292cb
 purp #5b54a2
 */
-/* fix bootstrap conflicts with Pygments*/
+
+/* Pygments CSS */
 .cpp-objdump .hll { background-color: #ffffcc }
 .cpp-objdump .c { color: #408080; font-style: italic } /* Comment */
 .cpp-objdump .err { border: 1px solid #FF0000 } /* Error */
@@ -139,6 +170,7 @@ purp #5b54a2
 .fortran .nv { color: #19177C } /* Name.Variable */
 .fortran .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
 .fortran .w { color: #bbbbbb } /* Text.Whitespace */
+.fortran .mi { color: #008000 } /* Literal.Number.Integer */
 .fortran .mb { color: #666666 } /* Literal.Number.Bin */
 .fortran .mf { color: #666666 } /* Literal.Number.Float */
 .fortran .mh { color: #666666 } /* Literal.Number.Hex */

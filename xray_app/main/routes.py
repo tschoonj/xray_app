@@ -106,7 +106,7 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
             y.append(float(calc_output(function, *variables, i)))
             x.append(i)        
     elif validate_float(range_start, range_end):
-        for i in range(int(float(range_start)), int(float(range_end)), 1):
+        for i in range(int(float(range_start)), int(range_end), 1):
             y.append(float(calc_output(function, *variables, i)))
             x.append(i)
     else:

@@ -8,7 +8,7 @@ $(document).ready(function () {
     // clear text fields onfocus
     $("input[type='text']").on("focus", function(){
         $( this ).val('');
-    });    
+    });        
     
     //shows and hides fields depending on $Select
     function show_hide_input($Select) {
@@ -126,7 +126,7 @@ $(document).ready(function () {
     
     // shows and hides transition select forms depending on $Radio
     function show_hide_trans ($Radio) {
-    if ($Radio == "IUPAC") {
+        if ($Radio == "IUPAC") {
             $("#transition-iupac").show();
             $("#transition-siegbahn").hide();
         } else if ($Radio == "Siegbahn") {
@@ -137,6 +137,17 @@ $(document).ready(function () {
         };
     };
     
+    function validate_form($Select){
+        if ($Select == "AtomicWeight" || $Select == "ElementDensity") {
+            if (! $("input#int_z[value]").val()){
+            return false;
+            alert('not valid')
+            } else {
+            alert($("input#int_z[value]").val())
+            };            
+        };
+    };
+      
     // on page refresh or load (POST)
     var $SelectOnLoad = $("select#function").val();
     show_hide_input($SelectOnLoad);
@@ -150,7 +161,7 @@ $(document).ready(function () {
     // shows select form for transition on change
     $("input[type='radio']").change(function(e) {
         var $RadioVal = $(this).val();
-        show_hide_trans($RadioVal);        
+        show_hide_trans($RadioVal);
     });  
     
     // shows select form for transition on load
@@ -164,13 +175,24 @@ $(document).ready(function () {
     });    
         
     //on page refresh or load (POST) hides/shows examples
-    var $Output = $("p#output").text()
-    if ($Output) {
+    var $Output = $("p#output").text();
+    var $TableOutput = $("div#output").text();
+    var $SuppEx = $("div.support-examples").text();
+    
+    if ($Output || $TableOutput && $SuppEx ) {
         $("div#examples").show();
         var $ExampleOnLoad = $("select#examples").val();
         show_hide_code($ExampleOnLoad);
     } else {
-        $("div#examples").hide();
-    };    
+        $("div#examples, .support-examples, .code-examples").hide();
+    }; 
       
+    //if input empty on submission: block submission and display error next to empty field
+    //need similar if function to show/hide? or is there a way to only need visible elements
+    $("form").submit(function(event) {
+          var $SelectedVal = $("select#function option[selected]").val();          
+          alert( $SelectedVal );
+          validate_form($SelectedVal);
+    });
+    //if energy = 0 display error: block submission  
 });

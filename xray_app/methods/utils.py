@@ -6,13 +6,19 @@ from pygments.formatters import HtmlFormatter
 
 #validators for input
 def validate_float(*s):
+    boo = []
     for i in s:
         try: 
             if float(i) >= 0:
-                pass
+                boo.append(True)
+            else:
+                boo.append(False)   
         except ValueError:
             return False
-    return True
+    if all(boo):
+        return True
+    else:
+        return False
 
 def validate_int(*s):
     boo = []
@@ -23,7 +29,10 @@ def validate_int(*s):
             else:
                 boo.append(False)              
         except:
-            return False
+            if xraylib.SymbolToAtomicNumber(i) != 0:
+                boo.append(True)
+            else:
+                return False    
     if all(boo):
         return True
     else:
@@ -155,20 +164,21 @@ def calc_output(function, *values):
 
     lst = []
     for value in values:        
-        if validate_int(value) == True:
-            lst.append(int(value))
-        elif validate_float(value) == True:
+        if validate_int(value):
+            if xraylib.SymbolToAtomicNumber(value) != 0:
+                lst.append(xraylib.SymbolToAtomicNumber(value))
+            else:
+                lst.append(int(value))
+        elif validate_float(value):
             lst.append(float(value))   
-        elif xraylib.SymbolToAtomicNumber(value) != 0:
-            lst.append(xraylib.SymbolToAtomicNumber(value))
-        elif check_xraylib_key(value) == True:
+        elif check_xraylib_key(value):
             value = get_key(value)
             value = getattr(xraylib, value)
             lst.append(value)
         else:
             lst.append(value) #needed for _CP entry         
     try:
-        if validate_float(lst[0]) == True:
+        if validate_float(lst[0]):
             output = xrl_function(*lst)
             #print(output)
             return output
@@ -222,149 +232,148 @@ def code_example(tple, function, *variables):
         
         if lang[0] == 'cpp-objdump':
             for variable in variables:
-                print(variable)
-                if validate_float(variable) == True:
+                if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append('"55Fe"')
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append('"Acetone"')
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append('"' + str(variable) + '"')
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('SymbolToAtomicNumber("' + variable + '")')
-                elif check_xraylib_key(str(variable)) == True:
-                    lst.append(variable)                
+                elif check_xraylib_key(str(variable)):
+                    lst.append(variable)
+                elif validate_int_or_str(variable):
+                    lst.append('"' + str(variable) + '"')          
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'
         
         elif lang[0] == 'fortran':
             for variable in variables:
-                if validate_float(variable) == True:
+                if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append("'55Fe'")
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append("'Acetone'")
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append("'" + str(variable) + "'")
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('symboltoatomicnumber(\'' + variable + '\')')
-                elif check_xraylib_key(str(variable)) == True:
-                    lst.append((variable).lower())                
+                elif check_xraylib_key(str(variable)):
+                    lst.append((variable).lower())
+                elif validate_int_or_str(variable):
+                    lst.append("'" + str(variable) + "'")                  
             _input = ', '.join(lst)
             example = str(function).lower() + '(' + _input + ')'
         
         elif lang[0] == 'perl':
             for variable in variables:
-                if validate_float(variable) == True:
+                if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append('"55Fe"')
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append('"Acetone"')
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append('"' + str(variable) + '"')
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('xraylib::SymbolToAtomicNumber("' + variable + '")')
-                elif check_xraylib_key(str(variable)) == True:
-                    lst.append('$xraylib::' + variable)                
+                elif check_xraylib_key(str(variable)):
+                    lst.append('$xraylib::' + variable)  
+                elif validate_int_or_str(variable):
+                    lst.append('"' + str(variable) + '"')                  
             _input = ', '.join(lst)
             example = 'xraylib::' + str(function) + '(' + _input + ')'
         
         elif lang[0] == 'idl':
             lst = []
             for variable in variables:
-                if validate_float(variable) == True or check_xraylib_key(str(variable)) == True:
+                if validate_float(variable) or check_xraylib_key(str(variable)):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append("'55Fe'")
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append("'Acetone'")
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append("'" + str(variable) + "'")
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
-                    lst.append('SYMBOLTOATOMICNUMBER(\'' + variable + '\')')                
+                    lst.append('SYMBOLTOATOMICNUMBER(\'' + variable + '\')')
+                elif validate_int_or_str(variable):
+                    lst.append("'" + str(variable) + "'")                 
             _input = ', '.join(lst)
             example = str(function).upper() + '(' + _input + ')'
         
         elif lang[0] == 'python':
             for variable in variables:
-                if validate_float(variable) == True:
+                if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append('"55Fe"')
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append('"Acetone"')
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append('"' + str(variable) + '"')
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('xraylib.SymbolToAtomicNumber("' + variable + '")')
-                elif check_xraylib_key(str(variable)) == True:
-                    lst.append('xraylib.' + variable)               
+                elif check_xraylib_key(str(variable)):
+                    lst.append('xraylib.' + variable)
+                elif validate_int_or_str(variable):
+                    lst.append('"' + str(variable) + '"')               
             _input = ', '.join(lst)
             example = 'xraylib.' + str(function) + '(' + _input + ')'
         
         elif lang[0] == 'java':
             for variable in variables:
-                if validate_float(variable) == True:
+                if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append('"55Fe"')
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append('"Acetone"')
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append('"' + str(variable) + '"')
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('Xraylib.SymbolToAtomicNumber("' + variable + '")')
-                elif check_xraylib_key(str(variable)) == True:
-                    lst.append('Xraylib.' + variable)               
+                elif check_xraylib_key(str(variable)):
+                    lst.append('Xraylib.' + variable)
+                elif validate_int_or_str(variable):
+                    lst.append('"' + str(variable) + '"')               
             _input = ', '.join(lst)
             example = 'Xraylib.' + str(function) + '(' + _input + ')'
         
         elif lang[0] == 'csharp':
             for variable in variables:
-                if validate_float(variable) == True:
+                if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append('"55Fe"')
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append('"Acetone"')
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append('"' + str(variable) + '"')
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('XrayLib.SymbolToAtomicNumber("' + variable + '")')
-                elif check_xraylib_key(str(variable)) == True:
-                    lst.append('XrayLib.' + variable)                
+                elif check_xraylib_key(str(variable)):
+                    lst.append('XrayLib.' + variable)
+                elif validate_int_or_str(variable):
+                    lst.append('"' + str(variable) + '"')                
             _input = ', '.join(lst)
             example = 'XrayLib.' + str(function) + '(' + _input + ')'
         
         elif lang[0] == 'lua':
             for variable in variables:
-                if validate_float(variable) == True:
+                if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append('"55Fe"')
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append('"Acetone"')
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append('"' + str(variable) + '"')
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('xraylib.SymbolToAtomicNumber("' + variable + '")')
-                elif check_xraylib_key(str(variable)) == True:
+                elif check_xraylib_key(str(variable)):
                     lst.append('xraylib.' + variable)
+                elif validate_int_or_str(variable):
+                    lst.append('"' + str(variable) + '"')
             _input = ', '.join(lst)
             example = 'xraylib.' + str(function) + '(' + _input + ')'
         
         elif lang[0] == 'ruby':
             for variable in variables:
-                if validate_float(variable) == True:
+                if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetRadioNuclideDataByName':
-                    lst.append('"55Fe"')
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append('"Acetone"')
+                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append('"' + str(variable) + '"')
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('Xraylib.SymbolToAtomicNumber("' + variable + '")')
-                elif check_xraylib_key(str(variable)) == True:
-                    lst.append('Xraylib::' + variable)                
+                elif check_xraylib_key(str(variable)):
+                    lst.append('Xraylib::' + variable) 
+                elif validate_int_or_str(variable):
+                    lst.append('"' + str(variable) + '"')               
             _input = ', '.join(lst)
             example = 'Xraylib.' + str(function) + '(' + _input + ')'        
         
         elif lang[0] == 'php': 
             for variable in variables:
-                if function == 'GetRadioNuclideDataByName':
-                    lst.append('"55Fe"')
-                elif function ==  'GetCompoundDataNISTByName':
-                    lst.append('"Acetone"')
-                elif validate_float(variable) == True or check_xraylib_key(str(variable)) == True:
+                if function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                    lst.append('"' + str(variable) + '"')
+                elif validate_float(variable) or check_xraylib_key(str(variable)):
                     lst.append(variable)                
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
-                    lst.append('SymbolToAtomicNumber("' + variable + '")')                
+                    lst.append('SymbolToAtomicNumber("' + variable + '")')
+                elif validate_int_or_str(variable):
+                    lst.append('"' + str(variable) + '"')                
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'
         

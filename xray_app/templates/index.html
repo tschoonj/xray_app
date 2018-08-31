@@ -47,6 +47,14 @@
             formnovalidate>
         <br/>
      </fieldset>
+      <div class="alert empty-alert">
+        <span class="close-button" onclick="this.parentElement.style.display='none';">&times;</span>
+        Please fill in all fields.
+      </div>
+      <div class="alert energy-alert">
+        <span class="close-button" onclick="this.parentElement.style.display='none';">&times;</span>
+        Energy input cannot be zero.
+      </div>
   </form>
 </div>  
 
@@ -69,26 +77,21 @@
                 {{value|safe}}
                 {% endif %}                 
                 </td>
-            {% endfor %}      
-            
+            {% endfor %}                  
         </table>
     </div>
 {% elif output %} 
-<h2> Result: </h2>
-    <div id="output">
-        <p id="output"> {{ output|safe }} </p>
-    </div>
-    <div id="units">
-    {% if units %}
-        <p> {{units|safe}} </p>
-    {% endif %}
-    </div>
-{% endif %}
-
+    <div>
+        <h2> Result: </h2>
+            <p id="output"> {{ output|safe }} </p>
+            {% if units %}
+                <p id="units"> {{units|safe}} </p>
+            {% endif %}
+    </div>        
+{% endif %}        
 {% if error %}
     {{error}}
 {% endif %}
-
 {% for field in form %}
     {% if field.id == 'examples' %}
         <div class="form-group xlib" id="{{field.id}}">
@@ -96,12 +99,10 @@
                     {{field}}
         </div>
     {% endif %}
-{% endfor %}
- 
+{% endfor %} 
 {% if code_examples %}
     {{code_examples|safe}}
 {% endif %}
-
 {# Latest jQuery #}
 <script
     src="https://code.jquery.com/jquery-3.3.1.js"
