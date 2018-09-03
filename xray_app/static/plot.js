@@ -1,6 +1,15 @@
 $(document).ready(function () {    
+    // clear text fields onfocus
+    $("input[type='text']").on("focus", function(){
+        $( this ).val('');
+    });
+    
+    /* hides All option for transition until implemented */
+    $("div#transition li:last-child").hide();
+    
+    
     //shows and hides fields depending on $Select
-    function show_hide($Select) {
+    function hideInputFields($Select) {
         if ($Select == "CS_Photo_Partial"){
             $("div.xlib").hide();
             $("#int_z, #shell").show();
@@ -13,46 +22,67 @@ $(document).ready(function () {
         };    
     };
     
-    // clear text fields onfocus
-    $("input[type='text']").on("focus", function(){
-        $( this ).val('');
-    });
-    
-    // shows and hides transition select forms depending on $Radio
-    function show_hide_trans ($Radio) {
-    if ($Radio == "IUPAC") {
-            $("#transition-iupac").show();
-            $("#transition-siegbahn").hide();
-        } else if ($Radio == "Siegbahn") {
-            $("#transition-siegbahn").show();
-            $("#transition-iupac").hide();
-        } else if ($Radio == "All") {
-            $("#transition-siegbahn, #transition-iupac").hide();
+    //hides impossible iupac transitions
+    function hideIUPAC ($select) {
+        var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
+        
+        var iupac2 = document.getElementById("transition-iupac2");
+        var iupac2Selected = iupac2.options[iupac2.selectedIndex].value;
+        
+        $selectIndex = shellsArray.indexOf($select);
+        $(iupac2).empty();
+        
+        var match = false;
+        for (var i = $selectIndex+1 ; i < shellsArray.length ; i++) {
+    	    iupac2.options.add(new Option(shellsArray[i], shellsArray[i]));
+    	    if (shellsArray[i] == iupac2Selected) {
+    	        iupac2.options[i-$selectIndex-1].selected = true;
+    	        match = true;
+    	    };
+        };
+        if (match == false) {
+            iupac2.options[0].selected = true;
         };
     };
     
+    // shows and hides transition select forms depending on $Radio
+    function hideTransSelects ($Radio) {
+        if ($Radio == "IUPAC") {
+            $("#transition-iupac1, #transition-iupac2").show();
+            $("#transition-siegbahn").hide();
+        } else if ($Radio == "Siegbahn") {
+            $("#transition-siegbahn").show();
+            $("#transition-iupac1, #transition-iupac2").hide();
+        } else if ($Radio == "All") {
+            $("#transition-siegbahn, #transition-iupac1, #transition-iupac2").hide();
+        };
+    }; 
+    
+    // hides/shows as form changes
+    $("select#transition-iupac1").change(function(e) {
+        var $selectTrans = $(this).val();
+        hideIUPAC($selectTrans);
+    });
+    
     // on page refresh or load (post form)
     var $SelectOnLoad = $("select#function").val();
-    show_hide($SelectOnLoad);
+    hideInputFields($SelectOnLoad);
     
     // hides/shows as form changes 
     $("select#function").change(function(e) {
         var $SelectVal = $(this).val();
-        show_hide($SelectVal);
+        hideInputFields($SelectVal);
     });
-        
-    /* hides All option for transition until implemented */
-    $("div#transition li:last-child").hide();
     
     // shows select form for transition on change
     $("input[type='radio']").change(function(e) {
         var $RadioVal = $(this).val();
-        show_hide_trans($RadioVal);        
+        hideTransSelects($RadioVal);        
     });
     
     // shows select form for transition on load
     var $RadioOnLoad = $("div#transition input[checked]").val();
-    show_hide_trans($RadioOnLoad);
+    hideTransSelects($RadioOnLoad);
     
     //client side validation 
     $("form").submit(function(event) {

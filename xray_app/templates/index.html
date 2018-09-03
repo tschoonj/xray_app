@@ -6,12 +6,7 @@
 
 <div>  
   <form method="POST" action="">  
-    <fieldset class="form-group inline">
-       <!--
-       possibly add headers or dividers to label diff functions i.e cross sections, misc, profiles, form factors
-       would need an ordered list :?
-       could also use bootstrap buttons to do radio bit then nest dropdown 
-       -->
+    <fieldset class="form-group inline">       
        {% for field in form %}
             {% if field.id == 'transition' %}
                 <div class="form-group xlib" id = "{{field.id}}">
@@ -40,11 +35,11 @@
                 </div>  
             {% endif %}  
        {% endfor %}
-       <p></p>
        <input 
             type="submit" 
             value="Submit"
-            formnovalidate>
+            formnovalidate
+            onclick="myFunction()">
         <br/>
      </fieldset>
       <div class="alert empty-alert">
@@ -109,7 +104,7 @@
     integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"> </script>
 
-{#<script src="{{url_for('static', filename='index.js')}}"></script>#}
+<script src="{{url_for('static', filename='index.js')}}"></script>
 <noscript>Sorry, your browser does not support JavaScript!</noscript>
 
 {% endblock body %}

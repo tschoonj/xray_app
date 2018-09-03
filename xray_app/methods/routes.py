@@ -21,7 +21,6 @@ nist_dict = {xraylib.GetCompoundDataNISTByIndex(int(v))['name']: v for k, v in x
 rad_dict = {xraylib.GetRadioNuclideDataByIndex(int(v))['name']: v for k, v in xraylib.__dict__.items() if k.startswith('RADIO')}
 
 shell_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('SHELL')}
-ck_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('TRANS')}
 aug_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('AUGER')}
 #print(aug_dict)
 trans_dict = {k: v for k, v in xraylib.__dict__.items() if k.endswith('_LINE')}
@@ -33,7 +32,6 @@ dcs_tup = make_tup(dcs_dict, 'dcs') #special case
 nist_tup = make_tup(nist_dict, 'nist')
 rad_name_tup = make_tup(rad_dict, 'rad')
 shell_tup = make_tup(shell_dict, 'shell')
-ck_tup = make_tup(ck_dict, 'ck')  #special case
 aug_tup = make_tup(aug_dict, 'aug')
 
 #slicing transition tuples to split into IUPAC and Siegbahn
@@ -50,7 +48,6 @@ def index():
     form.function.choices = form.function.choices + cs_tup + dcs_tup
     form.transition.siegbahn.choices = trans_S_tup
     form.shell.choices =  shell_tup
-    form.cktrans.choices = ck_tup
     form.nistcomp.choices = nist_tup
     form.rad_nuc.choices = rad_name_tup
     

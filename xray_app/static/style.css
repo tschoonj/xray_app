@@ -6,7 +6,7 @@ div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
 div.xlib { display: hidden }
 
 /* div.support-examples { display: inline-block } */
-img.center-block {width:100%}
+img.center-block { width:100% }
 
 @media only screen and (max-width: 600px) {
     select { width:100% }

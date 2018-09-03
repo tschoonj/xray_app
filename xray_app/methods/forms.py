@@ -50,7 +50,10 @@ class Xraylib_Request(FlaskForm):
     density = StringField('Density (g cm<sup>-3</sup>)', default = '1.0', validators = [DataRequired()])
     pz = StringField('Electron Momentum p<sub>z</sub>', default = '1.0', validators = [DataRequired()])     
     shell = SelectField(u'Shell', choices = [], validators = [DataRequired()])
-    cktrans = SelectField(u'Coster Kronig Trans', choices = [], validators = [DataRequired()])
+    cktrans = SelectField(u'Coster Kronig Trans', 
+        #coerce=str,
+        choices = [('FL12_TRANS', u'L1 \u2192 L2'), ('FL13_TRANS', u'L1 \u2192 L3'), ('FL23_TRANS', u'L2 \u2192 L3'), ('FM12_TRANS', u'M1 \u2192 M2'), ('FM13_TRANS', u'M1 \u2192 M3'), ('FM14_TRANS', 'M1 \u2192 M4'), ('FM15_TRANS', 'M1 \u2192 M5'), ('FM23_TRANS', 'M2 \u2192 M3'), ('FM24_TRANS', 'M2 \u2192 M4'), ('FM25_TRANS', 'M2 \u2192 M5'), ('FM34_TRANS', 'M3 \u2192 M4'), ('FM35_TRANS', 'M3 \u2192 M5'),('FM45_TRANS','M4 \u2192 M5')], 
+        validators = [DataRequired()])
     nistcomp = SelectField(u'NIST Compound', choices = [], validators = [DataRequired()])    
     rad_nuc = SelectField( u'Radio Nuclide', choices = [], validators = [DataRequired()])
     #choices(value,label)

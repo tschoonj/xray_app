@@ -23,6 +23,9 @@ $(document).ready(function () {
         } else if ($select == "LineEnergy" || $select == "RadRate"){
             $("div.xlib").hide();
             $("#int_z, #transition").show();
+        } else if ($select == "AugerRate"){
+            $("div.xlib").hide();
+            $("#int_z, #augtrans").show();
         } else if ($select == "EdgeEnergy" || $select == "JumpFactor" || $select == "FluorYield" || $select == "AugerYield" || $select == "AtomicLevelWidth" || $select == "ElectronConfig") {
             $("div.xlib").hide();
             $("#int_z, #shell").show();
@@ -137,19 +140,17 @@ $(document).ready(function () {
         } else if ($Radio == "All") {
             $("#transition-siegbahn, #transition-iupac1, #transition-iupac2").hide();
         };
-    };
+    };   
     
-    //alert($("#transition-iupac2 option[value='L3']").val())
-    
-    //hides impossible transitions
+    //hides impossible iupac transitions
     function hideIUPAC ($select) {
         var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
         
         var iupac2 = document.getElementById("transition-iupac2");
         var iupac2Selected = iupac2.options[iupac2.selectedIndex].value;
-        $(iupac2).empty();
-        
         $selectIndex = shellsArray.indexOf($select);
+        $(iupac2).empty();
+       
         //var hideChoices = choices.slice(0, $selectIndex + 1);
         //var showChoices = choices.slice($selectIndex + 1);
         
@@ -173,8 +174,60 @@ $(document).ready(function () {
             select.add(showChoices.indexOf(choice))
             alert(select.value)
         });*/
+    };     
+    
+    //hides impossible auger transitions
+    function hideAuger1 ($select) {
+    var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
+    var trans_shell = document.getElementById("augtrans-trans_shell");
+    var transSelected = trans_shell.options[trans_shell.selectedIndex].value;
+    
+    $selectIndex = shellsArray.indexOf($select);
+    $(trans_shell).empty();
+    
+    var match = false;
+        for (var i = $selectIndex+1 ; i < 9 ; i++) {
+    	    trans_shell.options.add(new Option(shellsArray[i], shellsArray[i]));
+    	    if (shellsArray[i] == transSelected) {
+    	        trans_shell.options[i-$selectIndex-1].selected = true;
+    	        match = true;
+    	    };
+        };
+        if (match == false) {
+            trans_shell.options[0].selected = true;
+        };    
     };
     
+    function hideAuger2 ($select) {
+    var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
+    var aug_shell = document.getElementById("augtrans-aug_shell");
+    var augSelected = aug_shell.options[aug_shell.selectedIndex].value;
+    
+    $selectIndex = shellsArray.indexOf($select);
+    $(aug_shell).empty();
+    
+    var match = false;
+        for (var i = $selectIndex+1 ; i < shellsArray.length ; i++) {
+    	    aug_shell.options.add(new Option(shellsArray[i], shellsArray[i]));
+    	    if (shellsArray[i] == augSelected) {
+    	        aug_shell.options[i-$selectIndex-1].selected = true;
+    	        match = true;
+    	    };
+        };
+        if (match == false) {
+            aug_shell.options[0].selected = true;
+        };    
+    };
+    
+    $("select#augtrans-ex_shell").change(function(e) {
+        var $selectAug = $(this).val();
+        hideAuger1($selectAug);
+    });
+    
+    $("select#augtrans-trans_shell").change(function(e) {
+        var $selectAug = $(this).val();
+        hideAuger2($selectAug);
+    });
     
     // hides/shows as form changes
     $("select#transition-iupac1").change(function(e) {

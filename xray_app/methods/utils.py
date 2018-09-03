@@ -66,10 +66,7 @@ def all_trans_xrf(tple, function, int_z, energy):
 #generates tuples from dicts after mapping 'user-friendly' strings onto the keys
 def make_tup(_dict, variable):
     tup = []
-    if variable == 'ck':
-        tup = [(k, k.split('_')[0]) for k, v in _dict.items()]
-        return tup
-    elif variable == 'nist' or variable == 'rad':
+    if variable == 'nist' or variable == 'rad':
         tup = [(k, k) for k, v in _dict.items()]
         return tup
     elif variable == 'cs' or variable == 'dcs':
