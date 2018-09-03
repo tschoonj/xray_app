@@ -15,10 +15,7 @@ def validate_float(*s):
                 boo.append(False)   
         except ValueError:
             return False
-    if all(boo):
-        return True
-    else:
-        return False
+    return all(boo)
 
 def validate_int(*s):
     boo = []
@@ -29,45 +26,22 @@ def validate_int(*s):
             else:
                 boo.append(False)              
         except:
-            if xraylib.SymbolToAtomicNumber(i) != 0:
-                boo.append(True)
-            else:
-                return False    
-    if all(boo):
-        return True
-    else:
-        return False    
+            return False    
+    return all(boo)    
                 
 def validate_str(*s):
-    for i in s:
-        try: 
-            str(i)
-        except ValueError:
-            return False
-    return True
-            
-def validate_int_or_str(*s):
     boo = []
     for i in s:
-        try:
-            if int(i) > 0:
+        try:                
+            if xraylib.SymbolToAtomicNumber(i) != 0:
+                boo.append(True)
+            elif xraylib.CompoundParser(i):                    
                 boo.append(True)
             else:
                 boo.append(False)
-        except ValueError:
-            try:                
-                if xraylib.SymbolToAtomicNumber(i) != 0:
-                    boo.append(True)
-                elif xraylib.CompoundParser(i):                    
-                    boo.append(True)
-                else:
-                    boo.append(False)
-            except:
-                return False
-    if all(boo):
-        return True
-    else:
-        return False
+        except:
+            return False
+    return all(boo)          
 #------------------------------------------------------------------------------------------------
 #generates dicts for all linetype output
 def all_trans(tple, *inputs):
@@ -160,37 +134,44 @@ def get_key(s):
 #calculates output for all functions excl. CompoundParser and Refractive_Index
 def calc_output(function, *values):
     xrl_function = getattr(xraylib, function)
-    #print(values)
+    print(values)
 
     lst = []
     for value in values:        
         if validate_int(value):
-            if xraylib.SymbolToAtomicNumber(value) != 0:
-                lst.append(xraylib.SymbolToAtomicNumber(value))
-            else:
-                lst.append(int(value))
+            lst.append(int(value))
         elif validate_float(value):
             lst.append(float(value))   
         elif check_xraylib_key(value):
             value = get_key(value)
             value = getattr(xraylib, value)
             lst.append(value)
-        else:
-            lst.append(value) #needed for _CP entry         
+        elif validate_str(value):
+            if xraylib.SymbolToAtomicNumber(value) != 0:
+                lst.append(xraylib.SymbolToAtomicNumber(value))
+            else:
+                lst.append(value) #needed for _CP entry         
+    print(lst)
     try:
         if validate_float(lst[0]):
             output = xrl_function(*lst)
-            #print(output)
-            return output
+            print(output)
+            if output == 0:
+                #0 not truthy so jinja ignores it
+                return '0'
+            else:
+                return output
         else: 
             xrl_function = getattr(xraylib, function + '_CP')
-            print(xrl_function)
             output = xrl_function(*lst)
-            #print(output)
-            return output
+            print(output)
+            if output == 0:
+                return '0'
+            else:
+                return output
     except:
         output = 'Error'
-        #print(output)
+        return output
 
 #generates code example strings and passes them through Pygments
 def code_example(tple, function, *variables):
@@ -240,7 +221,7 @@ def code_example(tple, function, *variables):
                     lst.append('SymbolToAtomicNumber("' + variable + '")')
                 elif check_xraylib_key(str(variable)):
                     lst.append(variable)
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append('"' + str(variable) + '"')          
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'
@@ -255,7 +236,7 @@ def code_example(tple, function, *variables):
                     lst.append('symboltoatomicnumber(\'' + variable + '\')')
                 elif check_xraylib_key(str(variable)):
                     lst.append((variable).lower())
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append("'" + str(variable) + "'")                  
             _input = ', '.join(lst)
             example = str(function).lower() + '(' + _input + ')'
@@ -270,7 +251,7 @@ def code_example(tple, function, *variables):
                     lst.append('xraylib::SymbolToAtomicNumber("' + variable + '")')
                 elif check_xraylib_key(str(variable)):
                     lst.append('$xraylib::' + variable)  
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append('"' + str(variable) + '"')                  
             _input = ', '.join(lst)
             example = 'xraylib::' + str(function) + '(' + _input + ')'
@@ -284,7 +265,7 @@ def code_example(tple, function, *variables):
                     lst.append("'" + str(variable) + "'")
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('SYMBOLTOATOMICNUMBER(\'' + variable + '\')')
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append("'" + str(variable) + "'")                 
             _input = ', '.join(lst)
             example = str(function).upper() + '(' + _input + ')'
@@ -299,7 +280,7 @@ def code_example(tple, function, *variables):
                     lst.append('xraylib.SymbolToAtomicNumber("' + variable + '")')
                 elif check_xraylib_key(str(variable)):
                     lst.append('xraylib.' + variable)
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append('"' + str(variable) + '"')               
             _input = ', '.join(lst)
             example = 'xraylib.' + str(function) + '(' + _input + ')'
@@ -314,7 +295,7 @@ def code_example(tple, function, *variables):
                     lst.append('Xraylib.SymbolToAtomicNumber("' + variable + '")')
                 elif check_xraylib_key(str(variable)):
                     lst.append('Xraylib.' + variable)
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append('"' + str(variable) + '"')               
             _input = ', '.join(lst)
             example = 'Xraylib.' + str(function) + '(' + _input + ')'
@@ -329,7 +310,7 @@ def code_example(tple, function, *variables):
                     lst.append('XrayLib.SymbolToAtomicNumber("' + variable + '")')
                 elif check_xraylib_key(str(variable)):
                     lst.append('XrayLib.' + variable)
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append('"' + str(variable) + '"')                
             _input = ', '.join(lst)
             example = 'XrayLib.' + str(function) + '(' + _input + ')'
@@ -344,7 +325,7 @@ def code_example(tple, function, *variables):
                     lst.append('xraylib.SymbolToAtomicNumber("' + variable + '")')
                 elif check_xraylib_key(str(variable)):
                     lst.append('xraylib.' + variable)
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append('"' + str(variable) + '"')
             _input = ', '.join(lst)
             example = 'xraylib.' + str(function) + '(' + _input + ')'
@@ -359,7 +340,7 @@ def code_example(tple, function, *variables):
                     lst.append('Xraylib.SymbolToAtomicNumber("' + variable + '")')
                 elif check_xraylib_key(str(variable)):
                     lst.append('Xraylib::' + variable) 
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append('"' + str(variable) + '"')               
             _input = ', '.join(lst)
             example = 'Xraylib.' + str(function) + '(' + _input + ')'        
@@ -372,7 +353,7 @@ def code_example(tple, function, *variables):
                     lst.append(variable)                
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('SymbolToAtomicNumber("' + variable + '")')
-                elif validate_int_or_str(variable):
+                elif validate_str(variable):
                     lst.append('"' + str(variable) + '"')                
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'

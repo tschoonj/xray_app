@@ -9,7 +9,7 @@ sys.path.insert(0, '..')
 app = flask.Flask(__name__)
 
 import xray_app
-from xray_app.methods.utils import calc_output, check_xraylib_key
+from xray_app.methods.utils import calc_output, check_xraylib_key, validate_str
 
 @pytest.fixture
 def client():
@@ -17,7 +17,7 @@ def client():
 	yield client
 #----------------------------------------------------------------------------	
 test_input = {
-	'comp': '', 'int_z':'',	'int_z_or_comp': '', 'float_q': '',	'transition-notation': '', 'transition-iupac':'', 'transition-siegbahn':'', 'shell': '', 'energy': '', 'theta': '', 'phi': '', 'density': '','pz': '', 'cktrans': '', 'nistcomp': '', 'augtrans': '', 'rad_nuc': ''
+	'comp': '', 'int_z':'',	'int_z_or_comp': '', 'float_q': '',	'transition-notation': '', 'transition-iupac1':'', 'transition-iupac2':'', 'transition-siegbahn':'', 'shell': '', 'energy': '', 'theta': '', 'phi': '', 'density': '','pz': '', 'cktrans': '', 'nistcomp': '', 'augtrans': '', 'rad_nuc': '', 'augtrans-ex_shell' : '', 'augtrans-trans_shell': '','augtrans-aug_shell':'' 
     }
 
 trans_functions = ['LineEnergy', 'RadRate', 'CS_FluorLine', 'CS_FluorLine_Kissel_Cascade', 'CS_FluorLine_Kissel_Nonradiative_Cascade', 'CS_FluorLine_Kissel_Radiative_Cascade']
@@ -35,7 +35,12 @@ test_cktrans = ['FL12_TRANS']
 
 test_notation = ['IUPAC', 'Siegbahn']
 test_siegbahn = ['KA1_LINE']
-test_iupac = ['KL3_LINE']	    
+test_iupac1 = ['K']
+test_iupac2 = ['L3']
+
+test_ex_shell = []
+tset_trans_shell = []
+test_aug_shell = []	    
 #----------------------------------------------------------------------------
 def vanilla_test(client, rv):
     assert 200 == rv.status_code
@@ -51,7 +56,7 @@ def invalid_input_test(rv):
 def output_test(rv, function, *values):
     output = soup_output(rv)
     values = [i for i in values]
-    
+    print(values)
     if 'IUPAC' in values:
         if function.startswith('CS_FluorLine'):
             #reorders input to Z, line, E            
@@ -85,7 +90,8 @@ def function_test(client, select_input, **variables):
     # - character forbidden for kwargs
     if select_input in trans_functions:
         variables['transition-notation'] = test_notation
-        variables['transition-iupac'] = test_iupac
+        variables['transition-iupac1'] = test_iupac1
+        variables['transition-iupac2'] = test_iupac2
         variables['transition-siegbahn'] = test_siegbahn
     print(variables)
     test_inputs = []
@@ -116,7 +122,7 @@ def function_test(client, select_input, **variables):
 #----------------------------------------------------------------------------    
 def validate_input(dct):
     values = list(dct.values())
-    boo_list = [isinstance(value, (float, int)) or xraylib.SymbolToAtomicNumber(value) != 0 or check_xraylib_key(value) for value in values] #or xraylib.CompoundParser(value)
+    boo_list = [isinstance(value, (float, int)) or xraylib.SymbolToAtomicNumber(value) != 0 or check_xraylib_key(value) or validate_str(value) for value in values] #or xraylib.CompoundParser(value)
     #print(boo_list)
     if all(boo_list):
         return True
@@ -125,14 +131,14 @@ def validate_input(dct):
 
 def soup_output(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
-    print(soup)
+    #print(soup)
     output = soup.find('p', id="output").string
     output = float(output.replace(" ",""))
     return output
 
 def soup_output_table(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
-    print(soup)
+    #print(soup)
     #return output
 #----------------------------------------------------------------------------                
 def test_nonexistent(client):
@@ -165,7 +171,7 @@ def test_ffrayl_sfcompt(client):
     for x in test_functions:
         function_test(client, x, int_z = test_z, float_q = test_q)
 #----------------------------------------------------------------------------
-def test_lineenergy_radrate(client):
+"""def test_lineenergy_radrate(client):
     test_functions = ['LineEnergy', 'RadRate']
     for x in test_functions:
         function_test(client, x, int_z = test_z)
@@ -174,7 +180,7 @@ def test_fluorline(client):
     test_functions = ['CS_FluorLine', 'CS_FluorLine_Kissel_Cascade', 'CS_FluorLine_Kissel_Nonradiative_Cascade', 'CS_FluorLine_Kissel_Radiative_Cascade']
     for x in test_functions:
         function_test(client, x, int_z = test_z, energy = test_energy)      
-#def test_cs_fluorline(client):
+#def test_cs_fluorline(client):"""
 #----------------------------------------------------------------------------
 # add in test for units
 def test_edgeenergy_etc(client):

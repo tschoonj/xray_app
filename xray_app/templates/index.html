@@ -18,7 +18,7 @@
                     {{field.label}}:
                     {{field.notation(class="radio-inline")}}
                     
-                    {{field.iupac(class="select-inline")}}
+                    {{field.iupac1(class="select-inline")}} &#x2190; {{field.iupac2(class="select-inline")}}
                     {{field.siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id == 'csrf_token' or field.id == 'examples' %}
@@ -108,9 +108,8 @@
     src="https://code.jquery.com/jquery-3.3.1.js"
     integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"> </script>
-    
-<script src="{{url_for('static', filename='index.js')}}"></script>
 
+{#<script src="{{url_for('static', filename='index.js')}}"></script>#}
 <noscript>Sorry, your browser does not support JavaScript!</noscript>
 
 {% endblock body %}

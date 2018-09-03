@@ -5,119 +5,121 @@ $(document).ready(function () {
     })*/ 
     /* automatically assigns event handlers to elements that are specified by the selector (i.e select)*/
     
+    // $ indicates a jQuery object
+    
     // clear text fields onfocus
     $("input[type='text']").on("focus", function(){
         $( this ).val('');
     });        
     
-    //shows and hides fields depending on $Select
-    function show_hide_input($Select) {
-        if ($Select == "AtomicWeight" || $Select == "ElementDensity") {
+    //shows and hides fields depending on $select
+    function hideInputFields($select) {
+        if ($select == "AtomicWeight" || $select == "ElementDensity") {
             $("div.xlib").hide();
             $("#int_z").show();
-        } else if ($Select == "FF_Rayl" || $Select == "SF_Compt") {
+        } else if ($select == "FF_Rayl" || $select == "SF_Compt") {
             $("div.xlib").hide();
             $("#int_z, #float_q").show();
-        } else if ($Select == "LineEnergy" || $Select == "RadRate"){
+        } else if ($select == "LineEnergy" || $select == "RadRate"){
             $("div.xlib").hide();
             $("#int_z, #transition").show();
-        } else if ($Select == "EdgeEnergy" || $Select == "JumpFactor" || $Select == "FluorYield" || $Select == "AugerYield" || $Select == "AtomicLevelWidth" || $Select == "ElectronConfig") {
+        } else if ($select == "EdgeEnergy" || $select == "JumpFactor" || $select == "FluorYield" || $select == "AugerYield" || $select == "AtomicLevelWidth" || $select == "ElectronConfig") {
             $("div.xlib").hide();
             $("#int_z, #shell").show();
-        } else if ($Select == "CS_Photo_Partial"){
+        } else if ($select == "CS_Photo_Partial"){
             $("div.xlib").hide();
             $("#int_z, #shell, #energy").show();
-        } else if ($Select == "CS_KN"){
+        } else if ($select == "CS_KN"){
             $("div.xlib").hide();
             $("#energy").show();
-        } else if ($Select == "CS_Total" || $Select == "CS_Photo"|| $Select == "CS_Rayl" || $Select == "CS_Compt"|| $Select == "CS_Energy"){
+        } else if ($select == "CS_Total" || $select == "CS_Photo"|| $select == "CS_Rayl" || $select == "CS_Compt"|| $select == "CS_Energy"){
             $("div.xlib").hide();
             $("#int_z_or_comp, #energy").show();
-        } else if ($Select.includes("CS_FluorLine")){
+        } else if ($select.includes("CS_FluorLine")){
             $("div.xlib").hide();
             $("#int_z, #transition, #energy").show();
-        } else if ($Select == "DCS_KN" || $Select == "ComptonEnergy"){
+        } else if ($select == "DCS_KN" || $select == "ComptonEnergy"){
             $("div.xlib").hide();
             $("#energy, #theta").show();
-        } else if ($Select == "DCS_Thoms"){
+        } else if ($select == "DCS_Thoms"){
             $("div.xlib").hide();
             $("#theta").show();
-        } else if ($Select == "DCS_Rayl" || $Select == "DCS_Compt"){
+        } else if ($select == "DCS_Rayl" || $select == "DCS_Compt"){
             $("div.xlib").hide();
             $("#int_z_or_comp, #energy, #theta").show();
-        } else if ($Select == "DCSP_KN"){
+        } else if ($select == "DCSP_KN"){
             $("div.xlib").hide();
             $("#energy, #theta, #phi").show();
-        } else if ($Select == "DCSP_Thoms"){
+        } else if ($select == "DCSP_Thoms"){
             $("div.xlib").hide();
             $("#theta, #phi").show();
-        } else if ($Select == "DCSP_Rayl" || $Select == "DCSP_Compt"){
+        } else if ($select == "DCSP_Rayl" || $select == "DCSP_Compt"){
             $("div.xlib").hide();
             $("#int_z_or_comp, #energy, #theta, #phi").show();
-        } else if ($Select.includes("Fi")) {
+        } else if ($select.includes("Fi")) {
             $("div.xlib").hide();
             $("#int_z, #energy").show();
-        } else if ($Select == "CosKronTransProb"){
+        } else if ($select == "CosKronTransProb"){
             $("div.xlib").hide();
             $("#int_z, #cktrans").show();
-        } else if ($Select == "ComptonProfile"){
+        } else if ($select == "ComptonProfile"){
             $("div.xlib").hide();
             $("#int_z, #pz").show();
-        } else if ($Select == "ComptonProfile_Partial"){
+        } else if ($select == "ComptonProfile_Partial"){
             $("div.xlib").hide();
             $("#int_z, #pz, #shell").show();
-        } else if ($Select == "MomentTransf"){
+        } else if ($select == "MomentTransf"){
             $("div.xlib").hide();
             $("#energy, #theta").show();
-        } else if ($Select == "Refractive_Index"){
+        } else if ($select == "Refractive_Index"){
             $("div.xlib").hide();
             $("#int_z_or_comp, #energy, #density").show();
-        } else if ($Select == "CompoundParser"){
+        } else if ($select == "CompoundParser"){
             $("div.xlib").hide();
             $("#comp").show();
-        } else if ($Select == "GetRadioNuclideDataList"){
+        } else if ($select == "GetRadioNuclideDataList"){
             $("div.xlib").hide();
-        } else if ($Select == "GetRadioNuclideDataByIndex"){
+        } else if ($select == "GetRadioNuclideDataByIndex"){
             $("div.xlib").hide();
             $("#rad_nuc").show();
-        } else if ($Select == "GetCompoundDataNISTList"){
+        } else if ($select == "GetCompoundDataNISTList"){
             $("div.xlib").hide();
-        } else if ($Select == "GetCompoundDataNISTByIndex"){
+        } else if ($select == "GetCompoundDataNISTByIndex"){
             $("div.xlib").hide();
             $("#nistcomp").show();
         };       
     };        
     
-    //shows and hides code examples depending on $Select
-    function show_hide_code ($Select) {
-        if ($Select == 'cpp-objdump') {
+    //shows and hides code examples depending on $select
+    function hideCode ($select) {
+        if ($select == 'cpp-objdump') {
             $(".code-examples, .support-examples").hide();
             $(".cpp-objdump").show();
-        } else if ($Select == 'fortran') {
+        } else if ($select == 'fortran') {
             $(".code-examples, .support-examples").hide();
             $(".fortran").show();
-        } else if ($Select == 'perl') {
+        } else if ($select == 'perl') {
             $(".code-examples, .support-examples").hide();
             $(".perl").show();
-        } else if ($Select == 'idl') {
+        } else if ($select == 'idl') {
             $(".code-examples, .support-examples").hide();
             $(".idl").show();
-        } else if ($Select == 'python') {
+        } else if ($select == 'python') {
             $(".code-examples, .support-examples").hide();
             $(".python").show();
-        } else if ($Select == 'java') {
+        } else if ($select == 'java') {
             $(".code-examples, .support-examples").hide();
             $(".java").show();
-        } else if ($Select == 'csharp') {
+        } else if ($select == 'csharp') {
             $(".code-examples, .support-examples").hide();
             $(".csharp").show();
-        } else if ($Select == 'lua') {
+        } else if ($select == 'lua') {
             $(".code-examples, .support-examples").hide();
             $(".lua").show();
-        } else if ($Select == 'ruby') {
+        } else if ($select == 'ruby') {
             $(".code-examples, .support-examples").hide();
             $(".ruby").show();
-        } else if ($Select == 'php') {
+        } else if ($select == 'php') {
             $(".code-examples, .support-examples").hide();
             $(".php").show();
         };
@@ -125,53 +127,85 @@ $(document).ready(function () {
     };
     
     // shows and hides transition select forms depending on $Radio
-    function show_hide_trans ($Radio) {
+    function hideTransSelects ($Radio) {
         if ($Radio == "IUPAC") {
-            $("#transition-iupac").show();
+            $("#transition-iupac1, #transition-iupac2").show();
             $("#transition-siegbahn").hide();
         } else if ($Radio == "Siegbahn") {
             $("#transition-siegbahn").show();
-            $("#transition-iupac").hide();
+            $("#transition-iupac1, #transition-iupac2").hide();
         } else if ($Radio == "All") {
-            $("#transition-siegbahn, #transition-iupac").hide();
+            $("#transition-siegbahn, #transition-iupac1, #transition-iupac2").hide();
         };
     };
     
-    function validate_form($Select){
-        if ($Select == "AtomicWeight" || $Select == "ElementDensity") {
-            if (! $("input#int_z[value]").val()){
-            return false;
-            alert('not valid')
-            } else {
-            alert($("input#int_z[value]").val())
-            };            
+    //alert($("#transition-iupac2 option[value='L3']").val())
+    
+    //hides impossible transitions
+    function hideIUPAC ($select) {
+        var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
+        
+        var iupac2 = document.getElementById("transition-iupac2");
+        var iupac2Selected = iupac2.options[iupac2.selectedIndex].value;
+        $(iupac2).empty();
+        
+        $selectIndex = shellsArray.indexOf($select);
+        //var hideChoices = choices.slice(0, $selectIndex + 1);
+        //var showChoices = choices.slice($selectIndex + 1);
+        
+        var match = false;
+        for (var i = $selectIndex+1 ; i < shellsArray.length ; i++) {
+    	    iupac2.options.add(new Option(shellsArray[i], shellsArray[i]));
+    	    if (shellsArray[i] == iupac2Selected) {
+    	        iupac2.options[i-$selectIndex-1].selected = true;
+    	        match = true;
+    	    };
         };
+        if (match == false) {
+            iupac2.options[0].selected = true;
+        };
+        /*hideChoices.forEach(function(choice){
+            //var y = document.querySelector(x).value;
+            //var y = document.querySelector(x).style.display == "none";
+            select.remove(hideChoices.indexOf(choice))            
+        });
+        showChoices.forEach(function(choice){
+            select.add(showChoices.indexOf(choice))
+            alert(select.value)
+        });*/
     };
-      
+    
+    
+    // hides/shows as form changes
+    $("select#transition-iupac1").change(function(e) {
+        var $selectTrans = $(this).val();
+        hideIUPAC($selectTrans);
+    });
+       
     // on page refresh or load (POST)
-    var $SelectOnLoad = $("select#function").val();
-    show_hide_input($SelectOnLoad);
+    var $selectOnLoad = $("select#function").val();
+    hideInputFields($selectOnLoad);
     
     // hides/shows as form changes
     $("select#function").change(function(e) {
-        var $SelectVal = $(this).val();        
-        show_hide_input($SelectVal);
+        var $selectVal = $(this).val();        
+        hideInputFields($selectVal);
     });
    
     // shows select form for transition on change
     $("input[type='radio']").change(function(e) {
         var $RadioVal = $(this).val();
-        show_hide_trans($RadioVal);
+        hideTransSelects($RadioVal);
     });  
     
     // shows select form for transition on load
     var $RadioOnLoad = $("input[checked]").val();
-    show_hide_trans($RadioOnLoad)
+    hideTransSelects($RadioOnLoad)
        
     // hides/shows examples as form changes 
     $("select#examples").change(function(e) {
-        var $SelectEx = $(this).val();                
-        show_hide_code($SelectEx);
+        var $selectEx = $(this).val();                
+        hideCode($selectEx);
     });    
         
     //on page refresh or load (POST) hides/shows examples
@@ -179,20 +213,91 @@ $(document).ready(function () {
     var $TableOutput = $("div#output").text();
     var $SuppEx = $("div.support-examples").text();
     
-    if ($Output || $TableOutput && $SuppEx ) {
+    if ($Output == 'Error') {
+        $("div#examples, .support-examples, .code-examples").hide();
+    } else if ($Output || $TableOutput && $SuppEx ) {
         $("div#examples").show();
         var $ExampleOnLoad = $("select#examples").val();
-        show_hide_code($ExampleOnLoad);
+        hideCode($ExampleOnLoad);
     } else {
         $("div#examples, .support-examples, .code-examples").hide();
     }; 
-      
-    //if input empty on submission: block submission and display error next to empty field
-    //need similar if function to show/hide? or is there a way to only need visible elements
+          
+    //client side validation 
     $("form").submit(function(event) {
-          var $SelectedVal = $("select#function option[selected]").val();          
-          alert( $SelectedVal );
-          validate_form($SelectedVal);
+        var $selected = $("select#function").val();        
+        //if energy = 0 display error: block submission
+        if ($("input#energy[value]").val() == 0) {
+            $(".energy-alert").show();
+            return false;
+        };
+        //if input empty on submission: block submission and display empty field error
+        if ($selected == "AtomicWeight" || $selected == "ElementDensity" || $selected == "LineEnergy" || $selected == "RadRate" || $selected == "EdgeEnergy" || $selected == "JumpFactor" || $selected == "FluorYield" || $selected == "AugerYield" || $selected == "AtomicLevelWidth" || $selected == "ElectronConfig" || $selected == "CosKronTransProb") {
+            if (!$("input#int_z[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "FF_Rayl" || $selected == "SF_Compt") {
+            if (!$("input#int_z[value]").val() || !$("input#float_q[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "CS_Photo_Partial" || $selected.includes("CS_FluorLine") || $selected.includes("Fi")) {
+            if (!$("input#int_z[value]").val() || !$("input#energy[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "CS_Total" || $selected == "CS_Photo"|| $selected == "CS_Rayl" || $selected == "CS_Compt"|| $selected == "CS_Energy"){
+            if (!$("input#int_z_or_comp[value]").val() || !$("input#energy[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };               
+        } else if ($selected == "DCS_KN" || $selected == "ComptonEnergy" || $selected == "MomentTransf"){
+            if (!$("input#energy[value]").val() || !$("input#theta[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "DCS_Thoms"){
+            if (!$("input#theta[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "DCS_Rayl" || $selected == "DCS_Compt") {
+            if (!$("input#int_z_or_comp[value]").val() || !$("input#energy[value]").val() || !$("input#theta[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "DCSP_KN") {
+            if (!$("input#phi[value]").val() || !$("input#energy[value]").val() || !$("input#theta[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "DCSP_Thoms") {
+            if (!$("input#phi[value]").val() || !$("input#theta[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "DCSP_Rayl" || $selected == "DCSP_Compt") {
+            if (!$("input#int_z_or_comp[value]").val() || !$("input#energy[value]").val() || !$("input#theta[value]").val() || !$("input#phi[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "ComptonProfile" || $selected == "ComptonProfile_Partial") {
+            if (!$("input#int_z[value]").val() || !$("input#pz[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "Refractive_Index") {
+            if (!$("input#int_z_or_comp[value]").val() || !$("input#energy[value]").val() || !$("input#density[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($selected == "CompoundParser") {
+            if (!$("input#comp[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };     
+        };    
     });
-    //if energy = 0 display error: block submission  
+           
 });

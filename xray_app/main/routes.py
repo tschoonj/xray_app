@@ -10,7 +10,7 @@ import base64
 
 import xraylib
 
-from xray_app.methods.routes import cs_dict, trans_S_tup, trans_I_tup, make_tup, validate_int, validate_int_or_str, validate_float
+from xray_app.methods.routes import cs_dict, trans_S_tup, trans_I_tup, make_tup, validate_int, validate_str, validate_float
 
 def delete_key(key, _dict):
     if key in _dict:
@@ -32,7 +32,6 @@ def about():
 def plot():
     form = Xraylib_Request_Plot()
     form.function.choices = form.function.choices + cs_tup #not all of these are needed delete as necessary
-    form.transition.iupac.choices = trans_I_tup
     form.transition.siegbahn.choices = trans_S_tup
     
     if request.method == 'POST':        
@@ -48,12 +47,15 @@ def plot():
         int_z = request.form['int_z']
         int_z_or_comp = request.form['int_z_or_comp']
         
-        transition_notation = request.form.get('transition-notation')        
-        iupac = request.form.get('transition-iupac')
+        notation = request.form.get('transition-notation')        
+        iupac1 = request.form.get('transition-iupac1')
+        iupac2 = request.form.get('transition-iupac2')
+        
+        trans = iupac1 + iupac2 + '_LINE'
         siegbahn = request.form.get('transition-siegbahn')
         
         if select_input == 'CS_Total' or select_input == 'CS_Photo' or select_input == 'CS_Rayl' or select_input == 'CS_Energy' or select_input == 'CS_Compt':
-            if validate_int_or_str(int_z_or_comp):
+            if validate_int(int_z_or_comp) or validate_str(int_z_or_comp):
                 plot = make_plot(select_input, 
                     'Energy ($keV$)', 
                     r'Cross Section ($cm^{2} g^{-1}$)', 
@@ -68,7 +70,7 @@ def plot():
     
         elif select_input.startswith('CS_FluorLine'):
             if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0:
-                if transition_notation == 'IUPAC':
+                if notation == 'IUPAC':
                     plot = make_plot(select_input, 
                         'Energy ($keV$)', 
                         r'Cross Section ($cm^{2} g^{-1}$)', 
@@ -77,9 +79,9 @@ def plot():
                         log_boo_x, 
                         log_boo_y, 
                         int_z,
-                         iupac)
+                         trans)
                     return render_template('plot.html', form = form, title = 'Plot', plot=plot)
-                elif transition_notation == 'Siegbahn':
+                elif notation == 'Siegbahn':
                     plot = make_plot(select_input, 
                         'Energy ($keV$)', 
                         r'Cross Section ($cm^{2} g^{-1}$)', 
@@ -130,7 +132,15 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
     
     t_variables = ', '.join(t_variables)
     ax.set(title = function + ': ' + t_variables, xlabel = xlabel, ylabel = ylabel)                
-                       
+    
+    if log_boo_y != None and log_boo_x != None:
+        plt.xscale('log')                  
+        plt.yscale('log')
+    elif log_boo_x != None:
+        plt.xscale('log')
+    elif log_boo_y != None:
+        plt.yscale('log')        
+    
     img = BytesIO()
     plt.savefig(img, format='png', dpi=300)
     plt.close()

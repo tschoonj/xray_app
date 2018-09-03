@@ -4,7 +4,7 @@ $(document).ready(function () {
         if ($Select == "CS_Photo_Partial"){
             $("div.xlib").hide();
             $("#int_z, #shell").show();
-        } else if ($Select == "CS_Total" || $Select == "CS_Photo"|| $Select == "CS_Rayl" || $Select == "CS_Compt"|| $Select == "CS_Energy") {
+        } else if ($Select == "CS_Total" || $Select == "CS_Photo" || $Select == "CS_Rayl" || $Select == "CS_Compt"|| $Select == "CS_Energy" || $Select == "CS_Photo_Total") {
             $("div.xlib").hide();
             $("#int_z_or_comp").show();
         } else if ($Select.includes("CS_FluorLine")) {
@@ -12,6 +12,11 @@ $(document).ready(function () {
             $("#int_z, #transition").show();
         };    
     };
+    
+    // clear text fields onfocus
+    $("input[type='text']").on("focus", function(){
+        $( this ).val('');
+    });
     
     // shows and hides transition select forms depending on $Radio
     function show_hide_trans ($Radio) {
@@ -46,6 +51,28 @@ $(document).ready(function () {
     });
     
     // shows select form for transition on load
-    var $RadioOnLoad = $("input[checked]").val();
-    show_hide_trans($RadioOnLoad)   
+    var $RadioOnLoad = $("div#transition input[checked]").val();
+    show_hide_trans($RadioOnLoad);
+    
+    //client side validation 
+    $("form").submit(function(event) {
+        var $Selected = $("select#function").val();
+        if ($Selected == "CS_Photo_Partial"){
+            if (!$("input#int_z[value]").val() || !$("input#range_start[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };
+        } else if ($Selected == "CS_Total" || $Selected == "CS_Photo" || $Selected == "CS_Rayl" || $Selected == "CS_Compt"|| $Selected == "CS_Energy" || $Selected == "CS_Photo_Total") { 
+            if (!$("input#int_z_or_comp[value]").val() || !$("input#range_start[value]").val() || !$("input#range_end[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };     
+        } else if ($Selected.includes("CS_FluorLine")) { 
+            if (!$("input#int_z[value]").val() || !$("input#range_start[value]").val() || !$("input#range_end[value]").val()) {
+            $(".empty-alert").show();
+            return false;
+            };   
+        };      
+    });
+       
 });

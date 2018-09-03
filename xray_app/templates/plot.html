@@ -9,7 +9,7 @@
                     {{field.label}}
                     {{field.notation(class="radio-inline")}}
                     
-                    {{field.iupac(class="select-inline")}}
+                    {{field.iupac1(class="select-inline")}} &#x2190; {{field.iupac2(class="select-inline")}}
                     {{field.siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id == 'function' or field.id.startswith('range') or field.id.startswith('log_boo') %}
@@ -29,6 +29,10 @@
             value = "Submit"
             formnovalidate>
     </fieldset>
+    <div class="alert empty-alert">
+        <span class="close-button" onclick="this.parentElement.style.display='none';">&times;</span>
+        Please fill in all fields.
+    </div>
     </form>
 {% if request.method == 'POST'%}
     <img class="center-block" src="data:image/png;base64,{{plot}}" alt="Invalid Form Request: Please enter valid input.">
