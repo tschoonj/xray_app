@@ -8,6 +8,9 @@ div.xlib { display: hidden }
 /* div.support-examples { display: inline-block } */
 img.center-block { width:100% }
 
+td { padding: 3px }
+select#function, select#nistcomp { width:40% }
+
 @media only screen and (max-width: 600px) {
     select { width:100% }
     .jumbotron { padding-top: 2% }

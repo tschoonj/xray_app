@@ -6,8 +6,7 @@ $(document).ready(function () {
     
     /* hides All option for transition until implemented */
     $("div#transition li:last-child").hide();
-    
-    
+       
     //shows and hides fields depending on $Select
     function hideInputFields($Select) {
         if ($Select == "CS_Photo_Partial"){
@@ -48,13 +47,13 @@ $(document).ready(function () {
     // shows and hides transition select forms depending on $Radio
     function hideTransSelects ($Radio) {
         if ($Radio == "IUPAC") {
-            $("#transition-iupac1, #transition-iupac2").show();
+            $("span#arrow, #transition-iupac1, #transition-iupac2").show();
             $("#transition-siegbahn").hide();
         } else if ($Radio == "Siegbahn") {
             $("#transition-siegbahn").show();
-            $("#transition-iupac1, #transition-iupac2").hide();
+            $("span#arrow, #transition-iupac1, #transition-iupac2").hide();
         } else if ($Radio == "All") {
-            $("#transition-siegbahn, #transition-iupac1, #transition-iupac2").hide();
+            $("span#arrow, #transition-siegbahn, #transition-iupac1, #transition-iupac2").hide();
         };
     }; 
     

@@ -1,3 +1,34 @@
+// extend jQuery methods with custom method
+jQuery.fn.filterSelect = function(textinput) {
+    return this.each(function() {
+        var select = this;
+        var options = [];
+        $(select).find('option').each(function() {
+            options.push({
+                value: $(this).val(),
+                text: $(this).text()
+            });
+        });
+    
+        $(select).data('options', options);
+
+        $(textinput).on('change keyup', function() {
+            var options = $(select).empty().data('options');
+            var filter = $.trim($(this).val());
+            var regex = new RegExp(filter, "gi");
+
+            $.each(options, function(i) {
+                var option = options[i];
+                if (option.text.match(regex) !== null) {
+                    $(select).append(
+                    $('<option>').text(option.text).val(option.value)
+                    );
+                };
+            });
+        });
+    });
+};
+
 $(document).ready(function () {
     /*$(document).on('change keyup', 'select#function', function(e) {
         var currentSelectVal = $(this).val();
@@ -6,11 +37,15 @@ $(document).ready(function () {
     /* automatically assigns event handlers to elements that are specified by the selector (i.e select)*/
     
     // $ indicates a jQuery object
-    
     // clear text fields onfocus
-    $("input[type='text']").on("focus", function(){
+    $(".xlib input[type='text']").on("focus", function(){
         $( this ).val('');
     });        
+    
+    // filters Function select
+    $("select#function").filterSelect($("input#function"));
+    // filters NIST compounds select
+    $("select#nistcomp").filterSelect($("input#nistcomp"))
     
     //shows and hides fields depending on $select
     function hideInputFields($select) {
@@ -132,13 +167,13 @@ $(document).ready(function () {
     // shows and hides transition select forms depending on $Radio
     function hideTransSelects ($Radio) {
         if ($Radio == "IUPAC") {
-            $("#transition-iupac1, #transition-iupac2").show();
+            $("span#arrow, #transition-iupac1, #transition-iupac2").show();
             $("#transition-siegbahn").hide();
         } else if ($Radio == "Siegbahn") {
-            $("#transition-siegbahn").show();
-            $("#transition-iupac1, #transition-iupac2").hide();
+            $("#transition-siegbahn").show();            
+            $("span#arrow, #transition-iupac1, #transition-iupac2").hide();
         } else if ($Radio == "All") {
-            $("#transition-siegbahn, #transition-iupac1, #transition-iupac2").hide();
+            $("span#arrow, #transition-siegbahn, #transition-iupac1, #transition-iupac2").hide();
         };
     };   
     
@@ -178,35 +213,35 @@ $(document).ready(function () {
     
     //hides impossible auger transitions
     function hideAuger1 ($select) {
-    var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
-    var trans_shell = document.getElementById("augtrans-trans_shell");
-    var transSelected = trans_shell.options[trans_shell.selectedIndex].value;
+        var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
+        var trans_shell = document.getElementById("augtrans-trans_shell");
+        var transSelected = trans_shell.options[trans_shell.selectedIndex].value;
     
-    $selectIndex = shellsArray.indexOf($select);
-    $(trans_shell).empty();
+        $selectIndex = shellsArray.indexOf($select);
+        $(trans_shell).empty();
     
-    var match = false;
+        var match = false;
         for (var i = $selectIndex+1 ; i < 9 ; i++) {
-    	    trans_shell.options.add(new Option(shellsArray[i], shellsArray[i]));
-    	    if (shellsArray[i] == transSelected) {
-    	        trans_shell.options[i-$selectIndex-1].selected = true;
-    	        match = true;
-    	    };
+            trans_shell.options.add(new Option(shellsArray[i], shellsArray[i]));
+            if (shellsArray[i] == transSelected) {
+                trans_shell.options[i-$selectIndex-1].selected = true;
+                match = true;
+            };
         };
         if (match == false) {
-            trans_shell.options[0].selected = true;
+        trans_shell.options[0].selected = true;
         };    
     };
     
     function hideAuger2 ($select) {
-    var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
-    var aug_shell = document.getElementById("augtrans-aug_shell");
-    var augSelected = aug_shell.options[aug_shell.selectedIndex].value;
+        var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
+        var aug_shell = document.getElementById("augtrans-aug_shell");
+        var augSelected = aug_shell.options[aug_shell.selectedIndex].value;
     
-    $selectIndex = shellsArray.indexOf($select);
-    $(aug_shell).empty();
+        $selectIndex = shellsArray.indexOf($select);
+        $(aug_shell).empty();
     
-    var match = false;
+        var match = false;
         for (var i = $selectIndex+1 ; i < shellsArray.length ; i++) {
     	    aug_shell.options.add(new Option(shellsArray[i], shellsArray[i]));
     	    if (shellsArray[i] == augSelected) {
@@ -217,7 +252,8 @@ $(document).ready(function () {
         if (match == false) {
             aug_shell.options[0].selected = true;
         };    
-    };
+    };      
+    
     
     $("select#augtrans-ex_shell").change(function(e) {
         var $selectAug = $(this).val();
@@ -285,7 +321,7 @@ $(document).ready(function () {
             return false;
         };
         //if input empty on submission: block submission and display empty field error
-        if ($selected == "AtomicWeight" || $selected == "ElementDensity" || $selected == "LineEnergy" || $selected == "RadRate" || $selected == "EdgeEnergy" || $selected == "JumpFactor" || $selected == "FluorYield" || $selected == "AugerYield" || $selected == "AtomicLevelWidth" || $selected == "ElectronConfig" || $selected == "CosKronTransProb") {
+        if ($selected == "AtomicWeight" || $selected == "ElementDensity" || $selected == "LineEnergy" || $selected == "RadRate" || $selected == "EdgeEnergy" || $selected == "JumpFactor" || $selected == "FluorYield" || $selected == "AugerYield" || $selected == "AtomicLevelWidth" || $selected == "ElectronConfig" || $selected == "CosKronTransProb" || $selected == "AugerRate") {
             if (!$("input#int_z[value]").val()) {
             $(".empty-alert").show();
             return false;

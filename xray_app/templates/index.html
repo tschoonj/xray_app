@@ -6,28 +6,34 @@
 
 <div>  
   <form method="POST" action="">  
-    <fieldset class="form-group inline">       
+    <fieldset class="form-group inline">              
        {% for field in form %}
             {% if field.id == 'transition' %}
                 <div class="form-group xlib" id = "{{field.id}}">
                     {{field.label}}:
                     {{field.notation(class="radio-inline")}}
                     
-                    {{field.iupac1(class="select-inline")}} &#x2190; {{field.iupac2(class="select-inline")}}
+                    {{field.iupac1(class="select-inline")}} <span id="arrow">&#x2190;</span> {{field.iupac2(class="select-inline")}}
                     {{field.siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id == 'csrf_token' or field.id == 'examples' %}
-            {% elif field.id == 'function'  %}
+            {% elif field.id == 'function' %}
                 <div class="form-group" id="{{field.id}}">
                     {{field.label}}:
                     {{field}}
+                    <input id="function" class="form-group" type="text" placeholder="Search...">
+                </div>
+            {% elif field.id == 'nistcomp' %}
+                <div class="form-group xlib" id="{{field.id}}">
+                    {{field.label}}:
+                    {{field}}
+                    <input id="nistcomp" class="form-group" type="text" placeholder="Search...">
                 </div>
             {% elif field.type == 'SelectField' %}
                 <div class="form-group xlib" id="{{field.id}}">
                     {{field.label}}:
                     {{field}}
                 </div>
-                <!--make field searchable-->
             {% else %}
                 <div class="form-group xlib" id="{{field.id}}">
                     {{field.label}}: 

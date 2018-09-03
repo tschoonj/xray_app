@@ -9,7 +9,7 @@
                     {{field.label}}
                     {{field.notation(class="radio-inline")}}
                     
-                    {{field.iupac1(class="select-inline")}} &#x2190; {{field.iupac2(class="select-inline")}}
+                    {{field.iupac1(class="select-inline")}} <span id="arrow"> &#x2190;</span> {{field.iupac2(class="select-inline")}}
                     {{field.siegbahn(class="select-inline")}}
                 </div>
             {% elif field.id == 'function' or field.id.startswith('range') or field.id.startswith('log_boo') %}

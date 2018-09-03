@@ -125,7 +125,7 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
     ax.plot(x, y)
     
     for variable in variables:
-        if validate_int(variable) == True:
+        if validate_int(variable):
             t_variables.append(xraylib.AtomicNumberToSymbol(int(variable)))
         else:
             t_variables.append(str(variable))
@@ -133,12 +133,12 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
     t_variables = ', '.join(t_variables)
     ax.set(title = function + ': ' + t_variables, xlabel = xlabel, ylabel = ylabel)                
     
-    if log_boo_y != None and log_boo_x != None:
+    if log_boo_y and log_boo_x:
         plt.xscale('log')                  
         plt.yscale('log')
-    elif log_boo_x != None:
+    elif log_boo_x:
         plt.xscale('log')
-    elif log_boo_y != None:
+    elif log_boo_y:
         plt.yscale('log')        
     
     img = BytesIO()
