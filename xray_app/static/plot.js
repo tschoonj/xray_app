@@ -53,17 +53,6 @@ $(document).ready(function () {
     function hideTransSelects ($Radio) {
         if ($Radio == "IUPAC") {
             $("span#arrow, #transition-iupac1, #transition-iupac2").show();
-=======
-    // clear text fields onfocus
-    $("input[type='text']").on("focus", function(){
-        $( this ).val('');
-    });
-    
-    // shows and hides transition select forms depending on $Radio
-    function show_hide_trans ($Radio) {
-    if ($Radio == "IUPAC") {
-            $("#transition-iupac").show();
->>>>>>> 4751a09f2d96f772fb5dc83ad701ea069eda6856
             $("#transition-siegbahn").hide();
         } else if ($Radio == "Siegbahn") {
             $("#transition-siegbahn").show();
