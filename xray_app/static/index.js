@@ -32,7 +32,6 @@ jQuery.fn.filterSelect = function (textinput) {
 };
 
 $(document).ready(function () {
-<<<<<<< HEAD
     // $ indicates a jQuery object
     
     // Clears text fields onfocus
@@ -47,23 +46,6 @@ $(document).ready(function () {
     
     // Shows and hides fields depending on $select
     function hideInputFields ($select) {
-=======
-    /*$(document).on('change keyup', 'select#function', function(e) {
-        var currentSelectVal = $(this).val();
-        alert(currentSelectVal);
-    })*/ 
-    /* automatically assigns event handlers to elements that are specified by the selector (i.e select)*/
-    
-    // $ indicates a jQuery object
-    
-    // clear text fields onfocus
-    $("input[type='text']").on("focus", function(){
-        $( this ).val('');
-    });        
-    
-    //shows and hides fields depending on $select
-    function hideInputFields($select) {
->>>>>>> 4751a09f2d96f772fb5dc83ad701ea069eda6856
         if ($select == "AtomicWeight" || $select == "ElementDensity") {
             $("div.xlib").hide();
             $("#int_z").show();
