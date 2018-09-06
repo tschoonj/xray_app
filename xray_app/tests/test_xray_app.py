@@ -23,7 +23,7 @@ test_input = {
 	'shell': '', 'energy': '', 'theta': '', 'phi': '', 
 	'density': '','pz': '', 'cktrans': '', 
 	'nistcomp': '', 'augtrans': '', 'rad_nuc': '', 
-	'augtrans-ex_shell' : '', 'augtrans-trans_shell': '', 'augtrans-aug_shell':'' 
+	'augtrans-ex_shell' : '', 'augtrans-trans_shell': '', 'augtrans-aug_shell':''} 
 
 trans_functions = ['LineEnergy', 'RadRate', 
     'CS_FluorLine', 'CS_FluorLine_Kissel_Cascade',
