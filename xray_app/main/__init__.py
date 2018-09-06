@@ -1,1 +1,1 @@
-#necessary for Flask to acknowledge the directory as a package
+# Needed for Flask to acknowledge the directory as a package

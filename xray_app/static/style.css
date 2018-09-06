@@ -1,30 +1,68 @@
-/* puts p/divs on the same line */
-p#output, p#units { display: inline-block }
-div[id="log_boo_x"], div[id="log_boo_y"] { display: inline-block }
+/*
+* Diamond Company colors
+* yellow #ffcf00
+* blue #002264
+*
+* turq #40b5bb
+* l blue #7292cb
+* purp #5b54a2
+*/
 
-/* hides extraneous fields */
-div.xlib { display: hidden }
-
-/* div.support-examples { display: inline-block } */
-img.center-block { width:100% }
-
-td { padding: 3px }
-select#function, select#nistcomp { width:40% }
-
-@media only screen and (max-width: 600px) {
-    select { width:100% }
-    .jumbotron { padding-top: 2% }
+/* Puts p/divs on the same line */
+p#output, 
+p#units, div.custom-select {
+    display: inline-block;
 }
 
+div[id="log_boo_x"], 
+div[id="log_boo_y"] {
+    display: inline-block;
+}
+
+/* Hides extraneous fields */
+div.xlib {
+    display: hidden;
+}
+
+/* Limits plot image to size of container */
+img.center-block { 
+    width:100%;
+}
+
+/* Padding for augtrans fields */
+td { 
+    padding: 0.25em;
+}
+
+/* CSS dependent on screen size */
+@media screen and (min-width: 600px) {
+    select#function, 
+    select#nistcomp { 
+        width:40%; 
+    }
+}
+    
+@media only screen and (max-width: 600px) {
+    select { 
+        width:100%;
+    }
+    input.form-group { 
+        margin-top: 1%;
+    }
+    .jumbotron { 
+        padding-top: 2%;
+    }
+}
+
+/* Alert boxes and their buttons */
 .alert {    
-    padding: 10px;
-    background-color: #40b5bb; /* Red */
+    padding: 0.5em;
+    background-color: #40b5bb; /* Turquoise */
     color: white;
     font-size: 20px;
     text-align: center;
-    margin-bottom: 15px;
     display: none;
-    }
+}
     
 .close-button {
     color: white;
@@ -33,35 +71,34 @@ select#function, select#nistcomp { width:40% }
     line-height: 20px;
     cursor: pointer;
     transition: 0.3s;
-    }
+}
     
 /* mouseover button */
 .close-button:hover {
     color: black;
 }
-/* general colour scheme */
+
+/* General colour scheme */
 .container { 
     padding-top: 100px; 
     color: #002264 
     }
 
-.jumbotron { box-shadow: 10px 10px 5px grey }
-a { color: #40b5bb }
-a:hover { color: #002264 }
+.jumbotron { 
+    box-shadow: 10px 10px 5px grey; 
+}
 
-/*body { background-color: #7292cb }
-div.jumbotron { background-color: #40b5bb }*/
-/*
-div.jumbotron
-input[type='text']{}
+a { 
+    color: #40b5bb; 
+}
 
-yellow #ffcf00
-blue #002264
+a:hover { 
+    color: #002264;
+}
 
-turq #40b5bb
-l blue #7292cb
-purp #5b54a2
-*/
+::placeholder {
+    color:#5b54a2;
+}
 
 /* Pygments CSS */
 .cpp-objdump .hll { background-color: #ffffcc }

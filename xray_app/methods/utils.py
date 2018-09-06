@@ -4,7 +4,7 @@ from pygments import highlight
 from pygments.lexers import PythonLexer, get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 
-#validators for input
+# Validators for input
 def validate_float(*s):
     boo = []
     for i in s:
@@ -43,7 +43,7 @@ def validate_str(*s):
             return False
     return all(boo)          
 #------------------------------------------------------------------------------------------------
-#generates dicts for all linetype output
+# Generates dicts for all linetype output
 def all_trans(tple, *inputs):
     transs = [x[0] for x in tple]
     output = {}    
@@ -53,7 +53,7 @@ def all_trans(tple, *inputs):
             output[trans] = out       
     return output                   
 
-#special case needed for xrf due to order of method input
+# Special case needed for xrf due to order of method input
 def all_trans_xrf(tple, function, int_z, energy):
     transs = [x[0] for x in tple]
     output = {}
@@ -63,7 +63,7 @@ def all_trans_xrf(tple, function, int_z, energy):
             output[trans] = out
     return output
 #------------------------------------------------------------------------------------------------
-#generates tuples from dicts after mapping 'user-friendly' strings onto the keys
+# Generates tuples from dicts after mapping 'user-friendly' strings onto the keys
 def make_tup(_dict, variable):
     tup = []
     if variable == 'nist' or variable == 'rad':
@@ -90,37 +90,36 @@ def make_tup(_dict, variable):
             tup.append(tpl)
         return tup
         
-#need to match each substr to dict key then 'translate' it        
+# Matches each substring to dict key then maps more helpful names       
 label_dict = {'CS':'Cross Section:', 'DCS':'Differential Unpolarized Cross Section:', 'DCSP':'Differential Polarized Cross Section:', 'KN':'Klein-Nishina', 'Photo':'Photoionization', 'Rayl':'Rayleigh', 'Compt':'Compton', 'FluorLine':' XRF', 'Partial':'(Partial)', 'Thoms':'Thomson', 'TRANS':''}
 
-#checks input for xrl keys also including transtion notation types
+# Checks if s is an xraylib key
+# Includes transtion notation types
 def check_xraylib_key(s):
         s = s.upper()
         s = s.replace(" ", "_")
         s = s.replace("-", "_")
-        #print(s)
         for key in xraylib.__dict__.keys():
-            #print (key)
             if s == key:
-                #print('KEY FOUND')
                 return True
             elif s == 'IUPAC' or s == 'SIEGBAHN':
                 return True
             elif key.endswith('_' + s) and key.startswith('NIST'):
-                #print('KEY FOUND') 
                 return True
             elif key.endswith('_' + s) and key.startswith('RADIO'):
-                #print('KEY FOUND') 
+                return True
+            # Validates partial shell key for tests
+            elif key.startswith(s) and key.endswith('SHELL'):
                 return True
         return False
 
-#user choice != xrl keys hence:              
+# User input is not an xraylib MACRO
+# MACRO required for calc_output              
 def get_key(s):
     s = s.upper()
     s = s.replace(" ", "_")
     s = s.replace("-", "_")
     for key in xraylib.__dict__.keys():
-            #print (key)
             if s == key:
                 return key
             elif key.endswith('_' + s) and key.startswith('NIST'):
@@ -128,10 +127,9 @@ def get_key(s):
             elif key.endswith('_' + s) and key.startswith('RADIO'):
                 return key
 
-#calculates output for all functions excl. CompoundParser and Refractive_Index
+# Calculates output for all functions excl. CompoundParser and Refractive_Index
 def calc_output(function, *values):
     xrl_function = getattr(xraylib, function)
-    print(values)
 
     lst = []
     for value in values:        
@@ -147,30 +145,32 @@ def calc_output(function, *values):
             if xraylib.SymbolToAtomicNumber(value) != 0:
                 lst.append(xraylib.SymbolToAtomicNumber(value))
             else:
-                lst.append(value) #needed for _CP entry         
-    print(lst)
+                lst.append(value)  #needed for _CP/compound string input          
     try:
+        # All objects in lst are integers or floats
+        # excl. compound char i.e. int_z, int_z_or_comp or comp
         if validate_float(lst[0]):
             output = xrl_function(*lst)
-            print(output)
             if output == 0:
-                #0 not truthy so jinja ignores it
+                # Needed to render 0 as output in jinja template
                 return '0'
             else:
                 return output
+        
         else: 
             xrl_function = getattr(xraylib, function + '_CP')
             output = xrl_function(*lst)
-            print(output)
             if output == 0:
                 return '0'
             else:
                 return output
     except:
-        output = 'Error'
+        output = 'Please enter valid input.'
         return output
 
-#generates code example strings and passes them through Pygments
+# Generates code example strings and passes them through Pygments' lexers
+# tple should be form.examples.choices i.e. (value, label) pairs
+# see further methods/forms.py
 def code_example(tple, function, *variables):
     
     languages = [x[0] for x in tple]
@@ -178,14 +178,14 @@ def code_example(tple, function, *variables):
     examples = []       
         
     for i in tple:
-        lang = [i[0], i[1]] #could be done with list comprehension?
+        lang = [i[0], i[1]]
         lst = []
-        #startinline arg lets php lexer highlight without prepending str with <?php
+        # startinline arg needed for php lexer highlight
+        # otherwise prepend php string with <?php
         lexer = get_lexer_by_name(lang[0], startinline=True)
         
         if lang[1] == 'C/C++/Objective-C':
             string = '#include <xraylib.h>'
-            # &lt = < &gt = >
         elif lang[1] == 'Fortran 2003/2008':
             string = 'use :: xraylib'
         elif lang[1] == 'Perl':
@@ -204,15 +204,21 @@ def code_example(tple, function, *variables):
             string = 'require \'xraylib\''
         elif lang[1] == 'PHP':
             string = 'include("xraylib.php");'
-        #div class included for CSS
-        pre_support = '<div class="support-examples ' + str(lang[0]) + '">Enable support for xraylib in ' + str(lang[1]) + ' using: </div>'
-        support_html = highlight(string, lexer, HtmlFormatter(cssclass = str(lang[0]) + ' support-examples'))        
+            
+        pre_support = ('<div class="support-examples ' 
+            + str(lang[0]) 
+            + '">Enable support for xraylib in ' 
+            + str(lang[1]) 
+            + ' using: </div>')
+        support_html = highlight(string, 
+            lexer, 
+            HtmlFormatter(cssclass = str(lang[0]) + ' support-examples'))        
         
         if lang[0] == 'cpp-objdump':
             for variable in variables:
                 if validate_float(variable):
                     lst.append(variable)
-                elif function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName':
+                elif (function == 'GetCompoundDataNISTByName' or function == 'GetRadioNuclideDataByName'):
                     lst.append('"' + str(variable) + '"')
                 elif xraylib.SymbolToAtomicNumber(variable) != 0:
                     lst.append('SymbolToAtomicNumber("' + variable + '")')
@@ -355,11 +361,14 @@ def code_example(tple, function, *variables):
             _input = ', '.join(lst)
             example = str(function) + '(' + _input + ')'
         
-        #div class included for CSS
-        example_html = highlight(example, lexer, HtmlFormatter(cssclass = str(lang[0]) + ' code-examples'))
-        pre_example = '<div class="code-examples ' + str(lang[0]) + '">Call as: </div>'
-        #print(HtmlFormatter().get_style_defs('.' + str(lang[0]))) #prints css
-               
+        example_html = highlight(example, 
+            lexer, 
+            HtmlFormatter(cssclass = str(lang[0]) + ' code-examples'))
+        pre_example = ('<div class="code-examples ' 
+            + str(lang[0]) 
+            + '">Call as: </div>')
+        # Prints Pygments CSS
+        # print(HtmlFormatter().get_style_defs('.' + str(lang[0]))) 
         examples.append(pre_support)
         examples.append(support_html)
         examples.append(pre_example)

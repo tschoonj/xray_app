@@ -9,7 +9,7 @@ sys.path.insert(0, '..')
 app = flask.Flask(__name__)
 
 import xray_app
-from xray_app.methods.utils import calc_output, check_xraylib_key, validate_str
+from xray_app.methods.utils import calc_output, check_xraylib_key, validate_str, validate_int, validate_float
 
 @pytest.fixture
 def client():
@@ -17,15 +17,23 @@ def client():
 	yield client
 #----------------------------------------------------------------------------	
 test_input = {
-	'comp': '', 'int_z':'',	'int_z_or_comp': '', 'float_q': '',	'transition-notation': '', 'transition-iupac1':'', 'transition-iupac2':'', 'transition-siegbahn':'', 'shell': '', 'energy': '', 'theta': '', 'phi': '', 'density': '','pz': '', 'cktrans': '', 'nistcomp': '', 'augtrans': '', 'rad_nuc': '', 'augtrans-ex_shell' : '', 'augtrans-trans_shell': '','augtrans-aug_shell':'' 
-    }
+	'comp': '', 'int_z':'',	'int_z_or_comp': '', 'float_q': '',	
+	'transition-notation': '', 'transition-iupac1':'',
+	'transition-iupac2':'', 'transition-siegbahn':'', 
+	'shell': '', 'energy': '', 'theta': '', 'phi': '', 
+	'density': '','pz': '', 'cktrans': '', 
+	'nistcomp': '', 'augtrans': '', 'rad_nuc': '', 
+	'augtrans-ex_shell' : '', 'augtrans-trans_shell': '', 'augtrans-aug_shell':'' 
 
-trans_functions = ['LineEnergy', 'RadRate', 'CS_FluorLine', 'CS_FluorLine_Kissel_Cascade', 'CS_FluorLine_Kissel_Nonradiative_Cascade', 'CS_FluorLine_Kissel_Radiative_Cascade']
+trans_functions = ['LineEnergy', 'RadRate', 
+    'CS_FluorLine', 'CS_FluorLine_Kissel_Cascade',
+    'CS_FluorLine_Kissel_Nonradiative_Cascade',
+    'CS_FluorLine_Kissel_Radiative_Cascade']
 
 test_z = ['26', '0', '-1', 'Fe', ' ']
 test_q = ['0.5', '0', '-1', ' ']
 test_z_comp = ['26', '0', '-1', 'Fe', 'FeSO4', ' ']
-test_energy = ['10.5', '0', '-1', ' ']
+test_energy = ['10.5', '-1', ' ']
 test_angle = ['1.5', '0', '-1', ' ']
 test_comp = ['FeSO4', '0', '-1', ' ', '0.5']
 test_pz = ['1.5', '0', '-1', ' ']
@@ -38,9 +46,9 @@ test_siegbahn = ['KA1_LINE']
 test_iupac1 = ['K']
 test_iupac2 = ['L3']
 
-test_ex_shell = []
-tset_trans_shell = []
-test_aug_shell = []	    
+test_ex_shell = ['K']
+test_trans_shell = ['L1']
+test_aug_shell = ['L1']    
 #----------------------------------------------------------------------------
 def vanilla_test(client, rv):
     assert 200 == rv.status_code
@@ -50,42 +58,58 @@ def vanilla_test(client, rv):
     
 def invalid_input_test(rv):
     assert 200 == rv.status_code
-    assert b'Invalid input' or b'Error' in rv.data
+    #print(rv.data)
+    assert b'Please enter valid input.' in rv.data
     print('Invalid Input Tested')
 
-def output_test(rv, function, *values):
-    output = soup_output(rv)
+def output_test(rv, function, *values):    
     values = [i for i in values]
-    print(values)
+    print('calc output values' + str(values))
     if 'IUPAC' in values:
         if function.startswith('CS_FluorLine'):
-            #reorders input to Z, line, E            
-            order = [0, 3, 1]
+            # Reorder input to Z, trans, E            
+            trans = values[3] + values[4] + '_LINE'
+            values.append(trans)
+            order = [0, -1, 1]
+            values = [values[i] for i in order]
+
+        else:
+            # Stitches trans together
+            trans = values[2] + values[3] + '_LINE'
+            values.append(trans)
+            # Removes extraneous input
+            order = [0, -1] 
             values = [values[i] for i in order]
             print(values)
-            val = calc_output(function, *values) 
-        else:
-            #removes extraneous input
-            del values[3]
-            values.remove('IUPAC')
-            val = calc_output(function, *values)        
+
     elif 'Siegbahn' in values:
+        print(values)
         if function.startswith('CS_FluorLine'):
-            order = [0, 4, 1]
-            values = [values[i] for i in order]
-            val = calc_output(function, *values) 
+            order = [0, -1, 1]
+            values = [values[i] for i in order]            
+
         else:
-            del values[2]
-            values.remove('Siegbahn')
-            val = calc_output(function, *values) 
+            order = [0, -1]
+            values = [values[i] for i in order] 
+ 
+    elif function == 'AugerRate':
+        augtrans = values[1] + '_' + values[2] +values[3] + '_AUGER'
+        values.append(augtrans)
+        order = [0, -1]
+        values = [values[i] for i in order]       
     else:
-        val = calc_output(function, *values)
-    
-    #print(val)
+        val = calc_output(function, *values)        
+        
+    val = calc_output(function, *values)
+    # calc_output gives 0 as a string
+    # .approx() does not take str input
+    if val == '0':
+        val = 0
+    output = soup_output(rv)
     assert 200 == rv.status_code
     assert output == pytest.approx(val)
     
-#order of variables needs to be the same as for method
+# Note: order of variables needs to be the same as for method
 def function_test(client, select_input, **variables):
     # - character forbidden for kwargs
     if select_input in trans_functions:
@@ -93,45 +117,58 @@ def function_test(client, select_input, **variables):
         variables['transition-iupac1'] = test_iupac1
         variables['transition-iupac2'] = test_iupac2
         variables['transition-siegbahn'] = test_siegbahn
-    print(variables)
+    if select_input == 'AugerRate':    
+        variables['augtrans-ex_shell'] = test_ex_shell
+        variables['augtrans-trans_shell'] = test_trans_shell
+        variables['augtrans-aug_shell'] =  test_aug_shell
+    print('variables:' + str(variables))
     test_inputs = []
     lst = [[]]
     test_values = [variables[k] for k in variables] 
         
-    #generates list of all possible permutations of test variables
+    # Generates list of all possible permutations of test variables
     for test_value in test_values:
         lst = [i + [value] for i in lst for value in test_value]    
     
-    #turns list of lists of permutations into  lists of dicts of permutations
+    # Turn list of lists of permutations into lists of dicts of permutations
     for values in lst:
         _input = (list(values))
         test_dict = (dict(zip(variables.keys(), _input)))        
         test_inputs.append(test_dict)                
     
-    #each test dict is used as a mock request        
+    # Each test dict is used as a mock request        
     for i in test_inputs:
-        function_input = dict(test_input, function = select_input)
+        function_input = dict(test_input, function = select_input)        
         function_input.update(i)
+        print('function input /n')
+        print(function_input)
         rv = client.post('/', data = function_input)
         if validate_input(i):
+            print("testing valid")
             output_test(rv, select_input, *list(i.values()))
         else:
             invalid_input_test(rv) 
             
-#add test for correct examples?                 
+"""def example_test(rv, select_input, *args):
+    print('example test')
+    print(args)
+  """                    
 #----------------------------------------------------------------------------    
 def validate_input(dct):
-    values = list(dct.values())
-    boo_list = [isinstance(value, (float, int)) or xraylib.SymbolToAtomicNumber(value) != 0 or check_xraylib_key(value) or validate_str(value) for value in values] #or xraylib.CompoundParser(value)
-    #print(boo_list)
-    if all(boo_list):
-        return True
-    else:
+    values = list(dct.values())    
+    boo_list = [validate_int(value) or check_xraylib_key(value) or validate_str(value) or validate_float(value) for value in values]
+    # Validating int and float allows int_z : 0 to fall through as True
+    if 'int_z' in dct and dct['int_z'] == '0':
         return False
+    elif 'int_z_or_comp' in dct and dct['int_z_or_comp'] == '0':
+        return False
+    print(dct.items())
+    print(boo_list)
+    return all(boo_list)
 
 def soup_output(rv):
     soup = BeautifulSoup(rv.data, 'html.parser')
-    #print(soup)
+    #print(soup.prettify())
     output = soup.find('p', id="output").string
     output = float(output.replace(" ",""))
     return output
@@ -171,28 +208,30 @@ def test_ffrayl_sfcompt(client):
     for x in test_functions:
         function_test(client, x, int_z = test_z, float_q = test_q)
 #----------------------------------------------------------------------------
-"""def test_lineenergy_radrate(client):
+def test_lineenergy_radrate(client):
     test_functions = ['LineEnergy', 'RadRate']
     for x in test_functions:
         function_test(client, x, int_z = test_z)
     #add test for all
+    
 def test_fluorline(client):
     test_functions = ['CS_FluorLine', 'CS_FluorLine_Kissel_Cascade', 'CS_FluorLine_Kissel_Nonradiative_Cascade', 'CS_FluorLine_Kissel_Radiative_Cascade']
     for x in test_functions:
         function_test(client, x, int_z = test_z, energy = test_energy)      
-#def test_cs_fluorline(client):"""
 #----------------------------------------------------------------------------
-# add in test for units
 def test_edgeenergy_etc(client):
     test_functions = ['EdgeEnergy', 'JumpFactor', 'FluorYield', 'AugerYield', 'AtomicLevelWidth', 'ElectronConfig']
     for x in test_functions:
         function_test(client, x, int_z = test_z, shell = test_shell)
+
+def test_augerrate(client):
+    function_test(client, 'AugerRate', int_z = test_z) 
 #----------------------------------------------------------------------------
 def test_cs(client):
     test_functions = ['CS_Total', 'CS_Photo', 'CS_Rayl', 'CS_Compt', 'CS_Energy']
     for x in test_functions:
         function_test(client, x, int_z_or_comp = test_z_comp, energy = test_energy)
-        
+       
 def test_cs_kn(client):
     function_test(client, 'CS_KN', energy = test_energy)
 

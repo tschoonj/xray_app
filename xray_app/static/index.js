@@ -1,9 +1,11 @@
-// extend jQuery methods with custom method
-jQuery.fn.filterSelect = function(textinput) {
-    return this.each(function() {
+// Extends jQuery methods with custom method
+// Filters Select element using text input
+// $("selectElement").filterSelect($("textInputElement"))
+jQuery.fn.filterSelect = function (textinput) {
+    return this.each(function () {
         var select = this;
         var options = [];
-        $(select).find('option').each(function() {
+        $(select).find('option').each(function () {
             options.push({
                 value: $(this).val(),
                 text: $(this).text()
@@ -12,12 +14,12 @@ jQuery.fn.filterSelect = function(textinput) {
     
         $(select).data('options', options);
 
-        $(textinput).on('change keyup', function() {
+        $(textinput).on('change keyup', function () {
             var options = $(select).empty().data('options');
             var filter = $.trim($(this).val());
             var regex = new RegExp(filter, "gi");
 
-            $.each(options, function(i) {
+            $.each(options, function (i) {
                 var option = options[i];
                 if (option.text.match(regex) !== null) {
                     $(select).append(
@@ -30,6 +32,22 @@ jQuery.fn.filterSelect = function(textinput) {
 };
 
 $(document).ready(function () {
+<<<<<<< HEAD
+    // $ indicates a jQuery object
+    
+    // Clears text fields onfocus
+    $(".xlib input[type='text']").on("focus", function () {
+        $( this ).val('');
+    });        
+    
+    // Filters function select element on keyup
+    $("select#function").filterSelect($("input#function"));
+    // Filters NIST compounds select element on keyup
+    $("select#nistcomp").filterSelect($("input#nistcomp"))
+    
+    // Shows and hides fields depending on $select
+    function hideInputFields ($select) {
+=======
     /*$(document).on('change keyup', 'select#function', function(e) {
         var currentSelectVal = $(this).val();
         alert(currentSelectVal);
@@ -37,18 +55,15 @@ $(document).ready(function () {
     /* automatically assigns event handlers to elements that are specified by the selector (i.e select)*/
     
     // $ indicates a jQuery object
+    
     // clear text fields onfocus
-    $(".xlib input[type='text']").on("focus", function(){
+    $("input[type='text']").on("focus", function(){
         $( this ).val('');
     });        
     
-    // filters Function select
-    $("select#function").filterSelect($("input#function"));
-    // filters NIST compounds select
-    $("select#nistcomp").filterSelect($("input#nistcomp"))
-    
     //shows and hides fields depending on $select
     function hideInputFields($select) {
+>>>>>>> 4751a09f2d96f772fb5dc83ad701ea069eda6856
         if ($select == "AtomicWeight" || $select == "ElementDensity") {
             $("div.xlib").hide();
             $("#int_z").show();
@@ -61,7 +76,12 @@ $(document).ready(function () {
         } else if ($select == "AugerRate"){
             $("div.xlib").hide();
             $("#int_z, #augtrans").show();
-        } else if ($select == "EdgeEnergy" || $select == "JumpFactor" || $select == "FluorYield" || $select == "AugerYield" || $select == "AtomicLevelWidth" || $select == "ElectronConfig") {
+        } else if ($select == "EdgeEnergy" 
+                || $select == "JumpFactor" 
+                || $select == "FluorYield" 
+                || $select == "AugerYield" 
+                || $select == "AtomicLevelWidth" 
+                || $select == "ElectronConfig") {
             $("div.xlib").hide();
             $("#int_z, #shell").show();
         } else if ($select == "CS_Photo_Partial"){
@@ -70,7 +90,12 @@ $(document).ready(function () {
         } else if ($select == "CS_KN"){
             $("div.xlib").hide();
             $("#energy").show();
-        } else if ($select == "CS_Total" || $select == "CS_Photo"|| $select == "CS_Rayl" || $select == "CS_Compt"|| $select == "CS_Energy"){
+
+        } else if ($select == "CS_Total" 
+                || $select == "CS_Photo" 
+                || $select == "CS_Rayl" 
+                || $select == "CS_Compt" 
+                || $select == "CS_Energy"){
             $("div.xlib").hide();
             $("#int_z_or_comp, #energy").show();
         } else if ($select.includes("CS_FluorLine")){
@@ -128,7 +153,7 @@ $(document).ready(function () {
         };       
     };        
     
-    //shows and hides code examples depending on $select
+    // Shows and hides code examples depending on $select
     function hideCode ($select) {
         if ($select == 'cpp-objdump') {
             $(".code-examples, .support-examples").hide();
@@ -164,7 +189,7 @@ $(document).ready(function () {
         
     };
     
-    // shows and hides transition select forms depending on $Radio
+    // Shows and hides transition select forms depending on $Radio
     function hideTransSelects ($Radio) {
         if ($Radio == "IUPAC") {
             $("span#arrow, #transition-iupac1, #transition-iupac2").show();
@@ -177,17 +202,15 @@ $(document).ready(function () {
         };
     };   
     
-    //hides impossible iupac transitions
+
+    // Hides impossible IUPAC transitions
     function hideIUPAC ($select) {
-        var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
+        var shellsArray = ['K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3']
         
         var iupac2 = document.getElementById("transition-iupac2");
         var iupac2Selected = iupac2.options[iupac2.selectedIndex].value;
         $selectIndex = shellsArray.indexOf($select);
-        $(iupac2).empty();
-       
-        //var hideChoices = choices.slice(0, $selectIndex + 1);
-        //var showChoices = choices.slice($selectIndex + 1);
+        $(iupac2).empty();    
         
         var match = false;
         for (var i = $selectIndex+1 ; i < shellsArray.length ; i++) {
@@ -200,193 +223,218 @@ $(document).ready(function () {
         if (match == false) {
             iupac2.options[0].selected = true;
         };
-        /*hideChoices.forEach(function(choice){
-            //var y = document.querySelector(x).value;
-            //var y = document.querySelector(x).style.display == "none";
-            select.remove(hideChoices.indexOf(choice))            
-        });
-        showChoices.forEach(function(choice){
-            select.add(showChoices.indexOf(choice))
-            alert(select.value)
-        });*/
     };     
     
-    //hides impossible auger transitions
+    // Hides impossible auger transitions
     function hideAuger1 ($select) {
-        var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
-        var trans_shell = document.getElementById("augtrans-trans_shell");
+        var shellsArray = ['K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3']
+        var transShell = document.getElementById("augtrans-trans_shell");
         var transSelected = trans_shell.options[trans_shell.selectedIndex].value;
     
         $selectIndex = shellsArray.indexOf($select);
-        $(trans_shell).empty();
+        $(transShell).empty();
     
         var match = false;
         for (var i = $selectIndex+1 ; i < 9 ; i++) {
-            trans_shell.options.add(new Option(shellsArray[i], shellsArray[i]));
+            transShell.options.add(new Option(shellsArray[i], shellsArray[i]));
             if (shellsArray[i] == transSelected) {
-                trans_shell.options[i-$selectIndex-1].selected = true;
+                transShell.options[i-$selectIndex-1].selected = true;
                 match = true;
             };
         };
         if (match == false) {
-        trans_shell.options[0].selected = true;
+        transShell.options[0].selected = true;
         };    
     };
     
     function hideAuger2 ($select) {
-        var shellsArray = new Array('K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3')
-        var aug_shell = document.getElementById("augtrans-aug_shell");
+        var shellsArray = ['K', 'L1', 'L2', 'L3', 'M1', 'M2', 'M3', 'M4', 'M5', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3']
+        var augShell = document.getElementById("augtrans-aug_shell");
         var augSelected = aug_shell.options[aug_shell.selectedIndex].value;
     
         $selectIndex = shellsArray.indexOf($select);
-        $(aug_shell).empty();
+        $(augShell).empty();
     
         var match = false;
         for (var i = $selectIndex+1 ; i < shellsArray.length ; i++) {
-    	    aug_shell.options.add(new Option(shellsArray[i], shellsArray[i]));
+    	    augShell.options.add(new Option(shellsArray[i], shellsArray[i]));
     	    if (shellsArray[i] == augSelected) {
-    	        aug_shell.options[i-$selectIndex-1].selected = true;
+    	        augShell.options[i-$selectIndex-1].selected = true;
     	        match = true;
     	    };
         };
         if (match == false) {
-            aug_shell.options[0].selected = true;
+            augShell.options[0].selected = true;
         };    
     };      
     
     
-    $("select#augtrans-ex_shell").change(function(e) {
+    $("select#augtrans-ex_shell").change(function (e) {
         var $selectAug = $(this).val();
         hideAuger1($selectAug);
     });
     
-    $("select#augtrans-trans_shell").change(function(e) {
+    $("select#augtrans-trans_shell").change(function (e) {
         var $selectAug = $(this).val();
         hideAuger2($selectAug);
     });
     
-    // hides/shows as form changes
-    $("select#transition-iupac1").change(function(e) {
+    // Hides/shows as form changes
+    $("select#transition-iupac1").change(function (e) {
         var $selectTrans = $(this).val();
         hideIUPAC($selectTrans);
     });
        
-    // on page refresh or load (POST)
+    // On page refresh or load (POST)
     var $selectOnLoad = $("select#function").val();
     hideInputFields($selectOnLoad);
     
-    // hides/shows as form changes
-    $("select#function").change(function(e) {
+    // Hides/shows as form changes
+    $("select#function").change(function (e) {
         var $selectVal = $(this).val();        
         hideInputFields($selectVal);
     });
    
-    // shows select form for transition on change
-    $("input[type='radio']").change(function(e) {
+    // Shows select form for transition on change
+    $("input[type='radio']").change(function (e) {
         var $RadioVal = $(this).val();
         hideTransSelects($RadioVal);
     });  
     
-    // shows select form for transition on load
+    // Shows select form for transition on load
     var $RadioOnLoad = $("input[checked]").val();
-    hideTransSelects($RadioOnLoad)
+    hideTransSelects($RadioOnLoad);
        
-    // hides/shows examples as form changes 
-    $("select#examples").change(function(e) {
+    // Hides/shows examples as form changes 
+    $("select#examples").change(function (e) {
         var $selectEx = $(this).val();                
         hideCode($selectEx);
     });    
         
-    //on page refresh or load (POST) hides/shows examples
-    var $Output = $("p#output").text();
-    var $TableOutput = $("div#output").text();
-    var $SuppEx = $("div.support-examples").text();
+    // On page refresh or load (POST) hides/shows examples
+    // Only shows if output or table output
+    var $output = $("p#output").text();
+    var $tableOutput = $("div#output").text();
+    var $suppEx = $("div.support-examples").text();
     
-    if ($Output == 'Error') {
+    if ($output == 'Error') {
         $("div#examples, .support-examples, .code-examples").hide();
-    } else if ($Output || $TableOutput && $SuppEx ) {
+    } else if ($output || $tableOutput && $suppEx ) {
         $("div#examples").show();
-        var $ExampleOnLoad = $("select#examples").val();
-        hideCode($ExampleOnLoad);
+        var $exampleOnLoad = $("select#examples").val();
+        hideCode($exampleOnLoad);
     } else {
         $("div#examples, .support-examples, .code-examples").hide();
     }; 
           
-    //client side validation 
-    $("form").submit(function(event) {
+    // Client side validation 
+    $("form").submit(function (e) {
         var $selected = $("select#function").val();        
-        //if energy = 0 display error: block submission
+        // If energy = 0 display error: block submission
         if ($("input#energy[value]").val() == 0) {
             $(".energy-alert").show();
             return false;
         };
-        //if input empty on submission: block submission and display empty field error
-        if ($selected == "AtomicWeight" || $selected == "ElementDensity" || $selected == "LineEnergy" || $selected == "RadRate" || $selected == "EdgeEnergy" || $selected == "JumpFactor" || $selected == "FluorYield" || $selected == "AugerYield" || $selected == "AtomicLevelWidth" || $selected == "ElectronConfig" || $selected == "CosKronTransProb" || $selected == "AugerRate") {
+        // If input empty on submission: block submission and display empty field error
+        if ($selected == "AtomicWeight" 
+                || $selected == "ElementDensity" 
+                || $selected == "LineEnergy" 
+                || $selected == "RadRate" 
+                || $selected == "EdgeEnergy" 
+                || $selected == "JumpFactor" 
+                || $selected == "FluorYield" 
+                || $selected == "AugerYield" 
+                || $selected == "AtomicLevelWidth" 
+                || $selected == "ElectronConfig" 
+                || $selected == "CosKronTransProb" 
+                || $selected == "AugerRate") {
             if (!$("input#int_z[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "FF_Rayl" || $selected == "SF_Compt") {
-            if (!$("input#int_z[value]").val() || !$("input#float_q[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+            if (!$("input#int_z[value]").val() 
+                    || !$("input#float_q[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };
-        } else if ($selected == "CS_Photo_Partial" || $selected.includes("CS_FluorLine") || $selected.includes("Fi")) {
+        } else if ($selected == "CS_Photo_Partial" 
+                || $selected.includes("CS_FluorLine") 
+                || $selected.includes("Fi")) {
             if (!$("input#int_z[value]").val() || !$("input#energy[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+                $(".empty-alert").show();
+                return false;
             };
-        } else if ($selected == "CS_Total" || $selected == "CS_Photo"|| $selected == "CS_Rayl" || $selected == "CS_Compt"|| $selected == "CS_Energy"){
-            if (!$("input#int_z_or_comp[value]").val() || !$("input#energy[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+        } else if ($selected == "CS_Total" 
+                || $selected == "CS_Photo" 
+                || $selected == "CS_Rayl" 
+                || $selected == "CS_Compt" 
+                || $selected == "CS_Energy"){
+            if (!$("input#int_z_or_comp[value]").val() 
+                    || !$("input#energy[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };               
-        } else if ($selected == "DCS_KN" || $selected == "ComptonEnergy" || $selected == "MomentTransf"){
-            if (!$("input#energy[value]").val() || !$("input#theta[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+        } else if ($selected == "DCS_KN" 
+                || $selected == "ComptonEnergy" 
+                || $selected == "MomentTransf"){
+            if (!$("input#energy[value]").val() 
+                    || !$("input#theta[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "DCS_Thoms"){
             if (!$("input#theta[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "DCS_Rayl" || $selected == "DCS_Compt") {
-            if (!$("input#int_z_or_comp[value]").val() || !$("input#energy[value]").val() || !$("input#theta[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+            if (!$("input#int_z_or_comp[value]").val() 
+                    || !$("input#energy[value]").val() 
+                    || !$("input#theta[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "DCSP_KN") {
-            if (!$("input#phi[value]").val() || !$("input#energy[value]").val() || !$("input#theta[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+            if (!$("input#phi[value]").val() 
+                    || !$("input#energy[value]").val() 
+                    || !$("input#theta[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "DCSP_Thoms") {
-            if (!$("input#phi[value]").val() || !$("input#theta[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+            if (!$("input#phi[value]").val() 
+                    || !$("input#theta[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "DCSP_Rayl" || $selected == "DCSP_Compt") {
-            if (!$("input#int_z_or_comp[value]").val() || !$("input#energy[value]").val() || !$("input#theta[value]").val() || !$("input#phi[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+            if (!$("input#int_z_or_comp[value]").val()
+                    || !$("input#energy[value]").val()
+                    || !$("input#theta[value]").val() 
+                    || !$("input#phi[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "ComptonProfile" || $selected == "ComptonProfile_Partial") {
-            if (!$("input#int_z[value]").val() || !$("input#pz[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+            if (!$("input#int_z[value]").val() 
+                    || !$("input#pz[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "Refractive_Index") {
-            if (!$("input#int_z_or_comp[value]").val() || !$("input#energy[value]").val() || !$("input#density[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+            if (!$("input#int_z_or_comp[value]").val() 
+                    || !$("input#energy[value]").val() 
+                    || !$("input#density[value]").val()) {
+                $(".empty-alert").show();
+                return false;
             };
         } else if ($selected == "CompoundParser") {
             if (!$("input#comp[value]").val()) {
-            $(".empty-alert").show();
-            return false;
+                $(".empty-alert").show();
+                return false;
             };     
         };    
-    });
-           
+    });           
 });
+

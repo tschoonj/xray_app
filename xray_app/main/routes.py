@@ -12,32 +12,34 @@ import xraylib
 
 from xray_app.methods.routes import cs_dict, trans_S_tup, trans_I_tup, make_tup, validate_int, validate_str, validate_float
 
+main = Blueprint('main', __name__)
+#---------------------------------------------------------------------------------
+# Removing unimplemented functions from rendered choices
 def delete_key(key, _dict):
     if key in _dict:
         del _dict[key]
         
-#remove unimplemented functions from possible input
 delete_key('CS_KN', cs_dict)
 delete_key('CS_Total_Kissel', cs_dict)
 delete_key('CS_Photo_Partial', cs_dict)
 cs_tup = make_tup(cs_dict, 'cs')
 
-main = Blueprint('main', __name__)
-
+#---------------------------------------------------------------------------------
 @main.route("/about")
 def about():
     return render_template('about.html', title = 'About ')
-
+    
+#---------------------------------------------------------------------------------
 @main.route("/plot", methods=['GET', 'POST'])
 def plot():
     form = Xraylib_Request_Plot()
-    form.function.choices = form.function.choices + cs_tup #not all of these are needed delete as necessary
+    
+    # Populating select fields
+    form.function.choices = form.function.choices + cs_tup
     form.transition.siegbahn.choices = trans_S_tup
     
     if request.method == 'POST':        
-        #for key in request.form.keys():
-        #print(f'key= {key}')
-                
+        # Get user input        
         select_input = request.form.get('function')
         range_start = request.form['range_start']
         range_end = request.form['range_end']
@@ -50,11 +52,14 @@ def plot():
         notation = request.form.get('transition-notation')        
         iupac1 = request.form.get('transition-iupac1')
         iupac2 = request.form.get('transition-iupac2')
-        
+
+        # User Input => valid arg for calc_output
         trans = iupac1 + iupac2 + '_LINE'
         siegbahn = request.form.get('transition-siegbahn')
         
-        if select_input == 'CS_Total' or select_input == 'CS_Photo' or select_input == 'CS_Rayl' or select_input == 'CS_Energy' or select_input == 'CS_Compt':
+        if (select_input == 'CS_Total' or select_input == 'CS_Photo' 
+        or select_input == 'CS_Rayl' or select_input == 'CS_Energy' 
+        or select_input == 'CS_Compt'):
             if validate_int(int_z_or_comp) or validate_str(int_z_or_comp):
                 plot = make_plot(select_input, 
                     'Energy ($keV$)', 
@@ -69,7 +74,7 @@ def plot():
                 return render_template('plot.html', form = form, title = 'Plot')
     
         elif select_input.startswith('CS_FluorLine'):
-            if validate_int(int_z) or xraylib.SymbolToAtomicNumber(int_z) != 0:
+            if validate_int(int_z) or validate_str(int_z):
                 if notation == 'IUPAC':
                     plot = make_plot(select_input, 
                         'Energy ($keV$)', 
@@ -81,6 +86,7 @@ def plot():
                         int_z,
                          trans)
                     return render_template('plot.html', form = form, title = 'Plot', plot=plot)
+
                 elif notation == 'Siegbahn':
                     plot = make_plot(select_input, 
                         'Energy ($keV$)', 
@@ -101,14 +107,12 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
     y = []
     t_variables = [] 
 
-    #print(variables)
     if validate_int(range_start, range_end):
-        for i in range(int(range_start), int(range_end), 1):            
-            #print(calc_output(function, *variables, i))
+        for i in range(int(range_start), int(range_end), 1):
             y.append(float(calc_output(function, *variables, i)))
             x.append(i)        
     elif validate_float(range_start, range_end):
-        for i in range(int(float(range_start)), int(range_end), 1):
+        for i in range(int(float(range_start)), int(float(range_end)), 1):
             y.append(float(calc_output(function, *variables, i)))
             x.append(i)
     else:
@@ -124,15 +128,16 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
     fig, ax = plt.subplots()
     ax.plot(x, y)
     
+    # Adds titles to graph
     for variable in variables:
         if validate_int(variable):
             t_variables.append(xraylib.AtomicNumberToSymbol(int(variable)))
         else:
-            t_variables.append(str(variable))
-    
+            t_variables.append(str(variable))    
     t_variables = ', '.join(t_variables)
     ax.set(title = function + ': ' + t_variables, xlabel = xlabel, ylabel = ylabel)                
-    
+
+    # Sets graph scale depending on input
     if log_boo_y and log_boo_x:
         plt.xscale('log')                  
         plt.yscale('log')
@@ -141,6 +146,7 @@ def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_b
     elif log_boo_y:
         plt.yscale('log')        
     
+    # Returns img as encoded byte string
     img = BytesIO()
     plt.savefig(img, format='png', dpi=300)
     plt.close()

@@ -1,5 +1,4 @@
 {% extends 'layout.html' %}
-
 {% block body %}
     <form method="POST" action="">  
     <fieldset class = "form-group inline">
@@ -30,12 +29,15 @@
             formnovalidate>
     </fieldset>
     <div class="alert empty-alert">
-        <span class="close-button" onclick="this.parentElement.style.display='none';">&times;</span>
+        <span class="close-button"
+            onclick="this.parentElement.style.display='none';">&times;</span>
         Please fill in all fields.
     </div>
     </form>
 {% if request.method == 'POST'%}
-    <img class="center-block" src="data:image/png;base64,{{plot}}" alt="Invalid Form Request: Please enter valid input.">
+    <img class="center-block" 
+        src="data:image/png;base64,{{plot}}" 
+        alt="Invalid Form Request: Please enter valid input.">
 {% endif %}
 <script
     src="https://code.jquery.com/jquery-3.3.1.js"
@@ -43,5 +45,5 @@
     crossorigin="anonymous"> </script>
     
 <script src="{{url_for('static', filename='plot.js')}}"></script>
-
 {% endblock body%}
+
