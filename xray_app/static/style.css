@@ -8,6 +8,31 @@
 * purp #5b54a2
 */
 
+/*input[type=submit] {
+    border: 2px solid #5b54a2;
+    border-radius: 2px;
+    padding: 0.5em 1em; 
+}
+input[type=submit]:hover {
+    background-color: #5b54a2;
+    color: white; 
+}*/
+body {
+    background-color: #002264;
+}
+div.jumbotron {}
+
+footer{color:white;}
+/* General colour scheme */
+.container { 
+    padding-top: 100px; 
+    color: #002264 
+    }
+
+.jumbotron { 
+    box-shadow: 10px 10px 5px black; 
+}
+
 /* Puts p/divs on the same line */
 p#output, 
 p#units, div.custom-select {
@@ -78,22 +103,14 @@ td {
     color: black;
 }
 
-/* General colour scheme */
-.container { 
-    padding-top: 100px; 
-    color: #002264 
-    }
 
-.jumbotron { 
-    box-shadow: 10px 10px 5px grey; 
-}
 
 a { 
     color: #40b5bb; 
 }
 
 a:hover { 
-    color: #002264;
+    color: #7292cb;
 }
 
 ::placeholder {

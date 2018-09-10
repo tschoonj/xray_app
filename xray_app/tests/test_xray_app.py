@@ -121,9 +121,10 @@ def function_test(client, select_input, **variables):
         variables['augtrans-ex_shell'] = test_ex_shell
         variables['augtrans-trans_shell'] = test_trans_shell
         variables['augtrans-aug_shell'] =  test_aug_shell
-    print('variables:' + str(variables))
+
     test_inputs = []
     lst = [[]]
+    print(lst)
     test_values = [variables[k] for k in variables] 
         
     # Generates list of all possible permutations of test variables

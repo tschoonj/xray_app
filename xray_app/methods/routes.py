@@ -31,6 +31,7 @@ trans_S_tup = trans_S_tup[::-1]
 @methods.route("/", methods=['GET', 'POST'])
 def index():
     form = Xraylib_Request()
+    version = xraylib.__version__
     
     form.function.choices = form.function.choices + cs_tup + dcs_tup
     form.transition.siegbahn.choices = trans_S_tup
@@ -78,6 +79,7 @@ def index():
                 return render_template(
                     'index.html', 
                     form = form,
+                    version = version,
                     output = output,
                     units = getattr(Request_Units, select_input + '_u'),
                     code_examples = examples
@@ -85,7 +87,8 @@ def index():
             else:
                 return render_template(
                     'index.html', 
-                    form = form,  
+                    form = form, 
+                    version = version,   
                     error = Request_Error.error
                     )
                        
@@ -95,13 +98,15 @@ def index():
                 output = calc_output(select_input, int_z, float_q)
                 return render_template(
                         'index.html', 
-                        form = form,
+                        form = form, 
+                        version = version, 
                         output = output,
                         code_examples = code_examples)                        
             else:
                 return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )            
 
@@ -111,14 +116,16 @@ def index():
                 output = calc_output(select_input, int_z, augtrans)
                 return render_template(
                                 'index.html', 
-                                form = form,
+                                form = form, 
+                                version = version, 
                                 output = output,
                                 code_examples = code_examples
                                 )
             else:
                 return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )
                 
@@ -131,7 +138,8 @@ def index():
                     if select_input == 'LineEnergy':
                         return render_template(
                                 'index.html', 
-                                form = form,
+                                form = form, 
+                                version = version, 
                                 output = output,
                                 units = Request_Units.Energy_u,
                                 code_examples = code_examples
@@ -139,14 +147,16 @@ def index():
                     else:
                         return render_template(
                                 'index.html', 
-                                form = form,
+                                form = form, 
+                                version = version, 
                                 output = output,
                                 code_examples = code_examples
                                 )
                 else:
                     return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )                                        
                   
@@ -159,7 +169,8 @@ def index():
                     if select_input == 'LineEnergy':
                         return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.Energy_u,
                             code_examples = code_examples
@@ -167,14 +178,16 @@ def index():
                     else:
                         return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             code_examples = code_examples
                             )
                 
                 return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )                     
               
@@ -187,20 +200,23 @@ def index():
                         #output = dict(out, Line = 'Energies')
                         return render_template(
                                 'index.html', 
-                                form = form,
+                                form = form, 
+                                version = version, 
                                 output = output,
                                 units = Request_Units.Energy_u
                                 )
                     else:
                         return render_template(
                                 'index.html', 
-                                form = form,
+                                form = form, 
+                                version = version, 
                                 output = output
                                 )
                 else:
                     return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )
             else:
@@ -218,7 +234,8 @@ def index():
                 if select_input == 'EdgeEnergy' or select_input == 'AtomicLevelWidth':
                     return render_template(
                         'index.html', 
-                        form = form,
+                        form = form, 
+                        version = version, 
                         output = output,
                         units = Request_Units.Energy_u,
                         code_examples = code_examples
@@ -226,7 +243,8 @@ def index():
                 elif select_input == 'ElectronConfig':
                     return render_template(
                         'index.html', 
-                        form = form,
+                        form = form, 
+                        version = version, 
                         output = output,
                         units = Request_Units.ElectronConfig_u,
                         code_examples = code_examples
@@ -234,14 +252,16 @@ def index():
                 else:
                     return render_template(
                         'index.html', 
-                        form = form,
+                        form = form, 
+                        version = version, 
                         output = output,
                         code_examples = code_examples
                         )
             else:
                 return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )
 
@@ -251,7 +271,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z, shell, energy)  
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.CS_u, 
                             code_examples = code_examples
@@ -259,7 +280,8 @@ def index():
             else:
                 return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )
          
@@ -269,7 +291,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, energy)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.CS_u,  
                             code_examples = code_examples
@@ -277,7 +300,8 @@ def index():
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             error=Request_Error.error
                             )
                             
@@ -289,7 +313,8 @@ def index():
                         output = calc_output(select_input, int_z, trans, energy)
                         return render_template(
                                 'index.html', 
-                                form = form,
+                                form = form, 
+                                version = version, 
                                 output = output,
                                 units = Request_Units.CS_u, 
                                 code_examples = code_examples
@@ -297,7 +322,8 @@ def index():
                     else:
                         return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form,
+                        version = version,   
                         error = Request_Error.error
                         )            
                 elif notation == 'Siegbahn':
@@ -306,7 +332,8 @@ def index():
                         output = calc_output(select_input, int_z, siegbahn, energy)
                         return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.CS_u, 
                             code_examples = code_examples
@@ -314,7 +341,8 @@ def index():
                     else:
                         return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )        
                 elif notation == 'All':
@@ -322,20 +350,23 @@ def index():
                         output = all_trans_xrf(form.transition.iupac.choices, select_input, int_z, energy)
                         return render_template(
                                 'index.html', 
-                                form = form,
+                                form = form, 
+                                version = version, 
                                 output = output,
                                 units = Request_Units.CS_u
                                 )
                     else:
                         return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )                       
             else:
                 return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )
                                                      
@@ -346,6 +377,7 @@ def index():
                 return render_template(
                             'index.html',
                             form = form, 
+                            version = version,  
                             output = output,
                             units = Request_Units.CS_u, 
                             code_examples = code_examples
@@ -353,7 +385,8 @@ def index():
             else:
                 return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, 
+                        version = version,   
                         error = Request_Error.error
                         )
                           
@@ -363,7 +396,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, theta)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.DCS_u,  
                             code_examples = code_examples
@@ -371,7 +405,8 @@ def index():
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             error = Request_Error.error
                             )
                                      
@@ -381,7 +416,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, energy, theta)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.DCS_u,  
                             code_examples = code_examples
@@ -389,7 +425,8 @@ def index():
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             error = Request_Error.error
                             )     
         
@@ -399,7 +436,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, theta)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.DCS_u,  
                             code_examples = code_examples
@@ -407,7 +445,8 @@ def index():
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             error = Request_Error.error
                             )
         
@@ -417,7 +456,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, energy, theta, phi)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.DCS_u,  
                             code_examples = code_examples
@@ -425,7 +465,8 @@ def index():
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, 
+                            version = version, 
                             error = Request_Error.error
                             )
                                 
@@ -435,7 +476,7 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, theta, phi)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             output = output,
                             units = Request_Units.DCS_u,  
                             code_examples = code_examples
@@ -443,7 +484,7 @@ def index():
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )
                             
@@ -453,7 +494,7 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, theta, phi)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             output = output,
                             units = Request_Units.DCS_u,  
                             code_examples = code_examples
@@ -461,7 +502,7 @@ def index():
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )
                                                 
@@ -471,14 +512,14 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z, energy)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             output = output,  
                             code_examples = code_examples
                             )
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )
         
@@ -488,14 +529,14 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z, cktrans)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             output = output,  
                             code_examples = code_examples
                             )
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )
         
@@ -506,14 +547,14 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z, pz)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             output = output,  
                             code_examples = code_examples
                             )
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )
         
@@ -523,14 +564,14 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z, shell, pz)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             output = output,  
                             code_examples = code_examples
                             )
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )
                             
@@ -540,14 +581,14 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, energy, theta)
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             output = output,  
                             code_examples = code_examples
                             )
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )                    
         
@@ -563,7 +604,7 @@ def index():
                     code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, density)
                     return render_template(
                         'index.html',
-                        form = form, 
+                        form = form, version = version,  
                         output = output, 
                         code_examples = code_examples
                         )
@@ -575,20 +616,20 @@ def index():
                     code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, density)
                     return render_template(
                         'index.html',
-                        form = form, 
+                        form = form, version = version,  
                         output = output, 
                         code_examples = code_examples
                         )
                 else:
                     return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, version = version,   
                         error = Request_Error.error
                         )                
             else:
                      return render_template(
                         'index.html', 
-                        form = form,  
+                        form = form, version = version,   
                         error = Request_Error.error
                         )
         
@@ -614,7 +655,7 @@ def index():
                     code_examples = code_example(form.examples.choices, select_input, comp)
                     return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             output = output,  
                             code_examples = code_examples, 
                             units = Request_Units.per_u
@@ -622,13 +663,13 @@ def index():
                 except:
                     return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )  
             else:
                 return render_template(
                             'index.html', 
-                            form = form,
+                            form = form, version = version, 
                             error = Request_Error.error
                             )                    
                                                                                         
@@ -639,7 +680,7 @@ def index():
             code_examples = code_example(form.examples.choices, select_input)
             return render_template(
                     'index.html',  
-                    form = form,
+                    form = form, version = version, 
                     output = output, 
                     code_examples = code_examples
                     )
@@ -659,7 +700,7 @@ def index():
             
             return render_template(
                     'index.html',  
-                    form = form,
+                    form = form, version = version, 
                     output = output, 
                     code_examples = code_examples
                     )
@@ -671,7 +712,7 @@ def index():
             code_examples = code_example(form.examples.choices, select_input)
             return render_template(
                     'index.html',  
-                    form = form,
+                    form = form, version = version, 
                     output = output, 
                     code_examples = code_examples
                     )
@@ -692,7 +733,7 @@ def index():
             code_examples = code_example(form.examples.choices, 'GetCompoundDataNISTByName', nistcomp)
             return render_template(
                     'index.html',
-                    form = form, 
+                    form = form, version = version,  
                     output = output,
                     code_examples = code_examples
                     )               

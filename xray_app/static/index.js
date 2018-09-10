@@ -277,6 +277,11 @@ $(document).ready(function () {
         hideInputFields($selectVal);
     });
    
+    // Hides/shows on key up of search
+    $("input#function").keyup(function (e) {
+        $("select#function").change();
+    });
+    
     // Shows select form for transition on change
     $("input[type='radio']").change(function (e) {
         var $RadioVal = $(this).val();
