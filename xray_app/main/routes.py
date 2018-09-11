@@ -2,11 +2,15 @@ from flask import Blueprint, render_template, request, url_for, make_response
 from xray_app.main.forms import Xraylib_Request_Plot
 from xray_app.methods.utils import calc_output, all_trans
 
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.backends.backend_svg import FigureCanvasSVG as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+
+from bokeh.plotting import figure, output_file, show
+from bokeh.embed import components
+import numpy as np
 
 import xraylib
 
@@ -14,6 +18,7 @@ from xray_app.methods.routes import cs_dict, trans_S_tup, trans_I_tup, make_tup,
 
 main = Blueprint('main', __name__)
 #---------------------------------------------------------------------------------
+y = []
 # Removing unimplemented functions from rendered choices
 def delete_key(key, _dict):
     if key in _dict:
@@ -23,7 +28,6 @@ delete_key('CS_KN', cs_dict)
 delete_key('CS_Total_Kissel', cs_dict)
 delete_key('CS_Photo_Partial', cs_dict)
 cs_tup = make_tup(cs_dict, 'cs')
-
 #---------------------------------------------------------------------------------
 @main.route("/about")
 def about():
@@ -33,7 +37,7 @@ def about():
 @main.route("/plot", methods=['GET', 'POST'])
 def plot():
     form = Xraylib_Request_Plot()
-    
+   
     # Populating select fields
     form.function.choices = form.function.choices + cs_tup
     form.transition.siegbahn.choices = trans_S_tup
@@ -61,96 +65,82 @@ def plot():
         or select_input == 'CS_Rayl' or select_input == 'CS_Energy' 
         or select_input == 'CS_Compt'):
             if validate_int(int_z_or_comp) or validate_str(int_z_or_comp):
-                plot = make_plot(select_input, 
-                    'Energy ($keV$)', 
-                    r'Cross Section ($cm^{2} g^{-1}$)', 
-                    range_start, 
-                    range_end, 
-                    log_boo_x, 
-                    log_boo_y, 
-                    int_z_or_comp)
-                return render_template('plot.html', form = form, title = 'Plot', plot=plot)
+                plot = create_fig(select_input, range_start, range_end, 
+                        log_boo_x, log_boo_y, int_z_or_comp)
+                script, div = components(plot)
+                y[:]=[]
+                return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)
             else:
                 return render_template('plot.html', form = form, title = 'Plot')
     
         elif select_input.startswith('CS_FluorLine'):
             if validate_int(int_z) or validate_str(int_z):
                 if notation == 'IUPAC':
-                    plot = make_plot(select_input, 
-                        'Energy ($keV$)', 
-                        r'Cross Section ($cm^{2} g^{-1}$)', 
-                        range_start, 
-                        range_end, 
-                        log_boo_x, 
-                        log_boo_y, 
-                        int_z,
-                         trans)
-                    return render_template('plot.html', form = form, title = 'Plot', plot=plot)
+                    plot = create_fig(select_input, range_start, range_end, 
+                            log_boo_x, log_boo_y, int_z, trans)
+                    script, div = components(plot)
+                    y[:]=[]
+                    return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)
 
                 elif notation == 'Siegbahn':
-                    plot = make_plot(select_input, 
-                        'Energy ($keV$)', 
-                        r'Cross Section ($cm^{2} g^{-1}$)', 
-                        range_start, 
-                        range_end, 
-                        log_boo_x, 
-                        log_boo_y, 
-                        int_z, 
-                        siegbahn)
-                    return render_template('plot.html', form = form, title = 'Plot', plot=plot)          
+                    plot = create_fig(select_input, range_start, range_end, 
+                            log_boo_x, log_boo_y, int_z, siegbahn)
+                    script, div = components(plot)
+                    y[:]=[]
+                    return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)      
             else:
                 return render_template('plot.html', form = form, title = 'Plot')
     return render_template('plot.html', title = 'Plot', form = form)
 #-------------------------------------------------------------------------------------
-def make_plot(function, xlabel, ylabel, range_start, range_end, log_boo_x, log_boo_y, *variables):
-    x = []
-    y = []
-    t_variables = [] 
+tools = 'wheel_zoom,reset,hover,box_zoom,save'
+tooltips = [('(x, y)', '($x, $y)')]
 
-    if validate_int(range_start, range_end):
-        for i in range(int(range_start), int(range_end), 1):
-            y.append(float(calc_output(function, *variables, i)))
-            x.append(i)        
-    elif validate_float(range_start, range_end):
-        for i in range(int(float(range_start)), int(float(range_end)), 1):
-            y.append(float(calc_output(function, *variables, i)))
-            x.append(i)
-    else:
-        #print('invalid range')
-        return
-    
-    if sum(y) == 0:
-        return #Add more useful/specific error message e.g. Line unsupported
-    
-    fig = Figure()
-    canvas = FigureCanvas(fig)
-            
-    fig, ax = plt.subplots()
-    ax.plot(x, y)
-    
-    # Adds titles to graph
+# Populates y with xraylib data
+def get_data(function, array, *variables):
+    xrl_function = getattr(xraylib, function)   
+    for i in array:
+        y.append(calc_output(function, *variables, i))
+
+# Creates array for x axis
+def make_array(range_start, range_end):
+    range_start = int(range_start)
+    range_end = int(range_end)
+    step = (range_end - range_start)*2
+    x = np.linspace(range_start, range_end, step)
+    return x
+
+# Gets Title for graph
+def get_title(*variables):
+    t_variables = []
     for variable in variables:
         if validate_int(variable):
             t_variables.append(xraylib.AtomicNumberToSymbol(int(variable)))
         else:
-            t_variables.append(str(variable))    
-    t_variables = ', '.join(t_variables)
-    ax.set(title = function + ': ' + t_variables, xlabel = xlabel, ylabel = ylabel)                
+            t_variables.append(str(variable))
+    t_variables = ', '.join(t_variables)        
+    return t_variables
 
+# Creates Bokeh object        
+def create_fig(function, range_start, range_end, log_boo_x, log_boo_y, *variables):
+    x = make_array(range_start, range_end)
+    get_data(function, x, *variables)
+    title = function + ': ' + str(get_title(*variables))
+    
     # Sets graph scale depending on input
     if log_boo_y and log_boo_x:
-        plt.xscale('log')                  
-        plt.yscale('log')
+        p = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
+            x_axis_type = 'log', y_axis_type = 'log', plot_height=500)
     elif log_boo_x:
-        plt.xscale('log')
+        p = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
+            x_axis_type = 'log', plot_height=500)
     elif log_boo_y:
-        plt.yscale('log')        
-    
-    # Returns img as encoded byte string
-    img = BytesIO()
-    plt.savefig(img, format='png', dpi=300)
-    plt.close()
-    img_bytes = img.getvalue()
-    img.close()
-    img64 = str(base64.b64encode(img_bytes), encoding='utf-8')
-    return img64 
+        p = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
+            y_axis_type = 'log', plot_height=500)
+    else:
+        p = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', plot_height=500)   
+    p.xaxis.axis_label = 'Energy (keV)'
+    p.yaxis.axis_label = 'Cross Section (cm^2/g)'
+    p.line(x, y)
+    p.hover.mode = 'vline'        
+    return p
+

@@ -476,7 +476,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, theta, phi)
                 return render_template(
                             'index.html', 
-                            form = form, version = version, 
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.DCS_u,  
                             code_examples = code_examples
@@ -484,7 +485,8 @@ def index():
             else:
                 return render_template(
                             'index.html', 
-                            form = form, version = version, 
+                            form = form, 
+                            version = version, 
                             error = Request_Error.error
                             )
                             
@@ -494,7 +496,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z_or_comp, energy, theta, phi)
                 return render_template(
                             'index.html', 
-                            form = form, version = version, 
+                            form = form, 
+                            version = version, 
                             output = output,
                             units = Request_Units.DCS_u,  
                             code_examples = code_examples
@@ -512,7 +515,8 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z, energy)
                 return render_template(
                             'index.html', 
-                            form = form, version = version, 
+                            form = form, 
+                            version = version, 
                             output = output,  
                             code_examples = code_examples
                             )
@@ -529,14 +533,16 @@ def index():
                 code_examples = code_example(form.examples.choices, select_input, int_z, cktrans)
                 return render_template(
                             'index.html', 
-                            form = form, version = version, 
+                            form = form, 
+                            version = version, 
                             output = output,  
                             code_examples = code_examples
                             )
             else:
                 return render_template(
                             'index.html', 
-                            form = form, version = version, 
+                            form = form, 
+                            version = version, 
                             error = Request_Error.error
                             )
         
@@ -700,7 +706,8 @@ def index():
             
             return render_template(
                     'index.html',  
-                    form = form, version = version, 
+                    form = form, 
+                    version = version, 
                     output = output, 
                     code_examples = code_examples
                     )
@@ -712,7 +719,8 @@ def index():
             code_examples = code_example(form.examples.choices, select_input)
             return render_template(
                     'index.html',  
-                    form = form, version = version, 
+                    form = form, 
+                    version = version, 
                     output = output, 
                     code_examples = code_examples
                     )
@@ -733,10 +741,11 @@ def index():
             code_examples = code_example(form.examples.choices, 'GetCompoundDataNISTByName', nistcomp)
             return render_template(
                     'index.html',
-                    form = form, version = version,  
+                    form = form, 
+                    version = version,  
                     output = output,
                     code_examples = code_examples
                     )               
 
-    return render_template('index.html', form=form)                        
+    return render_template('index.html', form=form, version = version)                        
                 

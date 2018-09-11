@@ -35,9 +35,12 @@
     </div>
     </form>
 {% if request.method == 'POST'%}
-    <img class="center-block" 
-        src="data:image/png;base64,{{plot}}" 
-        alt="Invalid Form Request: Please enter valid input.">
+    {% if script and div %}
+        {{script|safe}}
+        {{div|safe}}
+        {% else %}
+        Invalid Form Request: Please enter valid input.
+    {% endif %}
 {% endif %}
 <script
     src="https://code.jquery.com/jquery-3.3.1.js"

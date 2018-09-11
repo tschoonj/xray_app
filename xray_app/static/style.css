@@ -22,7 +22,7 @@ body {
 }
 div.jumbotron {}
 
-footer{color:white;}
+footer{color:#eeeeee;}
 /* General colour scheme */
 .container { 
     padding-top: 100px; 
@@ -50,7 +50,7 @@ div.xlib {
 }
 
 /* Limits plot image to size of container */
-img.center-block { 
+img.center-block, div.bk-root { 
     width:100%;
 }
 
