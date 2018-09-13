@@ -229,5 +229,4 @@ def create_table():
     
     table.legend.orientation = "horizontal"
     table.legend.location ="bottom_center"
-    table.legend.click_policy="mute"
     return table
