@@ -3,39 +3,44 @@
 * yellow #ffcf00
 * blue #002264
 *
-* turq #40b5bb
+* turquoise #40b5bb
 * l blue #7292cb
-* purp #5b54a2
+* purple #5b54a2
 */
 
-/*input[type=submit] {
-    border: 2px solid #5b54a2;
-    border-radius: 2px;
-    padding: 0.5em 1em; 
-}
-input[type=submit]:hover {
-    background-color: #5b54a2;
-    color: white; 
-}*/
+/* General colour scheme */
 body {
     background-color: #002264;
 }
-div.jumbotron {}
 
-footer{color:#eeeeee;}
-/* General colour scheme */
+footer{
+    color:#eeeeee;
+}
+
 .container { 
     padding-top: 100px; 
     color: #002264 
-    }
+}
 
 .jumbotron { 
     box-shadow: 10px 10px 5px black; 
 }
 
+a { 
+    color: #40b5bb; 
+}
+
+a:hover { 
+    color: #7292cb;
+}
+
+::placeholder {
+    color:#5b54a2;
+}
+
 /* Puts p/divs on the same line */
-p#output, 
-p#units, div.custom-select {
+p#output, p#units,
+div.custom-select {
     display: inline-block;
 }
 
@@ -49,12 +54,12 @@ div.xlib {
     display: hidden;
 }
 
-/* Limits plot image to size of container */
+/* Limits image or plot to size of container */
 img.center-block, div.bk-root { 
     width:100%;
 }
 
-/* Padding for augtrans fields */
+/* Padding for table data */
 td { 
     padding: 0.25em;
 }
@@ -79,7 +84,7 @@ td {
     }
 }
 
-/* Alert boxes and their buttons */
+/* Alert boxes and buttons */
 .alert {    
     padding: 0.5em;
     background-color: #40b5bb; /* Turquoise */
@@ -98,23 +103,9 @@ td {
     transition: 0.3s;
 }
     
-/* mouseover button */
+/* mouseover alert button */
 .close-button:hover {
     color: black;
-}
-
-
-
-a { 
-    color: #40b5bb; 
-}
-
-a:hover { 
-    color: #7292cb;
-}
-
-::placeholder {
-    color:#5b54a2;
 }
 
 /* Pygments CSS */

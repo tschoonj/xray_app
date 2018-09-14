@@ -6,16 +6,6 @@ from bokeh.transform import dodge, factor_cmap
 import xraylib
 import numpy as np
 
-# Defining lists and arrays
-y = []
-tools = 'hover, pan, zoom_in, reset'
-tooltips = [
-    ("Density", "@density"),
-    ("Abs. Edge Energy", "@absedge"),
-    ("Atomic Level Width", "@alw"),
-    ("Fluorescence Yield", "@flyield"),
-    ("AugerYield", "@augyield")
-]
 cmap = {
     "alkali metal": "#a6cee3",
     "alkaline earth metal": "#78aed2",
@@ -27,6 +17,16 @@ cmap = {
     "transition metal": "#ade25d",
     "lanthanide actinide": "#ffdd56",
 }
+# Defining lists and arrays
+tools = 'hover, pan, zoom_in, reset'
+tooltips = [
+    ("Density", "@density"),
+    ("Abs. Edge Energy", "@absedge"),
+    ("Atomic Level Width", "@alw"),
+    ("Fluorescence Yield", "@flyield"),
+    ("AugerYield", "@augyield")
+]
+y = []
 periods = ["I", "II", "III", "IV", "V", "VI", "VII", "", " ", "   "]
 groups = [str(x) for x in range(1, 19)]
 
@@ -61,7 +61,7 @@ noble_gas = group18
 nonmetal = np.array([1, 6, 7, 8, 9, 15, 16, 17, 34, 35, 53])
 ln_ac = np.concatenate((ln, ac))
 
-# Query xraylib and formats data into ColumnDataSource format
+# Query xraylib and format data into ColumnDataSource
 def get_data():
     sym, z, group, period, _type = ([], [], [], [], [])
     mass, density, absedge, alw, flyield, augyield = ([], [], [], [], [], [])
@@ -69,7 +69,7 @@ def get_data():
         s = xraylib.AtomicNumberToSymbol(i)
         sym.append(s)
         z.append(i)
-        mass.append(xraylib.CompoundParser(s)['molarMass'])
+        mass.append(xraylib.AtomicWeight(i))
         density.append(str(xraylib.ElementDensity(i)) + ' g/cm^3')
         
         absedge.append(str(xraylib.EdgeEnergy(i, 0)) + ' keV')        
@@ -81,10 +81,55 @@ def get_data():
         pop_group(i, group)
         pop_type(i, _type)
         
-    data = {'sym': sym, 'z': z, 'mass': mass, 'group':group, 'period':period, '_type': _type, 'density': density, 'flyield': flyield, 'augyield': augyield, 'absedge': absedge, 'alw': alw}
-    #print(data)
+    data = {
+        'sym': sym, 'z': z, 'mass': mass, 'group':group,
+        'period':period, '_type': _type, 'density': density,
+        'flyield': flyield, 'augyield': augyield,
+        'absedge': absedge, 'alw': alw
+        }
     return data
 
+# Creates Bokeh model and formats it                         
+def create_table():
+    data = ColumnDataSource(get_data())
+    table = figure(title = 'Periodic Table Widget', plot_width = 1000, plot_height=600, 
+        x_range = groups, y_range = list(reversed(periods)), 
+        tools = tools, tooltips = tooltips, 
+        sizing_mode='scale_width', x_axis_location = "above")
+    
+    table.rect('group','period', 0.93, 0.93, fill_alpha = 0.7,
+            source = data, legend = '_type', 
+            color = factor_cmap('_type', palette = list(cmap.values()), factors = list(cmap.keys())))
+    
+    # Formatting text
+    txt_format = {"source": data, "text_align": "left", "text_baseline": "middle"}
+    x = dodge("group", -.3, range = table.x_range)
+    
+    txt = table.text(x = x, y = "period", text = "sym", **txt_format)
+    txt.glyph.text_font_style = "bold"
+    txt.glyph.text_font_size = "1em"
+    
+    txt = table.text(x = x, y = dodge("period", 0.25, range = table.y_range), 
+            text = "z", **txt_format)
+    txt.glyph.text_font_size = "0.8em"
+    
+    txt = table.text(x = x, y = dodge("period", -0.2, range = table.y_range), 
+            text = "mass", **txt_format)
+    txt.glyph.text_font_size = "0.7em"
+    
+    table.text(x = ["3", "3"], y = ["VI", "VII"], 
+        text = ["57-71", "89-103"], text_align = "center", 
+        text_baseline = "middle", text_font_size = "0.7em")
+        
+    table.outline_line_color = None
+    table.grid.grid_line_color = None
+    table.axis.axis_line_color = None
+    table.axis.major_tick_line_color = None
+        
+    table.legend.orientation = "horizontal"
+    table.legend.location ="bottom_center"
+    return table
+    
 # Populating keys needed for formatting 
 def pop_type(i, _type):
     if i in alkali_metal:
@@ -194,39 +239,3 @@ def pop_period(i, period):
         period.append(periods[7])
     elif i in range(89, 104):     
         period.append(periods[8])
-
-# Creates Bokeh object and formats it                         
-def create_table():
-    data = ColumnDataSource(data=get_data())
-    table = figure(title = 'Periodic Table Widget', plot_width = 1000, plot_height=600, x_range = groups, y_range = list(reversed(periods)), tools = tools, tooltips = tooltips, sizing_mode='scale_width', x_axis_location = "above")
-    
-    table.rect('group','period', 0.93, 0.93, fill_alpha = 0.7, muted_alpha=0.2,
-            source = data, legend = '_type', 
-            color = factor_cmap('_type', palette = list(cmap.values()), factors = list(cmap.keys())), 
-            muted_color = factor_cmap('_type', palette = list(cmap.values()), factors = list(cmap.keys())))
-    #  to add a legend to the table
-    
-    txt_format = {"source": data, "text_align": "left", "text_baseline": "middle"}
-    x = dodge("group", -.3, range = table.x_range)
-    
-    txt = table.text(x = x, y = "period", text = "sym", **txt_format)
-    txt.glyph.text_font_style="bold"
-    txt.glyph.text_font_size = "1em"
-    
-    txt = table.text(x = x, y = dodge("period", 0.25, range = table.y_range), 
-            text = "z", **txt_format)
-    txt.glyph.text_font_size = "0.8em"
-    
-    txt = table.text(x = x, y = dodge("period", -0.2, range = table.y_range), 
-            text = "mass", **txt_format)
-    txt.glyph.text_font_size = "0.7em"
-    
-    table.text(x=["3", "3"], y=["VI", "VII"], text=["57-71", "89-103"], text_align="center", text_baseline="middle", text_font_size = "0.7em")
-    table.outline_line_color = None
-    table.grid.grid_line_color = None
-    table.axis.axis_line_color = None
-    table.axis.major_tick_line_color = None
-    
-    table.legend.orientation = "horizontal"
-    table.legend.location ="bottom_center"
-    return table

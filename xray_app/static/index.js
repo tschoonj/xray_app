@@ -32,7 +32,7 @@ jQuery.fn.filterSelect = function (textinput) {
 };
 
 $(document).ready(function () {
-    // $ indicates a jQuery object
+    // Syntax: $ indicates a jQuery object
     
     // Clears text fields onfocus
     $(".xlib input[type='text']").on("focus", function () {
@@ -249,8 +249,8 @@ $(document).ready(function () {
             augShell.options[0].selected = true;
         };    
     };      
-    
-    
+    // Hiding impossible transitions
+    // As form changes
     $("select#augtrans-ex_shell").change(function (e) {
         var $selectAug = $(this).val();
         hideAuger1($selectAug);
@@ -260,45 +260,47 @@ $(document).ready(function () {
         var $selectAug = $(this).val();
         hideAuger2($selectAug);
     });
-    
-    // Hides/shows as form changes
+
     $("select#transition-iupac1").change(function (e) {
         var $selectTrans = $(this).val();
         hideIUPAC($selectTrans);
     });
-       
-    // On page refresh or load (POST)
+    
+    // Hiding input fields   
+    // On page refresh or POST
     var $selectOnLoad = $("select#function").val();
     hideInputFields($selectOnLoad);
     
-    // Hides/shows as form changes
+    // As form changes
     $("select#function").change(function (e) {
         var $selectVal = $(this).val();        
         hideInputFields($selectVal);
     });
    
-    // Hides/shows on key up of search
+    // On key up of function search
     $("input#function").keyup(function (e) {
         $("select#function").change();
     });
     
-    // Shows select form for transition on change
+    // Hiding transition fields
+    // On change
     $("input[type='radio']").change(function (e) {
         var $RadioVal = $(this).val();
         hideTransSelects($RadioVal);
     });  
     
-    // Shows select form for transition on load
+    // On load
     var $RadioOnLoad = $("input[checked]").val();
     hideTransSelects($RadioOnLoad);
        
-    // Hides/shows examples as form changes 
+    // Hiding examples
+    // As form changes 
     $("select#examples").change(function (e) {
         var $selectEx = $(this).val();                
         hideCode($selectEx);
     });    
         
-    // On page refresh or load (POST) hides/shows examples
+    // On page refresh or POST
     // Only shows if output or table output
     var $output = $("p#output").text();
     var $tableOutput = $("div#output").text();

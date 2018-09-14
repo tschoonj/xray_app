@@ -1,13 +1,13 @@
-from flask import Blueprint, render_template, request, url_for, make_response
+from flask import Blueprint, render_template, request
 from xray_app.main.forms import Xraylib_Request_Plot
 from xray_app.main.plotting import create_fig
 from xray_app.main.ptable import create_table
-from xray_app.methods.utils import calc_output, all_trans
+from xray_app.methods.utils import calc_output
+from xray_app.methods.routes import cs_dict, trans_S_tup, trans_I_tup, make_tup, validate_int, validate_str, validate_float
 from bokeh.embed import components
 
 import xraylib
 
-from xray_app.methods.routes import cs_dict, trans_S_tup, trans_I_tup, make_tup, validate_int, validate_str, validate_float
 main = Blueprint('main', __name__)
 #---------------------------------------------------------------------------------
 # Removing unimplemented functions from rendered choices
@@ -20,16 +20,19 @@ delete_key('CS_Total_Kissel', cs_dict)
 delete_key('CS_Photo_Partial', cs_dict)
 cs_tup = make_tup(cs_dict, 'cs')
 #---------------------------------------------------------------------------------
+# About Page
 @main.route("/about")
 def about():
     return render_template('about.html', title = 'About ')
 #---------------------------------------------------------------------------------
+# Periodic Table Page
 @main.route("/ptable")
 def ptable():
     table = create_table()
     script, div = components(table)
     return render_template('ptable.html', title = 'Periodic Table', script=script, div=div)    
 #---------------------------------------------------------------------------------
+# Plotting interface
 @main.route("/plot", methods=['GET', 'POST'])
 def plot():
     form = Xraylib_Request_Plot()
@@ -63,8 +66,11 @@ def plot():
             if validate_int(int_z_or_comp) or validate_str(int_z_or_comp):
                 plot = create_fig(select_input, range_start, range_end, 
                         log_boo_x, log_boo_y, int_z_or_comp)
-                script, div = components(plot)
-                return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)
+                if plot:
+                    script, div = components(plot)
+                    return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)
+                else:
+                    return render_template('plot.html', form = form, title = 'Plot')
             else:
                 return render_template('plot.html', form = form, title = 'Plot')
     
@@ -73,14 +79,20 @@ def plot():
                 if notation == 'IUPAC':
                     plot = create_fig(select_input, range_start, range_end, 
                             log_boo_x, log_boo_y, int_z, trans)
-                    script, div = components(plot)
-                    return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)
+                    if plot:
+                        script, div = components(plot)
+                        return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)
+                    else:
+                        return render_template('plot.html', form = form, title = 'Plot')    
 
                 elif notation == 'Siegbahn':
                     plot = create_fig(select_input, range_start, range_end, 
                             log_boo_x, log_boo_y, int_z, siegbahn)
-                    script, div = components(plot)
-                    return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)      
+                    if plot:
+                        script, div = components(plot)
+                        return render_template('plot.html', form = form, title = 'Plot', script = script, div = div)
+                    else:
+                        return render_template('plot.html', form = form, title = 'Plot')
             else:
                 return render_template('plot.html', form = form, title = 'Plot')
     return render_template('plot.html', title = 'Plot', form = form)
