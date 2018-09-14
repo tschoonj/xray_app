@@ -209,17 +209,17 @@ def create_table():
     txt_format = {"source": data, "text_align": "left", "text_baseline": "middle"}
     x = dodge("group", -.3, range = table.x_range)
     
-    r = table.text(x = x, y = "period", text = "sym", **txt_format)
-    r.glyph.text_font_style="bold"
-    r.glyph.text_font_size = "1em"
+    txt = table.text(x = x, y = "period", text = "sym", **txt_format)
+    txt.glyph.text_font_style="bold"
+    txt.glyph.text_font_size = "1em"
     
-    r = table.text(x = x, y = dodge("period", 0.25, range = table.y_range), 
+    txt = table.text(x = x, y = dodge("period", 0.25, range = table.y_range), 
             text = "z", **txt_format)
-    r.glyph.text_font_size = "0.8em"
+    txt.glyph.text_font_size = "0.8em"
     
-    r = table.text(x = x, y = dodge("period", -0.2, range = table.y_range), 
+    txt = table.text(x = x, y = dodge("period", -0.2, range = table.y_range), 
             text = "mass", **txt_format)
-    r.glyph.text_font_size = "0.7em"
+    txt.glyph.text_font_size = "0.7em"
     
     table.text(x=["3", "3"], y=["VI", "VII"], text=["57-71", "89-103"], text_align="center", text_baseline="middle", text_font_size = "0.7em")
     table.outline_line_color = None

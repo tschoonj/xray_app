@@ -1,6 +1,8 @@
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import ColumnDataSource, Legend
 from bokeh.transform import dodge, factor_cmap
+from bokeh.layouts import widgetbox
+from bokeh.models.widgets import DataTable, DateFormatter, TableColumn
 import numpy as np
 
 import xraylib
@@ -37,27 +39,28 @@ def get_title(*variables):
             t_variables.append(str(variable))
     t_variables = ', '.join(t_variables)        
     return t_variables
-
+    
 # Creates Bokeh object        
 def create_fig(function, range_start, range_end, log_boo_x, log_boo_y, *variables):
     x = make_array(range_start, range_end)
     get_data(function, x, *variables)
     title = function + ': ' + str(get_title(*variables))
-    
+        
     # Sets graph scale depending on input
     if log_boo_y and log_boo_x:
-        p = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
+        plot = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
             x_axis_type = 'log', y_axis_type = 'log', plot_height=500)
     elif log_boo_x:
-        p = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
+        plot = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
             x_axis_type = 'log', plot_height=500)
     elif log_boo_y:
-        p = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
+        plot = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', 
             y_axis_type = 'log', plot_height=500)
     else:
-        p = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', plot_height=500)   
-    p.xaxis.axis_label = 'Energy (keV)'
-    p.yaxis.axis_label = 'Cross Section (cm^2/g)'
-    p.line(x, y)    
-    p.hover.mode = 'vline'
-    return p
+        plot = figure(title = title, tools=tools, tooltips=tooltips, sizing_mode='scale_width', plot_height=500)   
+    plot.xaxis.axis_label = 'Energy (keV)'
+    plot.yaxis.axis_label = 'Cross Section (cm^2/g)'
+    plot.line(x, y)    
+    plot.hover.mode = 'vline'
+    plot.output_backend = "svg"
+    return plot
