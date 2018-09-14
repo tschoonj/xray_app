@@ -50,26 +50,21 @@ def create_fig(function, range_start, range_end, log_boo_x, log_boo_y, *variable
             
     # Sets graph scale and creates model
     if log_boo_y and log_boo_x:
-        plot = figure(title = title, tools=tools, tooltips=tooltips, 
-            sizing_mode='scale_width', plot_height=500,
-            x_axis_type = 'log', y_axis_type = 'log')
+        plot = figure(title = title, tools = tools, tooltips = tooltips, sizing_mode = 'scale_width', plot_height=500, x_axis_type = 'log', y_axis_type = 'log')
     elif log_boo_x:
-        plot = figure(title = title, tools=tools, tooltips=tooltips, 
+        plot = figure(title = title, tools = tools, tooltips = tooltips, 
             sizing_mode='scale_width', plot_height=500,
             x_axis_type = 'log')
     elif log_boo_y:
-        plot = figure(title = title, tools=tools, tooltips=tooltips, 
-            sizing_mode='scale_width', plot_height=500, 
-            y_axis_type = 'log')
+        plot = figure(title = title, tools = tools, tooltips = tooltips, y_axis_type = 'log',         sizing_mode = 'scale_width', plot_height = 500)
     else:
-        plot = figure(title = title, tools=tools, tooltips=tooltips, 
-            sizing_mode='scale_width', plot_height=500)               
+        plot = figure(title = title, tools = tools, tooltips = tooltips, 
+            sizing_mode = 'scale_width', plot_height = 500)               
     
     # Creates Bokeh glyph   
-    plot.line(x, y)
+    plot.line(x, y, color = 'navy')
     
     plot.hover.mode = 'vline'
-    plot.output_backend = "svg"
     plot.xaxis.axis_label = 'Energy (keV)'
     plot.yaxis.axis_label = 'Cross Section (cm^2/g)'
     return plot
