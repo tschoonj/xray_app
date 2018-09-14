@@ -17,7 +17,8 @@ class TransitionForm(FlaskForm):
                 ('N2', 'N2'), ('N3', 'N3'), ('N4', 'N4'), ('N5', 'N5'), ('N6', 'N6'), 
                 ('N7', 'N7'), ('O1', 'O1'), ('O2', 'O2'), ('O3', 'O3'), ('O4', 'O4'), 
                 ('O5', 'O5'), ('O6', 'O6'), ('O7', 'O7'), ('P1', 'P1'), ('P2', 'P2'), 
-                ('P3', 'P3'), ('P4', 'P4'), ('P5', 'P5'), ('Q1', 'Q1'), ('Q2', 'Q2'), ('Q3', 'Q3')],
+                ('P3', 'P3'), ('P4', 'P4'), ('P5', 'P5'), ('Q1', 'Q1'), ('Q2', 'Q2'), 
+                ('Q3', 'Q3')],
             validators = [DataRequired()])
     iupac2 = SelectField(
             u'Transition', 
@@ -46,7 +47,12 @@ class AugerForm(FlaskForm):
         validators = [DataRequired()])
     aug_shell = SelectField(
         u'Auger Electron Shell', 
-        choices = [('L1', 'L1'), ('L2', 'L2'), ('L3', 'L3'), ('M1', 'M1'), ('M2', 'M2'), ('M3', 'M3'), ('M4', 'M4'), ('M5', 'M5'), ('N1', 'N1'), ('N2', 'N2'), ('N3', 'N3'), ('N4', 'N4'), ('N5', 'N5'), ('N6', 'N6'), ('N7', 'N7'), ('O1', 'O1'), ('O2', 'O2'), ('O3', 'O3'), ('O4', 'O4'), ('O5', 'O5'), ('O6', 'O6'), ('O7', 'O7'), ('P1', 'P1'), ('P2', 'P2'), ('P3', 'P3'), ('P4', 'P4'), ('P5', 'P5'), ('Q1', 'Q1'), ('Q2', 'Q2'), ('Q3', 'Q3')], 
+        choices = [('L1', 'L1'), ('L2', 'L2'), ('L3', 'L3'), ('M1', 'M1'), ('M2', 'M2'), 
+        ('M3', 'M3'), ('M4', 'M4'), ('M5', 'M5'),  ('N1', 'N1'), ('N2', 'N2'), 
+        ('N3', 'N3'), ('N4', 'N4'), ('N5', 'N5'), ('N6', 'N6'), ('N7', 'N7'), 
+        ('O1', 'O1'), ('O2', 'O2'), ('O3', 'O3'), ('O4', 'O4'), ('O5', 'O5'), 
+        ('O6', 'O6'), ('O7', 'O7'), ('P1', 'P1'), ('P2', 'P2'), ('P3', 'P3'), 
+        ('P4', 'P4'), ('P5', 'P5'), ('Q1', 'Q1'), ('Q2', 'Q2'), ('Q3', 'Q3')], 
         validators = [DataRequired()])
     
 class Xraylib_Request(FlaskForm):
@@ -65,7 +71,6 @@ class Xraylib_Request(FlaskForm):
         ('Refractive_Index','Refractive Index'), ('CompoundParser', 'Compound Parser'), 
         ('GetRadioNuclideDataList', 'Get Radionuclide List'), ('GetRadioNuclideDataByIndex', 'Radionuclide Excitation Profile'), 
         ('GetCompoundDataNISTList','Get List of NIST Compounds'),  ('GetCompoundDataNISTByIndex','Get NIST Data')],
-
         default = 'LineEnergy',
         validators = [DataRequired()])
     comp = StringField('Compound', default = 'Ca5(PO4)3', validators = [DataRequired()])

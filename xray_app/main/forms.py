@@ -28,22 +28,3 @@ class Xraylib_Request_Plot(FlaskForm):
     transition = FormField(TransitionForm)
     int_z = StringField('Element', default = '26', validators = [DataRequired()])
     int_z_or_comp = StringField('Element or Compound', default = 'FeSO4', validators = [DataRequired()])
-    #shell = SelectField(
-        #u'Shell', 
-        #choices = [],
-        #validators = [DataRequired()])       
-    #comp = StringField('Compound',validators = [DataRequired()])    
-    #float_q = StringField('Momentum Transfer',validators = [DataRequired()])
-    #energy = StringField('Energy', validators = [DataRequired()])
-    #theta = StringField(u'Theta &#952', validators = [DataRequired()])
-    #phi = StringField(u'Phi &#981', validators = [DataRequired()])
-    #density = StringField('Density',validators = [DataRequired()])
-    #pz = StringField('Electron Momentum p<sub>z</sub>',validators = [DataRequired()])
-    #cktrans = SelectField(
-        #u'Coster Kronig Trans', 
-        #choices = [],
-        #validators = [DataRequired()])
-    #augtrans = SelectField(
-        #u'Auger Transition', 
-        #choices = [],
-        #validators = [DataRequired()])

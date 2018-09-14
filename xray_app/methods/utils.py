@@ -4,7 +4,7 @@ from pygments import highlight
 from pygments.lexers import PythonLexer, get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 
-# Validators for input
+# Validators for user input
 def validate_float(*s):
     boo = []
     for i in s:
@@ -43,7 +43,7 @@ def validate_str(*s):
             return False
     return all(boo)          
 #------------------------------------------------------------------------------------------------
-# Generates dicts for all linetype output
+# Generates dicts of all transition output
 def all_trans(tple, *inputs):
     transs = [x[0] for x in tple]
     output = {}    
@@ -53,7 +53,7 @@ def all_trans(tple, *inputs):
             output[trans] = out       
     return output                   
 
-# Special case needed for xrf due to order of method input
+# Special case needed for xrf due arg order
 def all_trans_xrf(tple, function, int_z, energy):
     transs = [x[0] for x in tple]
     output = {}
@@ -74,8 +74,8 @@ def make_tup(_dict, variable):
             split_k = k.split('_')
             k_label = []
             for word in split_k:
-                if word in label_dict:
-                    k_label.append(label_dict[word])
+                if word in label_map:
+                    k_label.append(label_map[word])
                 else:
                     k_label.append(word)
             k_label = ' '.join(k_label)
@@ -89,11 +89,14 @@ def make_tup(_dict, variable):
             tpl = (k, k_label)
             tup.append(tpl)
         return tup
-        
-# Matches each substring to dict key then maps more helpful names       
-label_dict = {'CS':'Cross Section:', 'DCS':'Differential Unpolarized Cross Section:', 'DCSP':'Differential Polarized Cross Section:', 'KN':'Klein-Nishina', 'Photo':'Photoionization', 'Rayl':'Rayleigh', 'Compt':'Compton', 'FluorLine':' XRF', 'Partial':'(Partial)', 'Thoms':'Thomson', 'TRANS':''}
+             
+label_map = {'CS':'Cross Section:', 'DCS':'Differential Unpolarized Cross Section:', 
+    'DCSP':'Differential Polarized Cross Section:', 'KN':'Klein-Nishina', 
+    'Photo':'Photoionization', 'Rayl':'Rayleigh', 
+    'Compt':'Compton', 'FluorLine':' XRF', 
+    'Partial':'(Partial)', 'Thoms':'Thomson', 'TRANS':''}
 
-# Checks if s is an xraylib key
+# Checks for an xraylib key
 # Includes transtion notation types
 def check_xraylib_key(s):
         s = s.upper()
@@ -114,7 +117,7 @@ def check_xraylib_key(s):
         return False
 
 # User input is not an xraylib MACRO
-# MACRO required for calc_output              
+# input => valid arg       
 def get_key(s):
     s = s.upper()
     s = s.replace(" ", "_")
@@ -128,6 +131,7 @@ def get_key(s):
                 return key
 
 # Calculates output for all functions excl. CompoundParser and Refractive_Index
+# values can be int, float, char Compound/CompoundString, xraylib MACRO or abbr. MACRO
 def calc_output(function, *values):
     xrl_function = getattr(xraylib, function)
 
@@ -145,14 +149,14 @@ def calc_output(function, *values):
             if xraylib.SymbolToAtomicNumber(value) != 0:
                 lst.append(xraylib.SymbolToAtomicNumber(value))
             else:
-                lst.append(value)  #needed for _CP/compound string input          
+                lst.append(value) #needed for _CP/compound string input          
     try:
         # All objects in lst are integers or floats
         # excl. compound char i.e. int_z, int_z_or_comp or comp
         if validate_float(lst[0]):
             output = xrl_function(*lst)
             if output == 0:
-                # Needed to render 0 as output in jinja template
+                # Needed to render 0 in template
                 return '0'
             else:
                 return output
@@ -170,9 +174,8 @@ def calc_output(function, *values):
 
 # Generates code example strings and passes them through Pygments' lexers
 # tple should be form.examples.choices i.e. (value, label) pairs
-# see further methods/forms.py
-def code_example(tple, function, *variables):
-    
+# cf. methods/forms.py
+def code_example(tple, function, *variables):  
     languages = [x[0] for x in tple]
     labels = [x[1] for x in tple]
     examples = []       
@@ -367,8 +370,7 @@ def code_example(tple, function, *variables):
         pre_example = ('<div class="code-examples ' 
             + str(lang[0]) 
             + '">Call as: </div>')
-        # Prints Pygments CSS
-        # print(HtmlFormatter().get_style_defs('.' + str(lang[0]))) 
+                         
         examples.append(pre_support)
         examples.append(support_html)
         examples.append(pre_example)

@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block body %}
+<p> This periodic table was built using Bokeh and xraylib methods.
+</br> Fluorescence yields, Auger yields, absorption edge energies and atomic level widths 
+shown are for the K shell. For other queries please use the <a href="/">calculator.</a></p>
+
+{% if script and div %}
+    {{script|safe}}
+    {{div|safe}}
+{% else %}
+    JavaScript Error
+{% endif %}
+{% endblock body%}

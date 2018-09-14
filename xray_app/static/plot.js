@@ -4,7 +4,7 @@ $(document).ready(function () {
         $( this ).val('');
     });
     
-    // Hides All option for transition until implemented
+    // Hides All option until implemented
     $("div#transition li:last-child").hide();
        
     // Shows and hides fields depending on $Select
@@ -62,29 +62,32 @@ $(document).ready(function () {
         };
     }; 
     
-    // Hides/shows as form changes
+    // Hiding impossible transitions
+    // As form changes
     $("select#transition-iupac1").change(function (e) {
         var $selectTrans = $(this).val();
         hideIUPAC($selectTrans);
     });
     
-    // On page refresh or load (post form)
+    // Hiding input fields
+    // On page refresh or POST
     var $SelectOnLoad = $("select#function").val();
     hideInputFields($SelectOnLoad);
     
-    // Hides/shows as form changes 
+    // As form changes 
     $("select#function").change(function (e) {
         var $SelectVal = $(this).val();
         hideInputFields($SelectVal);
     });
     
-    // Shows select form for transition on change
+    // Hiding transition fields
+    // On change
     $("input[type='radio']").change(function (e) {
         var $RadioVal = $(this).val();
         hideTransSelects($RadioVal);        
     });
     
-    // Shows select form for transition on load
+    // On load
     var $RadioOnLoad = $("div#transition input[checked]").val();
     hideTransSelects($RadioOnLoad);
     
